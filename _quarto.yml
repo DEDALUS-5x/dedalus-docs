@@ -1,0 +1,22 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "DEDALUS"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+
+format:
+  html:
+    theme: 
+      light: flatly
+      dark: darkly
+    toc: true
+    lightbox: true
+    code-copy: true
+
+
