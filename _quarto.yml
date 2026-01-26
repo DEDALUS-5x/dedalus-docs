@@ -8,13 +8,24 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: design_choices.qmd
+        text: Design Choices
+      - href: modeling.qmd
+        text: Modeling
+      - href: boards.qmd
+        text: Boards
+
+    right:
+      - icon: github
+        href: https://https://github.com/DEDALUS-5x
 
 format:
   html:
     theme: 
       light: flatly
       dark: darkly
+    
+    number-sections: true
     toc: true
     lightbox: true
     code-copy: true

@@ -2,6 +2,10 @@
 title: "DEDALUS"
 ---
 
-This is a Quarto website.
+*Dedalus* project consists in the upgrade of a classic cartesian 3D printer into a 5DoFs 3D printer. This upgrade helps to overcome the classic limitations of FDM, exploiting non-planar printing
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Documentation outline:
+
+* [Design Choices](design_choices.qmd)
+* [Modeling](modeling.qmd)
+* [Boards](boards.qmd)
