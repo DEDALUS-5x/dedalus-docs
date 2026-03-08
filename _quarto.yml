@@ -10,10 +10,12 @@ website:
         text: Home
       - href: design_choices.qmd
         text: Design Choices
+      - href: boards.qmd
+        text: Hardware
       - href: modeling.qmd
         text: Modeling
-      - href: boards.qmd
-        text: Boards
+      - href: motion.qmd
+        text: Motion & Integration
 
     right:
       - icon: github

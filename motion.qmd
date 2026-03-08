@@ -1,0 +1,12 @@
+# Low-Level Kernel
+The low-level software is based on 3-axes [cncpp](https://github.com/pbosetti/cncpp) one, that is the outcome of the **Precision Engineering Mod.2** course. It implements:
+
+* `G Code` parsing;
+* Motion profiles computation;
+* `MQTT` interface for fast movements that require feedbacks
+
+The used fork additionally implements:
+
+* 2 additional positioning axes;
+* Tool Radius Compensation;
+* Lookhaed feedrate smoothing;

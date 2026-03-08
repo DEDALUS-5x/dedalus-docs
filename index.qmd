@@ -2,10 +2,11 @@
 title: "DEDALUS"
 ---
 
-*Dedalus* project consists in the upgrade of a classic cartesian 3D printer into a 5DoFs 3D printer. This upgrade helps to overcome the classic limitations of FDM, exploiting non-planar printing
+**Dedalus** project consists in the upgrade of a classic cartesian 3D printer into a 5DoFs 3D printer. This upgrade helps to overcome the classic limitations of FDM, exploiting non-planar printing.
 
 Documentation outline:
 
-* [Design Choices](design_choices.qmd)
+* [Overview & Design Choices](design_choices.qmd)
+* [Hardware](boards.qmd)
 * [Modeling](modeling.qmd)
-* [Boards](boards.qmd)
+* [Motion & Integration](motion.qmd)

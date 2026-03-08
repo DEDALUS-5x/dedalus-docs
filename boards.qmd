@@ -1,0 +1,55 @@
+# Axes Controller Board
+
+![](images/ACB.png)
+
+A custom board is developed in order to interface the path planning coming from `Raspberry Pi5` with the actual motors actuation. In particular the board recieves data via SPI from `Raspberry Pi5` and implements a high-frequency PID for each DC motor and a closed-loop positioning for stepper motors.
+
+The selected motors are:
+
+| DC Motor | Stepper Motor |
+|---|---|
+|![](images/DC.png) | |
+
+## DC motors control
+In order to perform properly the PIDs, the board senses from:
+
+* `AS5048A` as rotative encoders mounted along each motor axis as feedback on angular velocity;
+* `RLCI2C` as linear magnetic encoders mounted along each axis as positioning feedback;
+* `ACS37800` as current sensors in order to get the flowing current that is proportional to the motor torque.
+
+This 3 sensors are managed for each DC motor, that in total are 3:
+
+* A single DC motor for the X axis (extruder axis);
+* A dobule DC motor for the Y axis (printing plate axis).
+
+The 3 DC motors are then actuated thanks to an external double-H-bridge driver with IBT-4 configuration. The `Axes Controller Board`'s MCU drives it using 2 PWMs, in order to select the rotation direction (clockwise or anti-clockwise). The PID outputs the commanding signal that is then written inside the CCR register (`Capture Compare  Register`) that is proportional to the duty cycle.
+
+## Stepper motors control
+Stepper motors are actuated thanks to `TMC` drivers, that implement micro-stepping and STEP/DIR interface. They are driven by the MCU using these 2 signals while correcting the STEP position using the rotative encoder.
+The used stepper motors configuration is:
+
+* 2 steppers for Z positioning;
+* 2 steppers for global plate pitch orientation;
+* 1 stepper for local plate yaw orientation;
+* 1 stepper for plastic material flow.
+
+## Firmware Architecture
+In order to manage all the sensing and actuation, the bare-metal firmware is implemented such as:
+
+* all sensors converge to DMA, so the CPU is never used for sensing;
+* internal timer `TIM6` devoted to perform the required actuations (PIDs and steppers) at $10kHz$ frequency.
+
+### DMA
+The DMA of `STM32H723ZGT6` is used as follow:
+
+* interface with SPI1 for `Raspberry Pi5` communication;
+* interface with SPI2 for 3 daisy-chain-configured rotative encoders;
+* interface with SPI3 for the other 3 daisy-chain-configured rotative encoders;
+* interface with SPI4 for current sensor readings.
+
+### MCU
+
+## Mechanical Structure
+The mechanical skeleton is a `Creality CR10 Max` which has a wide potential printing volume that is fundamental for letting the plate rotate and move.
+
+On the Y axis, linear guides are mounted while replacing the old bearings-based carts. A single DC motor for each axis moves the plate structure along the Y direction, while on the carts are mounted one stepper motor each, which are devoted to orintate the pitch angle of the plate. The inner stepper (for the local yaw), is mounted such as the baricenter of the structure is aligned with the pitch rotating axis. It allows to load the stepper motors just with the structure inertia.
