@@ -6,9 +6,9 @@ A custom board is developed in order to interface the path planning coming from 
 
 The selected motors are:
 
-| DC Motor | Stepper Motor |
+| Geared DC Motor | Stepper Motor |
 |---|---|
-|![](images/DC.png) | |
+|![](images/DC.png) | ![](images/step.png) |
 
 ## DC motors control
 In order to perform properly the PIDs, the board senses from:
