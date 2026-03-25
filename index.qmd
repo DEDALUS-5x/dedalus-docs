@@ -8,5 +8,5 @@ Documentation outline:
 
 * [Overview & Design Choices](design_choices.qmd)
 * [Hardware](boards.qmd)
-* [Modeling](modeling.qmd)
+* [Digital Twin](modeling.qmd)
 * [Motion & Integration](motion.qmd)

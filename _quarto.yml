@@ -13,7 +13,7 @@ website:
       - href: boards.qmd
         text: Hardware
       - href: modeling.qmd
-        text: Modeling
+        text: Digital Twin
       - href: motion.qmd
         text: Motion & Integration
 
