@@ -2,7 +2,17 @@
 title: "DEDALUS"
 ---
 
-**Dedalus** project consists in the upgrade of a classic cartesian 3D printer into a 5DoFs 3D printer. This upgrade helps to overcome the classic limitations of FDM, exploiting non-planar printing.
+**Dedalus** project consists in the upgrade of a classic cartesian 3D printer into a 5DoFs 3D printer. This upgrade helps to overcome the classic limitations of traditional planar FDM, exploiting non-planar printing by compining hobbyist architecture and industrial-grade dynamic stability.
+
+Dedalus stands on 3 fundamental pillars:
+
+* **Precision**: moving beyound open-loop control in favor of a closed-loop system, where position is not assumed but measured thanks to linar encoders;
+* **Decentralization**: a control hierarchy that separates high-level kinematic planning (relied to Raspberry Pi5) from low-latency motor management implemented on a STM32H7 (ARM Cortex M7) microcontroller;
+* **Mechanical reliability**: linear rails and DC motors designed to perform smooth operations;
+
+An integrated engineering approach led to custom development of all tools: at first, the low-level control board is designed from the ground up, as well the bare-metal firmware. By exploiting the microcontroller features, it is possible to separate the data acquisition from the CPU computations, in order to achieve a highly reactive control. The motion planning software is custom as well, started from the material developed during the **Precision Engineering** course teached by prof. [Paolo Bosetti](https://github.com/pbosetti) at University of Trento.
+Last but not least, the digital-twin is developed from the ground up as well and integrated with the machine real-world operation by means of the **Mechatronic systems simulations: Modeling**'s approach teached by prof. Francesco Biral at University of Trento.
+
 
 Documentation outline:
 
