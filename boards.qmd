@@ -33,12 +33,6 @@ The used stepper motors configuration is:
 * 1 stepper for local plate yaw orientation;
 * 1 stepper for plastic material flow.
 
-## Firmware Architecture
-In order to manage all the sensing and actuation, the bare-metal firmware is implemented such as:
-
-* all sensors converge to DMA, so the CPU is never used for sensing;
-* internal timer `TIM6` devoted to perform the required actuations (PIDs and steppers) at $10kHz$ frequency.
-
 ### DMA
 The DMA of `STM32H723ZGT6` is used as follow:
 
@@ -47,9 +41,33 @@ The DMA of `STM32H723ZGT6` is used as follow:
 * interface with SPI3 for the other 3 daisy-chain-configured rotative encoders;
 * interface with SPI4 for current sensor readings.
 
-### MCU
-
 ## Mechanical Structure
 The mechanical skeleton is a `Creality CR10 Max` which has a wide potential printing volume that is fundamental for letting the plate rotate and move.
 
 On the Y axis, linear guides are mounted while replacing the old bearings-based carts. A single DC motor for each axis moves the plate structure along the Y direction, while on the carts are mounted one stepper motor each, which are devoted to orintate the pitch angle of the plate. The inner stepper (for the local yaw), is mounted such as the baricenter of the structure is aligned with the pitch rotating axis. It allows to load the stepper motors just with the structure inertia.
+
+## Firmware Architecture
+The motion control of Dedalus is managed by a custom bare-metal firmware developed for the STM32H7 architecture, designed to handle high-frequency control loops.
+
+### DMA Data Acquisition
+To eliminate jitter and CPU overhead during sensor communication, the system utilizes DMA on the SPI1 bus configured in Daisy Chain.
+
+* High-Speed SPI1 (10 kHz): At each system timer clock cycle, a DMA reception is triggered to simultaneously read position data from the movement axes rotary encoders:
+* since the H7 is equipped with an L1 cache, the firmware performs an `SCB_InvalidateDCache_by_Addr` operation before processing the `spi1_rx_buf`. This ensures the CPU reads the fresh data just written by the DMA into RAM.
+
+### Inner Velocity Loop
+The velocity loop is critical for the dynamic stability of the brushed DC motors.
+
+* It runs at every occurrence of the Timer 6 interrupt ($dt=0.0001s$);
+* it receives a composite velocity setpoint, consisting of the position feedback plus the feedforward from the `Raspberry Pi`;
+* the firmware calculates the acceleration contribution (Ka​) in real-time. This is derived from the smooth motion profile to overcome the inertia of the 3 kg cradle before a velocity error even occurs;
+* it directly generates the `PWM` signal sent to the `CCR` registers of Timer 1.
+
+### Outer Position Loop
+The position loop manages absolute spatial precision by reading the `RLCI2C` linear encoders from RLS.
+
+* It runs every 10 cycles of the velocity loop using a `pid_counter`;
+* it reads the real position via the H7's hardware encoder inputs (`Timer 2` and `Timer 3`);
+* it calculates the corrective velocity required to nullify the position error relative to the interpolated target received from the `Raspberry Pi`.
+* thanks to the 10-micron resolution of the RLS sensors, this loop ensures the machine maintains its nominal coordinate by correcting for mechanical backlash or belt flex;
+
