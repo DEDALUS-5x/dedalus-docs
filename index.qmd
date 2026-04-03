@@ -16,7 +16,6 @@ Last but not least, the digital-twin is developed from the ground up as well and
 
 Documentation outline:
 
-* [Overview & Design Choices](design_choices.qmd)
 * [Hardware](boards.qmd)
 * [Digital Twin](modeling.qmd)
 * [Motion & Integration](motion.qmd)

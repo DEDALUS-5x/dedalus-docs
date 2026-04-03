@@ -8,8 +8,6 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: design_choices.qmd
-        text: Design Choices
       - href: boards.qmd
         text: Hardware
       - href: modeling.qmd
