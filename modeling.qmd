@@ -1,0 +1,44 @@
+# Modeling
+
+## Overview
+The architecture is built using MATLAB/Simulink and Simscape, following a Multi Domain Model Design approach. The system is explicitly divided into two referenced models to separate the discrete software logic from the continuous physical plant:
+
+* `control_<axis>`: The discrete-time control algorithm (firmware replica).
+* `machine_<axis>`: The continuous-time physical model (Simscape Multibody/Foundation).
+
+## Top-Level Integration
+The top-level model connects the control logic and the physical plant. Since the controller operates in the discrete-time domain (simulating an STM32 microcontroller) and the physical plant operates in the continuous-time domain, appropriate interface blocks are utilized:
+
+* **Zero-Order Hold (ZOH):** Applied to the continuous feedback signals (position and velocity) entering the controller. This mimics the finite sampling rate of the microcontroller's ADCs and timers.
+* **Unit Delay ($z^{-1}$):** Placed between the controller's PWM output and the plant's input. This breaks the algebraic loop, accurately simulating the computational delay (e.g., 100 $\mu s$) between reading the encoders and updating the motor driver.
+
+## X: Extruder Axis
+
+### Control sub-Model
+The control logic features a discrete cascade PID architecture with feedforward compensation, matching the physical C firmware structure:
+
+* **Outer Position Loop (1 kHz):** Computes the positional error. The positional feedback is quantized to simulate the finite resolution of the RLS linear encoder. The output of this `PID(z)` is a baseline velocity command.
+* **Velocity Feedforward:** The target feedrate is directly summed with the output of the position PID. This acts as a primary driving signal, allowing the position PID to operate purely as a low-effort error corrector (usually purely Proportional), avoiding heavy oscillations.
+* **Inner Velocity Loop (10 kHz):** Compares the feedforward-adjusted target velocity against the quantized feedback from the AS5048A rotary encoder. This highly responsive `PID(z)` outputs a normalized duty cycle, which is then amplified by the system voltage (e.g., 12V) to command the physical motor.
+
+![control_x](images/control_x.png)
+
+### Physical Plant sub-Model
+The plant is modeled using the Simscape Foundation Library, employing a physical network approach rather than purely signal-based mathematical blocks. This ensures accurate bidirectional power flow and energy conservation across different physical domains (Electrical, Rotational, and Translational).
+
+![model_x](images/model_x.png)
+
+#### Electro-Mechanical Conversion
+The control signal (voltage) drives a **Controlled Voltage Source**, which powers a **DC Motor** block. The motor block is parameterized with real-world electrical constraints (armature resistance, inductance, and back-EMF) and mechanical properties (rotor inertia). 
+
+#### Transmission and Elasticity
+The rotational output of the motor is converted to linear motion via a **Wheel and Axle** block, representing the drive pulley. 
+Crucially, the timing belt is not modeled as a rigid link, but as a flexible transmission using parallel **Translational Spring** and **Translational Damper** blocks. This captures the structural resonance and high-frequency oscillations ("ringing") inherent in belt-driven systems.
+
+#### Mass and Friction Dynamics
+The linear force from the belt drives the **Mass** block, representing the extruder carriage. A secondary **Translational Damper** connected to the mechanical ground simulates the minimal viscous friction of the linear recirculating ball bearing guides.
+
+#### Sensor Interfaces
+Feedback is gathered using **Ideal Rotational** and **Ideal Translational Motion Sensors**. These blocks read the physical states without drawing energy from the system, converting the physical quantities back into standard Simulink signals for the control loops.
+
+## Y: Printing Plate Axis
