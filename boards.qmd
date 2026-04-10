@@ -45,11 +45,6 @@ The DMA of `STM32H723ZGT6` is used as follow:
 * interface with SPI3 for the other 3 daisy-chain-configured rotative encoders;
 * interface with SPI4 for current sensor readings.
 
-## Mechanical Structure
-The mechanical skeleton is a `Creality CR10 Max` which has a wide potential printing volume that is fundamental for letting the plate rotate and move.
-
-On the Y axis, linear guides are mounted while replacing the old bearings-based carts. A single DC motor for each axis moves the plate structure along the Y direction, while on the carts are mounted one stepper motor each, which are devoted to orintate the pitch angle of the plate. The inner stepper (for the local yaw), is mounted such as the baricenter of the structure is aligned with the pitch rotating axis. It allows to load the stepper motors just with the structure inertia.
-
 ## Firmware Architecture
 The motion control of Dedalus is managed by a custom bare-metal firmware developed for the STM32H7 architecture, designed to handle high-frequency control loops.
 
@@ -75,3 +70,8 @@ The position loop manages absolute spatial precision by reading the `RLCI2C` lin
 * it calculates the corrective velocity required to nullify the position error relative to the interpolated target received from the `Raspberry Pi`.
 * thanks to the 10-micron resolution of the RLS sensors, this loop ensures the machine maintains its nominal coordinate by correcting for mechanical backlash or belt flex;
 
+
+# Mechanical Structure
+The mechanical skeleton is a `Creality CR10 Max` which has a wide potential printing volume that is fundamental for letting the plate rotate and move.
+
+On the Y axis, linear guides are mounted while replacing the old bearings-based carts. A single DC motor for each axis moves the plate structure along the Y direction, while on the carts are mounted one stepper motor each, which are devoted to orintate the pitch angle of the plate. The inner stepper (for the local yaw), is mounted such as the baricenter of the structure is aligned with the pitch rotating axis. It allows to load the stepper motors just with the structure inertia.
