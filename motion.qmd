@@ -17,7 +17,7 @@ The software kernel runs by its own since it is fed with a valid `G Code` and a 
 
 MADS is a cross-plattform broker-based framework that can be used to run different agents on multiple machines. Its strenght stands on the idea to be a plug-and-play, robust and efficient software. In this case, it is used to interface the low-level kernel with both the real machine and a simulation environment based on Matlab Simulink.
 
-MADS is a ZeroMQ-based framework, so it is needed to bridge the communication from MQTT to ZeroMQ, thanks to a dedicated agent: [mqtt_plugin](https://github.com/MADS-NET/mqtt_plugin.git) is the responsible for bridging in both directions MADS and MQTT.
+MADS is a ZeroMQ-based framework, so it is needed to interface the low-level kernel with the MADS network. From this need the dedicated monolithic agent arises. This agent directly interfaces with the already structured FSM thanks by following the [fsm guide](https://mads-net.github.io/guides/fsm.html).
 
 While the interested data is sent through the MADS communication network, it is possible to both interface with the real machine and simulation environment by respectively using the agents [spi_agent](https://github.com/alterlleo/spi_agent.git) and [fmu_agent](https://github.com/MADS-NET/FMU_agent.git).
 
