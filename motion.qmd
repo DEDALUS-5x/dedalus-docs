@@ -23,4 +23,53 @@ While the interested data is sent through the MADS communication network, it is 
 
 ### Machine
 
+The `spi_agent` is a monolithic MADS agent specifically designed for the Raspberry Pi 5 to communicate with the Axes Controller Board (STM32H7) via the SPI peripheral. It implements a high-performance Full-Duplex logic, allowing simultaneous reading and writing during every loop cycle.
+Binary Protocol and Memory Alignment
+
+To ensure total compatibility between the ARM architecture of the Raspberry Pi and the MCU of the controller board, the communication protocol uses strict 1-byte alignment (via `#pragma pack(push, 1)`) to prevent memory padding issues.
+
+#### TX: Raspberry Pi → Microcontroller
+Sent whenever a valid JSON message is received from the MADS network.
+- **Total Size**: 26 Bytes
+- **Structure (`Pack`)**:
+  
+| Offset | Type | Field | Description |
+| :--- | :--- | :--- | :--- |
+| 0 | `uint8_t` | `start` | Start Byte: `0xAA` |
+| 1 | `float` | `x` | X-axis coordinate (4 bytes) |
+| 5 | `float` | `y` | Y-axis coordinate (4 bytes) |
+| 9 | `float` | `z` | Z-axis coordinate (4 bytes) |
+| 13 | `float` | `pitch` | Pitch/Rotation (4 bytes) |
+| 17 | `float` | `yaw` | Yaw/Rotation (4 bytes) |
+| 21 | `float` | `feedrate`| Target velocity (4 bytes) |
+| 25 | `uint8_t` | `check` | XOR Checksum of bytes 0-24 |
+
+#### RX: Microcontroller → Raspberry Pi
+Read during every agent loop cycle to update the machine status.
+- **Total Size**: 22 Bytes
+- **Structure (`PackFb`)**:
+
+| Offset | Type | Field | Description |
+| :--- | :--- | :--- | :--- |
+| 0 | `uint8_t` | `start` | Start Byte: `0xBB` |
+| 1 | `uint32_t`| `msg_id`| Sequence ID (only newer IDs are processed) |
+| 5 | `float` | `x` | Current X position (4 bytes) |
+| 9 | `float` | `y` | Current Y position (4 bytes) |
+| 13 | `float` | `z` | Current Z position (4 bytes) |
+| 17 | `float` | `error` | Current tracking error (4 bytes) |
+| 21 | `uint8_t` | `check` | XOR Checksum of bytes 0-20 |
+
+---
+
 ### Simulator
+
+When the real hardware is not available, Dedalus uses the [fmu_agent](https://github.com/MADS-NET/FMU_agent#) to interface the motion kernel with a **Digital Twin**.
+
+An FMU (Functional Mock-up Unit) is a file (ending in `.fmu`) that contains a simulation model following the FMI (Functional Mock-up Interface) standard. It allows models developed in environments like MATLAB Simulink or Modelica to be exported and executed as independent functional blocks within other software.
+Simulation Workflow
+
+The `fmu_agent` acts as a bridge between the MADS communication network and the virtual model:
+
+* **Dynamic Modeling**: The FMU contains the physical equations of the Dedalus axes, including motor torque constants, mass of the 3kg cradle, and friction of the MGN15 guides.
+* **Deterministic Execution**: The agent steps the simulation forward in time, receiving the same JSON setpoints that would normally be sent to the SPI agent.
+* **Closed-Loop Feedback**: The FMU calculates the resulting virtual position and sends it back to the MADS network as feedback. This allows the motion kernel to validate the G-code execution and the Feedforward/PID logic in a safe, virtual environment before deployment.
