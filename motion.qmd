@@ -10,6 +10,7 @@ The used [fork](https://github.com/DEDALUS-5x/cncppevo) additionally implements:
 * 2 additional positioning axes;
 * Tool Radius Compensation;
 * Lookhaed feedrate smoothing;
+* MADS framework interface in change of `MQTT` communication.
 
 ## MADS Interface
 
