@@ -6,6 +6,8 @@ The architecture is built using MATLAB/Simulink and Simscape, following a Multi 
 * `control_<axis>`: The discrete-time control algorithm (firmware replica).
 * `machine_<axis>`: The continuous-time physical model (Simscape Multibody/Foundation).
 
+The repository is available [here](https://github.com/DEDALUS-5x/machine-model).
+
 ## Top-Level Integration
 The top-level model connects the control logic and the physical plant. Since the controller operates in the discrete-time domain (simulating an STM32 microcontroller) and the physical plant operates in the continuous-time domain, appropriate interface blocks are utilized:
 
