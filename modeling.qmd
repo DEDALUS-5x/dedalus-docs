@@ -53,3 +53,5 @@ The core physical network (`machine_y`), encompassing the electro-mechanical con
 The primary distinction in the Y-axis physical model lies in the **Mass** block and its external inputs. The Y-axis carriage supports the entire printing plate and the rotating cradle (Pitch axis). 
 
 Crucially, because the center of gravity of the cradle is not perfectly aligned with the Y-axis linear guides, any rotational acceleration of the Pitch axis generates a leverage effect. This results in parasitic linear reaction forces (kickback) acting directly on the Y-axis carriage. To accurately simulate this coupled dynamic, the Y-axis mass system is modeled to receive these reaction forces as external physical disturbances. This ensures the simulation accurately represents the real-world scenario where the Y-axis cascade controller must actively reject sudden load changes to maintain tracking accuracy during simultaneous 5-axis movements.
+
+![model_y](images/model_y.png)
