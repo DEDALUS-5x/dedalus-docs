@@ -74,3 +74,5 @@ The `fmu_agent` acts as a bridge between the MADS communication network and the 
 * **Dynamic Modeling**: The FMU contains the physical equations of the Dedalus axes, including motor torque constants, mass of the 3kg cradle, and friction of the MGN15 guides.
 * **Deterministic Execution**: The agent steps the simulation forward in time, receiving the same JSON setpoints that would normally be sent to the SPI agent.
 * **Closed-Loop Feedback**: The FMU calculates the resulting virtual position and sends it back to the MADS network as feedback. This allows the motion kernel to validate the G-code execution and the Feedforward/PID logic in a safe, virtual environment before deployment.
+
+The virtual model is exported from `Matlab Simulink` and, in particular, it is exported as **Co-Simulation 3.0**. It is currently tested with the `ode14x` and `0.0001s` as fixed step. 
