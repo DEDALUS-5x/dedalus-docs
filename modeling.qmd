@@ -57,3 +57,22 @@ The primary distinction in the Y-axis physical model lies in the **Mass** block 
 Crucially, because the center of gravity of the cradle is not perfectly aligned with the Y-axis linear guides, any rotational acceleration of the Pitch axis generates a leverage effect. This results in parasitic linear reaction forces (kickback) acting directly on the Y-axis carriage. To accurately simulate this coupled dynamic, the Y-axis mass system is modeled to receive these reaction forces as external physical disturbances. This ensures the simulation accurately represents the real-world scenario where the Y-axis cascade controller must actively reject sudden load changes to maintain tracking accuracy during simultaneous 5-axis movements.
 
 ![model_y](images/model_y.png)
+
+## Z: Vertical Positioning Axis
+
+Unlike the X and Y axes, which utilize closed-loop DC motors for high-speed dynamic movements, the Z-axis is responsible for precise, low-speed vertical positioning. As poisitioning axis, a stepper motor is exploited. 
+The input `step_z_in` is a standardized signal representing the desired discrete steps.
+
+The Z-axis physical model translates discrete step commands into physical vertical motion, factoring in the unique properties of a lead screw transmission.
+
+![model_z](images/model_z.png)
+
+### Stepper Translation
+The input step signal is passed through an **Ideal Translational Velocity Source** (via a Gain block to convert steps to velocity). This enforces a strict kinematic translation profile, simulating the rigid holding torque and discrete stepping nature of the motor without modeling the complex electromagnetics of the stepper coils.
+This is just a modeling escamotage.
+
+### Transmission and Leadscrew Dynamics
+The core element of the Z-axis is the **Translational Spring** and **Translational Damper** assembly, acting as a flexible coupling between the ideal step source and the physical carriage. This captures the mechanical compliance (backlash and axial deformation) of the lead screw nut when subjected to varying loads. The rotational-to-linear conversion of the lead screw is abstracted into the step-to-translation gain.
+
+### Mass and Gravity Bias
+The entire weight of the gantry acts continuously on the Z-axis. This is modeled using an **Ideal Force Source** injecting a constant downward force equal to `Gravity * mass` ($9.81 \cdot 3$ kg). The carriage itself is represented by a **Mass** block, and a **Translational Damper** simulates the friction of the vertical rails. This setup ensures the system accurately models the asymmetrical effort required to lift the gantry versus lowering it, and the resting deflection of the flexible transmission.
