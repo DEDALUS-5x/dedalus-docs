@@ -55,9 +55,9 @@ Read during every agent loop cycle to update the machine status.
 | :--- | :--- | :--- | :--- |
 | 0 | `uint8_t` | `start` | Start Byte: `0xBB` |
 | 1 | `uint32_t`| `msg_id`| Sequence ID (only newer IDs are processed) |
-| 5 | `float` | `x` | Current X position (4 bytes) |
-| 9 | `float` | `y` | Current Y position (4 bytes) |
-| 13 | `float` | `z` | Current Z position (4 bytes) |
+| 5 | `float` | `xf` | Current X position (4 bytes) |
+| 9 | `float` | `yf` | Current Y position (4 bytes) |
+| 13 | `float` | `zf` | Current Z position (4 bytes) |
 | 17 | `float` | `error` | Current tracking error (4 bytes) |
 | 21 | `uint8_t` | `check` | XOR Checksum of bytes 0-20 |
 
