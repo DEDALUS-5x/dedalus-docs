@@ -48,15 +48,21 @@ Feedback is gathered using **Ideal Rotational** and **Ideal Translational Motion
 ### Control sub-Model
 The control logic for the Y-axis utilizes the exact same discrete cascade PID architecture with velocity feedforward as the X-axis. By leveraging Simulink's Model Reference arguments, the identical control model is instantiated with a specific set of tuning parameters ($K_p$, $K_i$, $K_d$, and saturation limits) tailored to the heavier load and different resonant frequencies of the Y-axis.
 
+#### Rotational Axis Control
+As regards the additional A and C axis (respectively global pitch and plate-local yaw), control law is simplified: at first, stepper motors are used, and second, just the rotating encoder `AS5048A` is embedded on the rotating shaft. Thanks to that, it is possible to implement a fast PID (10kHz frequency) by means of just Proportional gain. Derivative and Integral term are null for the C axis, while the A axis uses a small derivative term in order to smooth the kickback to the Y-axis carriage.
+
 ### Physical Plant sub-Model
 The core physical network (`machine_y`), encompassing the electro-mechanical conversion (DC Motor) and the flexible transmission (belt elasticity and damping), remains structurally identical to the extruder axis. However, the load characteristics are significantly more complex due to the multi-axis mechanical linkages.
 
-#### Coupled Mass and Parasitic Dynamics
+#### Coupled Mass and Parasitic Dynamics of Pitch Rotation
 The primary distinction in the Y-axis physical model lies in the **Mass** block and its external inputs. The Y-axis carriage supports the entire printing plate and the rotating cradle (Pitch axis). 
 
 Crucially, because the center of gravity of the cradle is not perfectly aligned with the Y-axis linear guides, any rotational acceleration of the Pitch axis generates a leverage effect. This results in parasitic linear reaction forces (kickback) acting directly on the Y-axis carriage. To accurately simulate this coupled dynamic, the Y-axis mass system is modeled to receive these reaction forces as external physical disturbances. This ensures the simulation accurately represents the real-world scenario where the Y-axis cascade controller must actively reject sudden load changes to maintain tracking accuracy during simultaneous 5-axis movements.
 
 ![model_y](images/model_y.png)
+
+#### Yaw-Rotating Printing Plate
+On the other hand, the printing plate also rotates on its own Z axis, resulting the 5 global printing axis. The model of the rotating plate is basically the same of the rotating Y-axis carriage, by differentiating it just for the mass and damping values.
 
 ## Z: Vertical Positioning Axis
 
