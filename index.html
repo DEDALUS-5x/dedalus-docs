@@ -292,8 +292,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#documentation-outline" id="toc-documentation-outline" class="nav-link active" data-scroll-target="#documentation-outline"><span class="header-section-number">0.1</span> Documentation Outline:</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -318,15 +324,18 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><strong>Dedalus</strong> project consists in the upgrade of a classic cartesian 3D printer into a 5DoFs 3D printer. This upgrade helps to overcome the classic limitations of traditional planar FDM, exploiting non-planar printing by compining hobbyist architecture and industrial-grade dynamic stability.</p>
-<p>Dedalus stands on 3 fundamental pillars:</p>
+<p>The <strong>Dedalus</strong> project focuses on upgrading a classic Cartesian 3D printer into a 5-Degree-of-Freedom (5DoF) manufacturing system. This upgrade overcomes the traditional limitations of planar Fused Deposition Modeling (FDM) by enabling non-planar printing, combining a hobbyist-friendly architecture with industrial-grade dynamic stability.</p>
+<p>Dedalus stands on three fundamental pillars:</p>
 <ul>
-<li><strong>Precision</strong>: moving beyound open-loop control in favor of a closed-loop system, where position is not assumed but measured thanks to linar encoders;</li>
-<li><strong>Decentralization</strong>: a control hierarchy that separates high-level kinematic planning (relied to Raspberry Pi5) from low-latency motor management implemented on a STM32H7 (ARM Cortex M7) microcontroller;</li>
-<li><strong>Mechanical reliability</strong>: linear rails and DC motors designed to perform smooth operations;</li>
+<li><strong>Precision</strong>: Moving beyond open-loop control in favor of a closed-loop system, where position is actively measured using linear encoders rather than merely assumed.</li>
+<li><strong>Decentralization</strong>: A hierarchical control architecture that separates high-level kinematic planning (delegated to a Raspberry Pi 5) from low-latency motor management (implemented on an STM32H7 ARM Cortex-M7 microcontroller).</li>
+<li><strong>Mechanical Reliability</strong>: Utilizing linear rails and DC motors designed to ensure smooth and highly repeatable operations.</li>
 </ul>
-<p>An integrated engineering approach led to custom development of all tools: at first, the low-level control board is designed from the ground up, as well the bare-metal firmware. By exploiting the microcontroller features, it is possible to separate the data acquisition from the CPU computations, in order to achieve a highly reactive control. The motion planning software is custom as well, started from the material developed during the <strong>Precision Engineering</strong> course teached by prof. <a href="https://github.com/pbosetti">Paolo Bosetti</a> at University of Trento. Last but not least, the digital-twin is developed from the ground up as well and integrated with the machine real-world operation by means of the <strong>Mechatronic systems simulations: Modeling</strong>’s approach teached by prof. Francesco Biral at University of Trento.</p>
-<p>Documentation outline:</p>
+<p>An integrated engineering approach drove the custom development of the entire technology stack. The low-level control board and its bare-metal firmware were designed from the ground up. By fully exploiting the microcontroller’s advanced features, data acquisition is decoupled from CPU computations, achieving highly reactive and deterministic control.</p>
+<p>The motion planning software is also custom-built, starting from the material developed during the <strong>Precision Engineering</strong> course taught by Prof.&nbsp;<a href="https://github.com/pbosetti">Paolo Bosetti</a> at the University of Trento.</p>
+<p>Finally, a digital twin was developed from scratch and integrated with the machine’s real-world operations, applying the methodologies from the <strong>Mechatronic Systems Simulation: Modeling</strong> course taught by Prof.&nbsp;Francesco Biral, also at the University of Trento.</p>
+<section id="documentation-outline" class="level3" data-number="0.1">
+<h3 data-number="0.1" class="anchored" data-anchor-id="documentation-outline"><span class="header-section-number">0.1</span> Documentation Outline:</h3>
 <ul>
 <li><a href="./boards.html">Hardware</a></li>
 <li><a href="./modeling.html">Digital Twin</a></li>
@@ -334,6 +343,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
