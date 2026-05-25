@@ -331,16 +331,16 @@ window.Quarto = {
   <ul>
   <li><a href="#axes-controller-board" id="toc-axes-controller-board" class="nav-link active" data-scroll-target="#axes-controller-board"><span class="header-section-number">1</span> Axes Controller Board</a>
   <ul class="collapse">
-  <li><a href="#dc-motors-control" id="toc-dc-motors-control" class="nav-link" data-scroll-target="#dc-motors-control"><span class="header-section-number">1.1</span> DC motors control</a></li>
-  <li><a href="#stepper-motors-control" id="toc-stepper-motors-control" class="nav-link" data-scroll-target="#stepper-motors-control"><span class="header-section-number">1.2</span> Stepper motors control</a>
+  <li><a href="#dc-motors-setup" id="toc-dc-motors-setup" class="nav-link" data-scroll-target="#dc-motors-setup"><span class="header-section-number">1.1</span> DC Motors Setup</a></li>
+  <li><a href="#stepper-motors-setup" id="toc-stepper-motors-setup" class="nav-link" data-scroll-target="#stepper-motors-setup"><span class="header-section-number">1.2</span> Stepper Motors Setup</a>
   <ul class="collapse">
   <li><a href="#dma" id="toc-dma" class="nav-link" data-scroll-target="#dma"><span class="header-section-number">1.2.1</span> DMA</a></li>
   </ul></li>
   <li><a href="#firmware-architecture" id="toc-firmware-architecture" class="nav-link" data-scroll-target="#firmware-architecture"><span class="header-section-number">1.3</span> Firmware Architecture</a>
   <ul class="collapse">
-  <li><a href="#dma-data-acquisition" id="toc-dma-data-acquisition" class="nav-link" data-scroll-target="#dma-data-acquisition"><span class="header-section-number">1.3.1</span> DMA Data Acquisition</a></li>
-  <li><a href="#inner-velocity-loop" id="toc-inner-velocity-loop" class="nav-link" data-scroll-target="#inner-velocity-loop"><span class="header-section-number">1.3.2</span> Inner Velocity Loop</a></li>
-  <li><a href="#outer-position-loop" id="toc-outer-position-loop" class="nav-link" data-scroll-target="#outer-position-loop"><span class="header-section-number">1.3.3</span> Outer Position Loop</a></li>
+  <li><a href="#dma-driven-data-acquisition" id="toc-dma-driven-data-acquisition" class="nav-link" data-scroll-target="#dma-driven-data-acquisition"><span class="header-section-number">1.3.1</span> DMA-Driven Data Acquisition</a></li>
+  <li><a href="#stepper-motors-control" id="toc-stepper-motors-control" class="nav-link" data-scroll-target="#stepper-motors-control"><span class="header-section-number">1.3.2</span> Stepper Motors Control</a></li>
+  <li><a href="#dc-motors-control" id="toc-dc-motors-control" class="nav-link" data-scroll-target="#dc-motors-control"><span class="header-section-number">1.3.3</span> DC Motors Control</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#mechanical-structure" id="toc-mechanical-structure" class="nav-link" data-scroll-target="#mechanical-structure"><span class="header-section-number">2</span> Mechanical Structure</a></li>
@@ -376,8 +376,8 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<section id="dc-motors-control" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="dc-motors-control"><span class="header-section-number">1.1</span> DC motors control</h2>
+<section id="dc-motors-setup" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="dc-motors-setup"><span class="header-section-number">1.1</span> DC Motors Setup</h2>
 <p>In order to perform properly the PIDs, the board implements a full state-space feedback system, sensing multiple quantities to close the loop on velocity and position:</p>
 <ul>
 <li><code>AS5048A</code> as rotative encoders mounted along each motor axis as feedback on angular velocity;</li>
@@ -391,8 +391,8 @@ window.Quarto = {
 </ul>
 <p>The 3 DC motors are then actuated thanks to an external double-H-bridge driver in a IBT-4 configuration. The <code>Axes Controller Board</code>’s MCU drives it using 2 complementary PWM signals for each motor, in order to select the rotation direction (CW/CCW). The PID algorithm outputs the commanding signal that is then written inside the CCR register (<code>Capture Compare  Register</code>) that is proportional to the duty cycle.</p>
 </section>
-<section id="stepper-motors-control" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="stepper-motors-control"><span class="header-section-number">1.2</span> Stepper motors control</h2>
+<section id="stepper-motors-setup" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="stepper-motors-setup"><span class="header-section-number">1.2</span> Stepper Motors Setup</h2>
 <p>Stepper motors are actuated thanks to <code>TMC</code> drivers, that implement micro-stepping and STEP/DIR interface. They are driven by the MCU using these 2 signals while correcting the STEP position using the rotative encoder. The used stepper motors configuration is:</p>
 <ul>
 <li>2 steppers for Z positioning;</li>
@@ -414,16 +414,48 @@ window.Quarto = {
 <section id="firmware-architecture" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="firmware-architecture"><span class="header-section-number">1.3</span> Firmware Architecture</h2>
 <p>The motion control of Dedalus is managed by a custom bare-metal firmware developed for the STM32H7 architecture, designed to handle high-frequency control loops.</p>
-<section id="dma-data-acquisition" class="level3" data-number="1.3.1">
-<h3 data-number="1.3.1" class="anchored" data-anchor-id="dma-data-acquisition"><span class="header-section-number">1.3.1</span> DMA Data Acquisition</h3>
-<p>To eliminate jitter and CPU overhead during sensor communication, the system utilizes DMA on the SPI1 bus configured in Daisy Chain.</p>
+<section id="dma-driven-data-acquisition" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="dma-driven-data-acquisition"><span class="header-section-number">1.3.1</span> DMA-Driven Data Acquisition</h3>
+<p>To achieve strict real-time performance and eliminate CPU overhead during high-frequency closed-loop control, the system relies on Direct Memory Access (DMA) for sensor communication. The physical rotary encoders (AS5048A) are connected to the SPI1 and SPI2 buses in a Daisy Chain configuration, enabling the synchronous acquisition of multiple axes (e.g., Z, A, C) within a single data transaction.</p>
+<section id="high-speed-triggering-10-khz-control-loop" class="level4" data-number="1.3.1.1">
+<h4 data-number="1.3.1.1" class="anchored" data-anchor-id="high-speed-triggering-10-khz-control-loop"><span class="header-section-number">1.3.1.1</span> High-Speed Triggering (10 kHz Control Loop)</h4>
+<p>The core position-control loop is driven by a hardware timer (TIM6) operating at a strict 10 kHz frequency, providing a narrow 100 µs execution window. Instead of employing blocking SPI calls that would stall the CPU, the timer’s Interrupt Service Routine (ISR) is used solely to initiate the data request. The firmware asserts the Chip Select (CS) line and triggers a non-blocking <code>HAL_SPI_TransmitReceive_DMA</code> request.</p>
+<p>Before launching the DMA, the firmware forces a microscopic manual toggle of the CS line to HIGH and clears any residual SPI Overrun (OVR) flags. This acts as a hardware reset for the encoders’ internal state machines, preventing the bus from deadlocking due to electrical noise or missed clock edges.</p>
+</section>
+<section id="asynchronous-execution-and-jitter-elimination" class="level4" data-number="1.3.1.2">
+<h4 data-number="1.3.1.2" class="anchored" data-anchor-id="asynchronous-execution-and-jitter-elimination"><span class="header-section-number">1.3.1.2</span> Asynchronous Execution and Jitter Elimination</h4>
+<p>Offloading the SPI transaction to the DMA controller physically decouples the data transmission from the CPU execution. At a standard SPI baud rate (e.g., 1.0 to 2.0 Mbps), transferring the 48 bits required for three daisy-chained 16-bit encoders takes approximately 24 to 48 µs. While the DMA handles this data shifting in the background, the CPU is immediately released. This allows the processor to handle other critical operations—such as updating the linear encoders or evaluating path planning—without introducing execution jitter to the stepper motor generation.</p>
+</section>
+<section id="l1-data-cache-management" class="level4" data-number="1.3.1.3">
+<h4 data-number="1.3.1.3" class="anchored" data-anchor-id="l1-data-cache-management"><span class="header-section-number">1.3.1.3</span> L1 Data Cache Management</h4>
+<p>The STM32H7 architecture employs a high-performance Cortex-M7 core equipped with an L1 Data Cache. Because the DMA streams the incoming SPI payload directly into the RAM matrix, it bypasses the CPU entirely. Consequently, the CPU’s L1 cache becomes temporarily out of sync with the physical memory.</p>
+<p>To ensure data integrity, the system leverages the DMA Transfer Complete Callback (<code>HAL_SPI_TxRxCpltCallback</code>). Before processing the newly arrived <code>spi1_rx_buf</code> array, the firmware executes an <code>SCB_InvalidateDCache_by_Addr</code> operation. This critical step invalidates the specific memory region linked to the buffer, forcing the CPU to fetch the fresh, exact positional data from RAM before calculating the new motor targets.</p>
+</section>
+</section>
+<section id="stepper-motors-control" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="stepper-motors-control"><span class="header-section-number">1.3.2</span> Stepper Motors Control</h3>
+<p>The positioning axes are driven by stepper motors (Moons’ C17HD4 series) operating in a strict closed-loop configuration. The control algorithm runs inside the 10 kHz system timer (TIM6) interrupt, continuously computing the positional error between the target coordinates and the high-resolution feedback provided by the AS5048A rotary encoders.</p>
+<section id="hysteresis-deadband" class="level4" data-number="1.3.2.1">
+<h4 data-number="1.3.2.1" class="anchored" data-anchor-id="hysteresis-deadband"><span class="header-section-number">1.3.2.1</span> Hysteresis Deadband</h4>
+<p>A major challenge in closed-loop stepper control is “hunting” (or limit cycling)—a high-frequency vibration occurring when the computed positional error falls below the physical microstepping resolution of the motor, causing continuous forward/backward corrections. To eliminate this, the firmware implements a dynamic, state-aware hysteresis deadband:</p>
 <ul>
-<li>High-Speed SPI1 (10 kHz): At each system timer clock cycle, a DMA reception is triggered to simultaneously read position data from the movement axes rotary encoders:</li>
-<li>since the H7 is equipped with an L1 cache, the firmware performs an <code>SCB_InvalidateDCache_by_Addr</code> operation before processing the <code>spi1_rx_buf</code>. This ensures the CPU reads the fresh data just written by the DMA into RAM.</li>
+<li><strong>Active State (Moving):</strong> A tight tolerance (e.g., 0.15°) is used to accurately determine when the motor has reached the target.</li>
+<li><strong>Idle State (Stopped):</strong> Once the target is reached and the motor stops, the tolerance is significantly widened (e.g., 0.60°). This prevents the system from violently reacting to microscopic inertial overshoots or mechanical elasticity, ensuring the motor remains perfectly silent and structurally rigid once in position.</li>
 </ul>
 </section>
-<section id="inner-velocity-loop" class="level3" data-number="1.3.2">
-<h3 data-number="1.3.2" class="anchored" data-anchor-id="inner-velocity-loop"><span class="header-section-number">1.3.2</span> Inner Velocity Loop</h3>
+<section id="hardware-level-pwm-generation" class="level4" data-number="1.3.2.2">
+<h4 data-number="1.3.2.2" class="anchored" data-anchor-id="hardware-level-pwm-generation"><span class="header-section-number">1.3.2.2</span> Hardware-Level PWM Generation</h4>
+<p>To guarantee perfectly deterministic step generation without CPU bit-banging overhead, the firmware manipulates the STM32 hardware timers (e.g., TIM4, TIM8, TIM15) in <code>PWM Generation</code> mode. The calculated required speed is converted into a step frequency (Hz). The algorithm dynamically recalculates and updates the timer’s Auto-Reload Register (<code>ARR</code>) to adjust the frequency on the fly, while keeping the Capture/Compare Register (<code>CCR</code>) at <code>ARR / 2</code> to maintain an optimal 50% duty cycle for the stepper drivers.</p>
+</section>
+<section id="anti-glitch-protection" class="level4" data-number="1.3.2.3">
+<h4 data-number="1.3.2.3" class="anchored" data-anchor-id="anti-glitch-protection"><span class="header-section-number">1.3.2.3</span> Anti-Glitch Protection</h4>
+<p>When updating timer frequencies dynamically, modifying the <code>ARR</code> to a value lower than the current Counter (<code>CNT</code>) value can cause the timer to overflow to 0xFFFF, resulting in a severe step delay (glitch). The <code>stepper_command</code> function actively prevents this by automatically resetting the <code>CNT</code> register if it exceeds the newly calculated <code>ARR</code>. Furthermore, a low-frequency cutoff filter is implemented: if the requested speed drops below 10 Hz, the firmware aggressively zeroes the <code>CCR</code> register. This instantly disables the PWM output, allowing the stepper driver to inject pure holding torque, completely eradicating low-frequency acoustic resonance.</p>
+</section>
+</section>
+<section id="dc-motors-control" class="level3" data-number="1.3.3">
+<h3 data-number="1.3.3" class="anchored" data-anchor-id="dc-motors-control"><span class="header-section-number">1.3.3</span> DC Motors Control</h3>
+<section id="inner-velocity-loop" class="level4" data-number="1.3.3.1">
+<h4 data-number="1.3.3.1" class="anchored" data-anchor-id="inner-velocity-loop"><span class="header-section-number">1.3.3.1</span> Inner Velocity Loop</h4>
 <p>The velocity loop is critical for the dynamic stability of the brushed DC motors.</p>
 <ul>
 <li>It runs at every occurrence of the Timer 6 interrupt (<span class="math inline">\(dt=0.0001s\)</span>);</li>
@@ -432,8 +464,8 @@ window.Quarto = {
 <li>it directly generates the <code>PWM</code> signal sent to the <code>CCR</code> registers of Timer 1.</li>
 </ul>
 </section>
-<section id="outer-position-loop" class="level3" data-number="1.3.3">
-<h3 data-number="1.3.3" class="anchored" data-anchor-id="outer-position-loop"><span class="header-section-number">1.3.3</span> Outer Position Loop</h3>
+<section id="outer-position-loop" class="level4" data-number="1.3.3.2">
+<h4 data-number="1.3.3.2" class="anchored" data-anchor-id="outer-position-loop"><span class="header-section-number">1.3.3.2</span> Outer Position Loop</h4>
 <p>The position loop manages absolute spatial precision by reading the <code>RLCI2C</code> linear encoders from RLS.</p>
 <ul>
 <li>It runs every 10 cycles of the velocity loop using a <code>pid_counter</code>;</li>
@@ -444,10 +476,11 @@ window.Quarto = {
 </section>
 </section>
 </section>
+</section>
 <section id="mechanical-structure" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Mechanical Structure</h1>
 <p>The mechanical skeleton is a <code>Creality CR10 Max</code> which has a wide potential printing volume that is fundamental for letting the plate rotate and move.</p>
-<p>On the Y axis, linear guides are mounted while replacing the old bearings-based carts. A single DC motor for each axis moves the plate structure along the Y direction, while on the carts are mounted one stepper motor each, which are devoted to orintate the pitch angle of the plate. The inner stepper (for the local yaw), is mounted such as the baricenter of the structure is aligned with the pitch rotating axis. It allows to load the stepper motors just with the structure inertia.</p>
+<p>On the Y axis, linear guides are mounted while replacing the old bearings-based carts. A single DC motor for each axis moves the plate structure along the Y direction, while on the carts are mounted one stepper motor each, which are devoted to orientate the pitch angle of the plate. The inner stepper (for the local yaw), is mounted such as the baricenter of the structure is aligned with the pitch rotating axis. It allows to load the stepper motors just with the structure inertia.</p>
 
 
 </section>
