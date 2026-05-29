@@ -106,6 +106,22 @@ The position loop manages absolute spatial precision by reading the `RLCI2C` lin
 
 
 # Mechanical Structure
-The mechanical skeleton is a `Creality CR10 Max` which has a wide potential printing volume that is fundamental for letting the plate rotate and move.
 
-On the Y axis, linear guides are mounted while replacing the old bearings-based carts. A single DC motor for each axis moves the plate structure along the Y direction, while on the carts are mounted one stepper motor each, which are devoted to orientate the pitch angle of the plate. The inner stepper (for the local yaw), is mounted such as the baricenter of the structure is aligned with the pitch rotating axis. It allows to load the stepper motors just with the structure inertia.
+The mechanical foundation of the project is based on a **Creality CR10 Max**. Its natively large build volume is crucial for this multi-axis modification, as it provides the necessary spatial clearance to safely perform complex rotations and translations without colliding with the frame. The original massive heated bed has been entirely removed and replaced with a more compact **20x20 cm print bed**, which is much better suited for 5-axis kinematics.
+
+**The Yaw Axis (Local Bed Rotation)**
+At the core of the moving platform is the local yaw axis. The 20x20 print plate is directly mounted onto a dedicated stepper motor. This motor handles the continuous rotational movement of the bed around its vertical axis, acting as the rotational platter for the workpiece.
+
+**The Pitch Axis and the "Cradle"**
+The print bed and its yaw stepper motor are nested inside a custom structural frame, referred to as the "Cradle". The Cradle is suspended and rotated by two stepper motors—one mounted on each side—which govern the pitch angle of the entire bed assembly. A critical design choice here is the weight distribution: the inner yaw stepper and the bed are positioned so that their combined center of mass aligns perfectly with the pitch rotation axis. This mechanical balancing ensures that the dual pitch steppers only need to overcome the rotational inertia of the structure, rather than fighting gravity to hold a static unbalanced load.
+
+**The Y-Axis Translation**
+To move this entire cradle assembly back and forth, the original V-wheel and bearing system of the CR10 was stripped away. It has been upgraded with high-precision **linear guides** mounted directly onto the base aluminum extrusions. The two pitch stepper motors sit on top of the sliding carriages riding on these rails. 
+The linear translation along the Y-axis is driven by a single, powerful **DC motor**. To ensure both sides move in perfect synchronization and avoid racking, this motor is equipped with a custom extended drive shaft that hosts two separate toothed pulleys. Each pulley drives a timing belt connected to one of the carriages, pulling the cradle evenly along the linear rails.
+
+**The X-Axis (Extruder Gantry)**
+The X-axis, which carries the extruder, retains the original CR10 gantry aluminum profile but has undergone a similar heavy-duty upgrade. The stock V-wheels have been replaced with a linear rail to guarantee superior rigidity and precision. Additionally, the standard stepper motor has been swapped out for a **DC motor**, enabling fast, closed-loop linear positioning for the toolhead.
+
+**Power and Aesthetics**
+Powering this complex mechatronic setup is a dedicated **400W Power Supply Unit (PSU)**, which delivers a steady 12V output directly to the custom motor control board. 
+Finally, to highlight the custom mechanics and give the machine a striking, high-tech aesthetic, custom LED lighting has been integrated throughout the chassis.
