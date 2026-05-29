@@ -65,16 +65,19 @@ Read during every agent loop cycle to update the machine status.
 
 ### Simulator
 
-When the real hardware is not available, Dedalus uses the [fmu_agent](https://github.com/MADS-NET/FMU_agent#) to interface the motion kernel with a **Digital Twin**.
+When the real hardware is not available, Dedalus uses the [FMU_agent](https://github.com/MADS-NET/FMU_agent#) to interface the motion kernel with a **Digital Twin**.
 
 An FMU (Functional Mock-up Unit) is a file (ending in `.fmu`) that contains a simulation model following the FMI (Functional Mock-up Interface) standard. It allows models developed in environments like MATLAB Simulink or Modelica to be exported and executed as independent functional blocks within other software.
 Simulation Workflow
 
-The `fmu_agent` acts as a bridge between the MADS communication network and the virtual model:
+The `FMU_agent` acts as a bridge between the MADS communication network and the virtual model:
 
 * **Dynamic Modeling**: The FMU contains the physical equations of the Dedalus axes, including motor torque constants, mass of the 3kg cradle, and friction of the MGN15 guides.
 * **Deterministic Execution**: The agent steps the simulation forward in time, receiving the same JSON setpoints that would normally be sent to the SPI agent.
 * **Closed-Loop Feedback**: The FMU calculates the resulting virtual position and sends it back to the MADS network as feedback. This allows the motion kernel to validate the G-code execution and the Feedforward/PID logic in a safe, virtual environment before deployment.
+
+For this application, the `FMU_agent` is exploited in `trigger mode`: the agent is triggered whenever an input occurs. In this way, the real-time clock runs on the master agent, that is the same that runs the FSM. The FMU is subjected to this clock, in order to get a synchronized simulation. Since the machine model implements a discrete controller and it is exported within a fixed-step integrator, it is required to get to the exported plant a time interval equal to a multiple of the integration `dt`.
+For this reason, a dedicated implementation on the `FMU_agent` is developed.
 
 The virtual model is exported from `Matlab Simulink` and, in particular, it is exported as **Co-Simulation 3.0**. It is currently tested with the `ode14x` and `0.0001s` as fixed step. 
 
