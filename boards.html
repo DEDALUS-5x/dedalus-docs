@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -340,7 +375,8 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#dma-driven-data-acquisition" id="toc-dma-driven-data-acquisition" class="nav-link" data-scroll-target="#dma-driven-data-acquisition"><span class="header-section-number">1.3.1</span> DMA-Driven Data Acquisition</a></li>
   <li><a href="#stepper-motors-control" id="toc-stepper-motors-control" class="nav-link" data-scroll-target="#stepper-motors-control"><span class="header-section-number">1.3.2</span> Stepper Motors Control</a></li>
-  <li><a href="#dc-motors-control" id="toc-dc-motors-control" class="nav-link" data-scroll-target="#dc-motors-control"><span class="header-section-number">1.3.3</span> DC Motors Control</a></li>
+  <li><a href="#raspberry-pi5-communication-spi-full-duplex" id="toc-raspberry-pi5-communication-spi-full-duplex" class="nav-link" data-scroll-target="#raspberry-pi5-communication-spi-full-duplex"><span class="header-section-number">1.3.3</span> Raspberry Pi5 Communication (SPI Full-Duplex)</a></li>
+  <li><a href="#dc-motors-control" id="toc-dc-motors-control" class="nav-link" data-scroll-target="#dc-motors-control"><span class="header-section-number">1.3.4</span> DC Motors Control</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#mechanical-structure" id="toc-mechanical-structure" class="nav-link" data-scroll-target="#mechanical-structure"><span class="header-section-number">2</span> Mechanical Structure</a></li>
@@ -452,10 +488,73 @@ window.Quarto = {
 <p>When updating timer frequencies dynamically, modifying the <code>ARR</code> to a value lower than the current Counter (<code>CNT</code>) value can cause the timer to overflow to 0xFFFF, resulting in a severe step delay (glitch). The <code>stepper_command</code> function actively prevents this by automatically resetting the <code>CNT</code> register if it exceeds the newly calculated <code>ARR</code>. Furthermore, a low-frequency cutoff filter is implemented: if the requested speed drops below 10 Hz, the firmware aggressively zeroes the <code>CCR</code> register. This instantly disables the PWM output, allowing the stepper driver to inject pure holding torque, completely eradicating low-frequency acoustic resonance.</p>
 </section>
 </section>
-<section id="dc-motors-control" class="level3" data-number="1.3.3">
-<h3 data-number="1.3.3" class="anchored" data-anchor-id="dc-motors-control"><span class="header-section-number">1.3.3</span> DC Motors Control</h3>
-<section id="inner-velocity-loop" class="level4" data-number="1.3.3.1">
-<h4 data-number="1.3.3.1" class="anchored" data-anchor-id="inner-velocity-loop"><span class="header-section-number">1.3.3.1</span> Inner Velocity Loop</h4>
+<section id="raspberry-pi5-communication-spi-full-duplex" class="level3" data-number="1.3.3">
+<h3 data-number="1.3.3" class="anchored" data-anchor-id="raspberry-pi5-communication-spi-full-duplex"><span class="header-section-number">1.3.3</span> Raspberry Pi5 Communication (SPI Full-Duplex)</h3>
+<p>The synchronization between the high-level trajectory planner (Raspberry Pi 5 running MADS) and the real-time execution core (STM32H7) is achieved through a robust, Full-Duplex SPI interface operating at 1 MHz.</p>
+<p>To ensure micrometric precision at high speeds, the communication protocol must guarantee zero data loss, exact memory alignment, and atomic data transfers.</p>
+<section id="packet-structure-and-memory-alignment" class="level4" data-number="1.3.3.1">
+<h4 data-number="1.3.3.1" class="anchored" data-anchor-id="packet-structure-and-memory-alignment"><span class="header-section-number">1.3.3.1</span> Packet Structure and Memory Alignment</h4>
+<p>The communication relies on a fixed 32-byte payload for both TX and RX channels. Exchanging fixed-size packets allows both master and slave to maintain perfect clock synchronization without overhead.</p>
+<p>The structures are defined as follows:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode c code-with-copy"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma pack(push, 1)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">// RX: From Raspberry Pi to STM32 (32 bytes)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> start<span class="op">;</span>       <span class="co">// 0xAA (Run) or 0xCC (Homing)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> x<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> y<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> z<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> a<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> c<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> vx<span class="op">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> vy<span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> check<span class="op">;</span>       <span class="co">// XOR Checksum</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> padding<span class="op">[</span><span class="dv">2</span><span class="op">];</span>  <span class="co">// 32-byte alignment</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SPIPacket<span class="op">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">// TX: From STM32 to Raspberry Pi (32 bytes)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  start<span class="op">;</span>      <span class="co">// 0xBB</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> msg_id<span class="op">;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    x<span class="op">;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    y<span class="op">;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    z<span class="op">;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    a<span class="op">;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    c<span class="op">;</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    error<span class="op">;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  check<span class="op">;</span>      <span class="co">// XOR Checksum</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  padding<span class="op">[</span><span class="dv">2</span><span class="op">];</span> <span class="co">// 32-byte alignment</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SPITxPacket<span class="op">;</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma pack(pop)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="padding-and-packing" class="level4" data-number="1.3.3.2">
+<h4 data-number="1.3.3.2" class="anchored" data-anchor-id="padding-and-packing"><span class="header-section-number">1.3.3.2</span> Padding and Packing</h4>
+<p>Standard C/C++ compilers automatically insert invisible padding bytes between variables to align 32-bit floats to even memory addresses. Because the Raspberry Pi (C++) and the STM32 (C) process memory differently, relying on default compiler behavior results in misaligned bytes across the SPI bus. To solve this, the firmware enforces a strict 1-byte alignment using <code>#pragma pack(push, 1)</code>. The <code>padding[2]</code> array is explicitly added at the end of the structs to force the total size to exactly 32 bytes. This power-of-2 dimension matches the SPI/DMA transfer length perfectly, ensuring neither side expects more or fewer clock cycles than physically generated.</p>
+</section>
+<section id="data-integrity-and-checksum" class="level4" data-number="1.3.3.3">
+<h4 data-number="1.3.3.3" class="anchored" data-anchor-id="data-integrity-and-checksum"><span class="header-section-number">1.3.3.3</span> Data Integrity and Checksum</h4>
+<p>Since jumper wires and high-frequency DC motor PWMs can introduce electromagnetic interference (EMI) on the SPI lines, data integrity is verified via a strict XOR checksum.</p>
+<p>The checksum is calculated exclusively on the first 29 bytes of the payload (the <code>start</code> byte, the <code>msg_id</code>, and the floats). The code programmatically stops before the <code>check</code> byte using the <code>offsetof()</code> function. The two trailing padding bytes are intentionally excluded from the XOR calculation, as their memory state might be undefined, which would otherwise lead to false-positive checksum failures.</p>
+</section>
+<section id="dma-configuration" class="level4" data-number="1.3.3.4">
+<h4 data-number="1.3.3.4" class="anchored" data-anchor-id="dma-configuration"><span class="header-section-number">1.3.3.4</span> DMA Configuration</h4>
+<p>Initially, the SPI3 peripheral on the STM32 was configured with its DMA in <code>CIRCULAR</code> mode. However, this led to a race condition known as “FIFO Tearing.”</p>
+<p>In Circular mode, as soon as a 32-byte transfer finishes, the DMA immediately fetches the first bytes of the old buffer and pushes them into the SPI hardware FIFO, waiting for the next Raspberry Pi clock signal. Meanwhile, the STM32’s 10 kHz control loop (<code>TIM6</code>) overwrites the RAM buffer with fresh positional data. When the Raspberry Pi finally initiates the next read, the STM32 spits out a “hybrid” packet: the first 4 bytes (the old header in the FIFO) mixed with 28 fresh bytes from RAM. This temporal misalignment caused the checksum to fail continuously.</p>
+<p>To achieve atomic data transfers, the DMA was switched to <code>NORMAL</code> mode. The sequence is now strictly sequential:</p>
+<ul>
+<li>The 10 kHz control loop updates a temporary staging buffer.</li>
+<li>The Raspberry Pi initiates the SPI transfer, reading the active buffer.</li>
+<li>Once the transfer is complete, the HAL_SPI_TxRxCpltCallback is triggered.</li>
+<li>Only inside this callback (when the SPI bus is idle), the firmware safely copies the staging buffer to the active buffer and manually re-arms the DMA for the next transfer.</li>
+</ul>
+<p>This architectural choice completely eradicates FIFO tearing, ensuring that the Raspberry Pi always reads a single, coherent snapshot of the machine’s state.</p>
+</section>
+</section>
+<section id="dc-motors-control" class="level3" data-number="1.3.4">
+<h3 data-number="1.3.4" class="anchored" data-anchor-id="dc-motors-control"><span class="header-section-number">1.3.4</span> DC Motors Control</h3>
+<section id="inner-velocity-loop" class="level4" data-number="1.3.4.1">
+<h4 data-number="1.3.4.1" class="anchored" data-anchor-id="inner-velocity-loop"><span class="header-section-number">1.3.4.1</span> Inner Velocity Loop</h4>
 <p>The velocity loop is critical for the dynamic stability of the brushed DC motors.</p>
 <ul>
 <li>It runs at every occurrence of the Timer 6 interrupt (<span class="math inline">\(dt=0.0001s\)</span>);</li>
@@ -464,8 +563,8 @@ window.Quarto = {
 <li>it directly generates the <code>PWM</code> signal sent to the <code>CCR</code> registers of Timer 1.</li>
 </ul>
 </section>
-<section id="outer-position-loop" class="level4" data-number="1.3.3.2">
-<h4 data-number="1.3.3.2" class="anchored" data-anchor-id="outer-position-loop"><span class="header-section-number">1.3.3.2</span> Outer Position Loop</h4>
+<section id="outer-position-loop" class="level4" data-number="1.3.4.2">
+<h4 data-number="1.3.4.2" class="anchored" data-anchor-id="outer-position-loop"><span class="header-section-number">1.3.4.2</span> Outer Position Loop</h4>
 <p>The position loop manages absolute spatial precision by reading the <code>RLCI2C</code> linear encoders from RLS.</p>
 <ul>
 <li>It runs every 10 cycles of the velocity loop using a <code>pid_counter</code>;</li>
