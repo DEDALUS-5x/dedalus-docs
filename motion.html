@@ -472,14 +472,15 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="simulator" class="level3" data-number="1.1.2">
 <h3 data-number="1.1.2" class="anchored" data-anchor-id="simulator"><span class="header-section-number">1.1.2</span> Simulator</h3>
-<p>When the real hardware is not available, Dedalus uses the <a href="https://github.com/MADS-NET/FMU_agent#">fmu_agent</a> to interface the motion kernel with a <strong>Digital Twin</strong>.</p>
+<p>When the real hardware is not available, Dedalus uses the <a href="https://github.com/MADS-NET/FMU_agent#">FMU_agent</a> to interface the motion kernel with a <strong>Digital Twin</strong>.</p>
 <p>An FMU (Functional Mock-up Unit) is a file (ending in <code>.fmu</code>) that contains a simulation model following the FMI (Functional Mock-up Interface) standard. It allows models developed in environments like MATLAB Simulink or Modelica to be exported and executed as independent functional blocks within other software. Simulation Workflow</p>
-<p>The <code>fmu_agent</code> acts as a bridge between the MADS communication network and the virtual model:</p>
+<p>The <code>FMU_agent</code> acts as a bridge between the MADS communication network and the virtual model:</p>
 <ul>
 <li><strong>Dynamic Modeling</strong>: The FMU contains the physical equations of the Dedalus axes, including motor torque constants, mass of the 3kg cradle, and friction of the MGN15 guides.</li>
 <li><strong>Deterministic Execution</strong>: The agent steps the simulation forward in time, receiving the same JSON setpoints that would normally be sent to the SPI agent.</li>
 <li><strong>Closed-Loop Feedback</strong>: The FMU calculates the resulting virtual position and sends it back to the MADS network as feedback. This allows the motion kernel to validate the G-code execution and the Feedforward/PID logic in a safe, virtual environment before deployment.</li>
 </ul>
+<p>For this application, the <code>FMU_agent</code> is exploited in <code>trigger mode</code>: the agent is triggered whenever an input occurs. In this way, the real-time clock runs on the master agent, that is the same that runs the FSM. The FMU is subjected to this clock, in order to get a synchronized simulation. Since the machine model implements a discrete controller and it is exported within a fixed-step integrator, it is required to get to the exported plant a time interval equal to a multiple of the integration <code>dt</code>. For this reason, a dedicated implementation on the <code>FMU_agent</code> is developed.</p>
 <p>The virtual model is exported from <code>Matlab Simulink</code> and, in particular, it is exported as <strong>Co-Simulation 3.0</strong>. It is currently tested with the <code>ode14x</code> and <code>0.0001s</code> as fixed step.</p>
 <p>In this figure, it is shown the full simulation of a generic <code>G-Code</code> in which it is imposed a generic path with also some rotative axis inclinations: <img src="images/simulation.png" class="img-fluid" alt="simulation"></p>
 
