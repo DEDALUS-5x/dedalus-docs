@@ -31,7 +31,7 @@ To ensure total compatibility between the ARM architecture of the Raspberry Pi a
 
 #### TX: Raspberry Pi → Microcontroller
 Sent whenever a valid JSON message is received from the MADS network.
-- **Total Size**: 30 Bytes
+- **Total Size**: 32 Bytes
 - **Structure (`Pack`)**:
   
 | Offset | Type | Field | Description |
@@ -44,11 +44,12 @@ Sent whenever a valid JSON message is received from the MADS network.
 | 17 | `float` | `c` | Yaw/Rotation (4 bytes) |
 | 21 | `float` | `vx`| Target velocity, x component, (4 bytes) |
 | 25 | `float` | `vy`| Target velocity, y component, (4 bytes) |
-| 29 | `uint8_t` | `check` | XOR Checksum of bytes 0-24 |
+| 29 | `uint8_t` | `check` | XOR Checksum of bytes 0-28 |
+| 30 | `uint8_t` | `padding[2]` | Padding
 
 #### RX: Microcontroller → Raspberry Pi
 Read during every agent loop cycle to update the machine status.
-- **Total Size**: 22 Bytes
+- **Total Size**: 32 Bytes
 - **Structure (`PackFb`)**:
 
 | Offset | Type | Field | Description |
@@ -58,8 +59,11 @@ Read during every agent loop cycle to update the machine status.
 | 5 | `float` | `xf` | Current X position (4 bytes) |
 | 9 | `float` | `yf` | Current Y position (4 bytes) |
 | 13 | `float` | `zf` | Current Z position (4 bytes) |
-| 17 | `float` | `error` | Current tracking error (4 bytes) |
-| 21 | `uint8_t` | `check` | XOR Checksum of bytes 0-20 |
+| 17 | `float` | `af` | Current A position (4 bytes) |
+| 21 | `float` | `cf` | Current C position (4 bytes) |
+| 25 | `float` | `error` | Current tracking error (4 bytes) |
+| 29 | `uint8_t` | `check` | XOR Checksum of bytes 0-28 |
+| 30 | `uint8_t` | `padding[2]` | Padding
 
 ---
 

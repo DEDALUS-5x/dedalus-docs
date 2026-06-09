@@ -342,7 +342,7 @@ ul.task-list li input[type="checkbox"] {
 <p>To ensure total compatibility between the ARM architecture of the Raspberry Pi and the MCU of the controller board, the communication protocol uses strict 1-byte alignment (via <code>#pragma pack(push, 1)</code>) to prevent memory padding issues.</p>
 <section id="tx-raspberry-pi-microcontroller" class="level4" data-number="1.1.1.1">
 <h4 data-number="1.1.1.1" class="anchored" data-anchor-id="tx-raspberry-pi-microcontroller"><span class="header-section-number">1.1.1.1</span> TX: Raspberry Pi → Microcontroller</h4>
-<p>Sent whenever a valid JSON message is received from the MADS network. - <strong>Total Size</strong>: 30 Bytes - <strong>Structure (<code>Pack</code>)</strong>:</p>
+<p>Sent whenever a valid JSON message is received from the MADS network. - <strong>Total Size</strong>: 32 Bytes - <strong>Structure (<code>Pack</code>)</strong>:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -405,14 +405,20 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">29</td>
 <td style="text-align: left;"><code>uint8_t</code></td>
 <td style="text-align: left;"><code>check</code></td>
-<td style="text-align: left;">XOR Checksum of bytes 0-24</td>
+<td style="text-align: left;">XOR Checksum of bytes 0-28</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">30</td>
+<td style="text-align: left;"><code>uint8_t</code></td>
+<td style="text-align: left;"><code>padding[2]</code></td>
+<td style="text-align: left;">Padding</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="rx-microcontroller-raspberry-pi" class="level4" data-number="1.1.1.2">
 <h4 data-number="1.1.1.2" class="anchored" data-anchor-id="rx-microcontroller-raspberry-pi"><span class="header-section-number">1.1.1.2</span> RX: Microcontroller → Raspberry Pi</h4>
-<p>Read during every agent loop cycle to update the machine status. - <strong>Total Size</strong>: 22 Bytes - <strong>Structure (<code>PackFb</code>)</strong>:</p>
+<p>Read during every agent loop cycle to update the machine status. - <strong>Total Size</strong>: 32 Bytes - <strong>Structure (<code>PackFb</code>)</strong>:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -456,14 +462,32 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td style="text-align: left;">17</td>
 <td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>af</code></td>
+<td style="text-align: left;">Current A position (4 bytes)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">21</td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>cf</code></td>
+<td style="text-align: left;">Current C position (4 bytes)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">25</td>
+<td style="text-align: left;"><code>float</code></td>
 <td style="text-align: left;"><code>error</code></td>
 <td style="text-align: left;">Current tracking error (4 bytes)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">21</td>
+<td style="text-align: left;">29</td>
 <td style="text-align: left;"><code>uint8_t</code></td>
 <td style="text-align: left;"><code>check</code></td>
-<td style="text-align: left;">XOR Checksum of bytes 0-20</td>
+<td style="text-align: left;">XOR Checksum of bytes 0-28</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">30</td>
+<td style="text-align: left;"><code>uint8_t</code></td>
+<td style="text-align: left;"><code>padding[2]</code></td>
+<td style="text-align: left;">Padding</td>
 </tr>
 </tbody>
 </table>
@@ -576,7 +600,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/DEDALUS-5x\.github\.io\/dedalus-docs\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

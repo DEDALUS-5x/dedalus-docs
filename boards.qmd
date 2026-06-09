@@ -85,6 +85,73 @@ The calculated required speed is converted into a step frequency (Hz). The algor
 When updating timer frequencies dynamically, modifying the `ARR` to a value lower than the current Counter (`CNT`) value can cause the timer to overflow to 0xFFFF, resulting in a severe step delay (glitch). The `stepper_command` function actively prevents this by automatically resetting the `CNT` register if it exceeds the newly calculated `ARR`.
 Furthermore, a low-frequency cutoff filter is implemented: if the requested speed drops below 10 Hz, the firmware aggressively zeroes the `CCR` register. This instantly disables the PWM output, allowing the stepper driver to inject pure holding torque, completely eradicating low-frequency acoustic resonance.
 
+### Raspberry Pi5 Communication (SPI Full-Duplex)
+
+The synchronization between the high-level trajectory planner (Raspberry Pi 5 running MADS) and the real-time execution core (STM32H7) is achieved through a robust, Full-Duplex SPI interface operating at 1 MHz. 
+
+To ensure micrometric precision at high speeds, the communication protocol must guarantee zero data loss, exact memory alignment, and atomic data transfers. 
+
+#### Packet Structure and Memory Alignment
+The communication relies on a fixed 32-byte payload for both TX and RX channels. Exchanging fixed-size packets allows both master and slave to maintain perfect clock synchronization without overhead.
+
+The structures are defined as follows:
+
+```c
+#pragma pack(push, 1)
+
+// RX: From Raspberry Pi to STM32 (32 bytes)
+typedef struct {
+    uint8_t start;       // 0xAA (Run) or 0xCC (Homing)
+    float x;
+    float y;
+    float z;
+    float a;
+    float c;
+    float vx;
+    float vy;
+    uint8_t check;       // XOR Checksum
+    uint8_t padding[2];  // 32-byte alignment
+} SPIPacket;
+
+// TX: From STM32 to Raspberry Pi (32 bytes)
+typedef struct {
+    uint8_t  start;      // 0xBB
+    uint32_t msg_id;
+    float    x;
+    float    y;
+    float    z;
+    float    a;
+    float    c;
+    float    error;
+    uint8_t  check;      // XOR Checksum
+    uint8_t  padding[2]; // 32-byte alignment
+} SPITxPacket;
+
+#pragma pack(pop)
+```
+
+#### Padding and Packing
+Standard C/C++ compilers automatically insert invisible padding bytes between variables to align 32-bit floats to even memory addresses. Because the Raspberry Pi (C++) and the STM32 (C) process memory differently, relying on default compiler behavior results in misaligned bytes across the SPI bus.
+To solve this, the firmware enforces a strict 1-byte alignment using `#pragma pack(push, 1)`. The `padding[2]` array is explicitly added at the end of the structs to force the total size to exactly 32 bytes. This power-of-2 dimension matches the SPI/DMA transfer length perfectly, ensuring neither side expects more or fewer clock cycles than physically generated.
+
+#### Data Integrity and Checksum
+Since jumper wires and high-frequency DC motor PWMs can introduce electromagnetic interference (EMI) on the SPI lines, data integrity is verified via a strict XOR checksum.
+
+The checksum is calculated exclusively on the first 29 bytes of the payload (the `start` byte, the `msg_id`, and the floats). The code programmatically stops before the `check` byte using the `offsetof()` function. The two trailing padding bytes are intentionally excluded from the XOR calculation, as their memory state might be undefined, which would otherwise lead to false-positive checksum failures.
+
+#### DMA Configuration
+Initially, the SPI3 peripheral on the STM32 was configured with its DMA in `CIRCULAR` mode. However, this led to a race condition known as "FIFO Tearing."
+
+In Circular mode, as soon as a 32-byte transfer finishes, the DMA immediately fetches the first bytes of the old buffer and pushes them into the SPI hardware FIFO, waiting for the next Raspberry Pi clock signal. Meanwhile, the STM32's 10 kHz control loop (`TIM6`) overwrites the RAM buffer with fresh positional data. When the Raspberry Pi finally initiates the next read, the STM32 spits out a "hybrid" packet: the first 4 bytes (the old header in the FIFO) mixed with 28 fresh bytes from RAM. This temporal misalignment caused the checksum to fail continuously.
+
+To achieve atomic data transfers, the DMA was switched to `NORMAL` mode. The sequence is now strictly sequential:
+
+* The 10 kHz control loop updates a temporary staging buffer.
+* The Raspberry Pi initiates the SPI transfer, reading the active buffer.
+* Once the transfer is complete, the HAL_SPI_TxRxCpltCallback is triggered.
+* Only inside this callback (when the SPI bus is idle), the firmware safely copies the staging buffer to the active buffer and manually re-arms the DMA for the next transfer.
+
+This architectural choice completely eradicates FIFO tearing, ensuring that the Raspberry Pi always reads a single, coherent snapshot of the machine's state.
 
 ### DC Motors Control
 
