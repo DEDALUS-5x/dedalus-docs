@@ -1,9 +1,26 @@
 # HOW TO USE
-Before understaing the steps to get in order to work with DEDALUS, be sure to check and to remember all the next listed components as getting on the line in case of failure.
+Before understanding the steps required to work with DEDALUS, ensure you perform the following pre-flight checks to prevent hardware failures or unpredictable behavior.
 
 ## Machine Checks
+Prior to powering on and operating the machine, systematically verify the following physical and sensor conditions:
+
+* **Linear Encoders:** Verify the correct alignment and secure positioning of the linear encoders along both the X and Y axes.
+* **Rotary Encoders:** Ensure the magnetic rotary encoders are correctly coupled and providing stable, accurate readings.
+* **Axis Leveling:** Confirm that the axes remain mechanically level after the homing procedure is executed.
+* **Cable Management:** Inspect all wiring harnesses to ensure there are no twisted cables or wires that could catch on moving components during 5-axis kinematics.
+* **Electrical Safety:** Check that all stepper and DC motor terminals are properly covered and insulated to prevent accidental short circuits.
 
 ## Usage Procedure
-The Power-On of the machine is relied just on the main plug and switch, than both Axes Controller Board and Raspberry will start. The Raspberry is configure as an internet `Access Point`: after turning on the switch, the `Access Point` Network is quickly available from any external device.
+Powering on the machine relies solely on the main plug and power switch, which will simultaneously boot the Axes Controller Board and the Raspberry Pi. 
 
-It's then possible to connect via `SSH` at the network `DedalusAP`. MADS framework is already running as a startup service.
+* **Network Connection:** The Raspberry Pi is configured to boot as a Wi-Fi Access Point. After turning on the switch, the `DedalusAP` network will quickly become available. Connect to this network from your external device.
+* **SSH Access:** Connect to the Raspberry Pi environment via `SSH`.
+* **Verify Background Services:** The MADS framework broker and the `spi_agent` are configured to run automatically as startup services. You can verify their active status using the `systemctl` command:
+   ```bash
+   systemctl status mads-broker.service
+   systemctl status mads-spi.service
+   ```
+* Launch the Controller: Execute the path planner program (cncppevo) by specifying the desired `G-Code`
+* **Homing Procedure:** Once the program is running and the interface is active, trigger the machine homing sequence by pressing the z key.
+* **Bed Calibration:** With the machine homed, perform a manual bed leveling/calibration to ensure the printing plate is perfectly set.
+* **Start Printing:** Begin the printing execution by pressing the <space> bar.
