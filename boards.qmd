@@ -92,14 +92,14 @@ The synchronization between the high-level trajectory planner (Raspberry Pi 5 ru
 To ensure micrometric precision at high speeds, the communication protocol must guarantee zero data loss, exact memory alignment, and atomic data transfers. 
 
 #### Packet Structure and Memory Alignment
-The communication relies on a fixed 32-byte payload for both TX and RX channels. Exchanging fixed-size packets allows both master and slave to maintain perfect clock synchronization without overhead.
+The communication relies on a fixed 96-byte payload for both TX and RX channels. Exchanging fixed-size packets allows both master and slave to maintain perfect clock synchronization without overhead.
 
 The structures are defined as follows:
 
 ```c
 #pragma pack(push, 1)
 
-// RX: From Raspberry Pi to STM32 (32 bytes)
+// RX: From Raspberry Pi to STM32 (96 bytes)
 typedef struct {
     uint8_t start;       // 0xAA (Run) or 0xCC (Homing)
     float x;
@@ -110,10 +110,10 @@ typedef struct {
     float vx;
     float vy;
     uint8_t check;       // XOR Checksum
-    uint8_t padding[2];  // 32-byte alignment
+    uint8_t padding[66];  // 96-byte alignment
 } SPIPacket;
 
-// TX: From STM32 to Raspberry Pi (32 bytes)
+// TX: From STM32 to Raspberry Pi (96 bytes)
 typedef struct {
     uint8_t  start;      // 0xBB
     uint32_t msg_id;
@@ -122,9 +122,19 @@ typedef struct {
     float    z;
     float    a;
     float    c;
+    float    vx;
+    float    vy;
+    float    va;
+    float    vc;
+    float    vz;
+    float    ax;
+    float    ay;
+    float    az;
+    float    aa;
+    float    ac;
     float    error;
     uint8_t  check;      // XOR Checksum
-    uint8_t  padding[2]; // 32-byte alignment
+    uint8_t  padding[26]; // 96-byte alignment
 } SPITxPacket;
 
 #pragma pack(pop)
@@ -132,7 +142,7 @@ typedef struct {
 
 #### Padding and Packing
 Standard C/C++ compilers automatically insert invisible padding bytes between variables to align 32-bit floats to even memory addresses. Because the Raspberry Pi (C++) and the STM32 (C) process memory differently, relying on default compiler behavior results in misaligned bytes across the SPI bus.
-To solve this, the firmware enforces a strict 1-byte alignment using `#pragma pack(push, 1)`. The `padding[2]` array is explicitly added at the end of the structs to force the total size to exactly 32 bytes. This power-of-2 dimension matches the SPI/DMA transfer length perfectly, ensuring neither side expects more or fewer clock cycles than physically generated.
+To solve this, the firmware enforces a strict 1-byte alignment using `#pragma pack(push, 1)`. The `padding[2]` array is explicitly added at the end of the structs to force the total size to exactly 96 bytes. This power-of-2 dimension matches the SPI/DMA transfer length perfectly, ensuring neither side expects more or fewer clock cycles than physically generated.
 
 #### Data Integrity and Checksum
 Since jumper wires and high-frequency DC motor PWMs can introduce electromagnetic interference (EMI) on the SPI lines, data integrity is verified via a strict XOR checksum.
@@ -142,7 +152,7 @@ The checksum is calculated exclusively on the first 29 bytes of the payload (the
 #### DMA Configuration
 Initially, the SPI3 peripheral on the STM32 was configured with its DMA in `CIRCULAR` mode. However, this led to a race condition known as "FIFO Tearing."
 
-In Circular mode, as soon as a 32-byte transfer finishes, the DMA immediately fetches the first bytes of the old buffer and pushes them into the SPI hardware FIFO, waiting for the next Raspberry Pi clock signal. Meanwhile, the STM32's 10 kHz control loop (`TIM6`) overwrites the RAM buffer with fresh positional data. When the Raspberry Pi finally initiates the next read, the STM32 spits out a "hybrid" packet: the first 4 bytes (the old header in the FIFO) mixed with 28 fresh bytes from RAM. This temporal misalignment caused the checksum to fail continuously.
+In Circular mode, as soon as a 96-byte transfer finishes, the DMA immediately fetches the first bytes of the old buffer and pushes them into the SPI hardware FIFO, waiting for the next Raspberry Pi clock signal. Meanwhile, the STM32's 10 kHz control loop (`TIM6`) overwrites the RAM buffer with fresh positional data. When the Raspberry Pi finally initiates the next read, the STM32 spits out a "hybrid" packet: the first 4 bytes (the old header in the FIFO) mixed with 28 fresh bytes from RAM. This temporal misalignment caused the checksum to fail continuously.
 
 To achieve atomic data transfers, the DMA was switched to `NORMAL` mode. The sequence is now strictly sequential:
 

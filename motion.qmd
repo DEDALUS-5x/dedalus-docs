@@ -45,7 +45,7 @@ Sent whenever a valid JSON message is received from the MADS network.
 | 21 | `float` | `vx`| Target velocity, x component, (4 bytes) |
 | 25 | `float` | `vy`| Target velocity, y component, (4 bytes) |
 | 29 | `uint8_t` | `check` | XOR Checksum of bytes 0-28 |
-| 30 | `uint8_t` | `padding[2]` | Padding
+| 30 | `uint8_t` | `padding[66]` | Padding
 
 #### RX: Microcontroller → Raspberry Pi
 Read during every agent loop cycle to update the machine status.
@@ -60,10 +60,10 @@ Read during every agent loop cycle to update the machine status.
 | 9 | `float` | `yf` | Current Y position (4 bytes) |
 | 13 | `float` | `zf` | Current Z position (4 bytes) |
 | 17 | `float` | `af` | Current A position (4 bytes) |
-| 21 | `float` | `cf` | Current C position (4 bytes) |
+| 21 | `float` | `cf` | Current C position (4 bytes) |****
 | 25 | `float` | `error` | Current tracking error (4 bytes) |
 | 29 | `uint8_t` | `check` | XOR Checksum of bytes 0-28 |
-| 30 | `uint8_t` | `padding[2]` | Padding
+| 30 | `uint8_t` | `padding[26]` | Padding
 
 ---
 
