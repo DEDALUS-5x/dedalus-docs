@@ -21,3 +21,4 @@ Finally, a digital twin was developed from scratch and integrated with the machi
 * [Hardware](boards.qmd)
 * [Digital Twin](modeling.qmd)
 * [Motion & Integration](motion.qmd)
+* [Checks & Usage](howtouse.qmd)

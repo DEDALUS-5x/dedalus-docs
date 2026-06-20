@@ -340,6 +340,10 @@ window.Quarto = {
     <a class="nav-link" href="./motion.html"> 
 <span class="menu-text">Motion &amp; Integration</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./howtouse.html"> 
+<span class="menu-text">How To Use</span></a>
+  </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
@@ -494,11 +498,11 @@ window.Quarto = {
 <p>To ensure micrometric precision at high speeds, the communication protocol must guarantee zero data loss, exact memory alignment, and atomic data transfers.</p>
 <section id="packet-structure-and-memory-alignment" class="level4" data-number="1.3.3.1">
 <h4 data-number="1.3.3.1" class="anchored" data-anchor-id="packet-structure-and-memory-alignment"><span class="header-section-number">1.3.3.1</span> Packet Structure and Memory Alignment</h4>
-<p>The communication relies on a fixed 32-byte payload for both TX and RX channels. Exchanging fixed-size packets allows both master and slave to maintain perfect clock synchronization without overhead.</p>
+<p>The communication relies on a fixed 96-byte payload for both TX and RX channels. Exchanging fixed-size packets allows both master and slave to maintain perfect clock synchronization without overhead.</p>
 <p>The structures are defined as follows:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode c code-with-copy"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma pack(push, 1)</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">// RX: From Raspberry Pi to STM32 (32 bytes)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">// RX: From Raspberry Pi to STM32 (96 bytes)</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> start<span class="op">;</span>       <span class="co">// 0xAA (Run) or 0xCC (Homing)</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> x<span class="op">;</span></span>
@@ -509,10 +513,10 @@ window.Quarto = {
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> vx<span class="op">;</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> vy<span class="op">;</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> check<span class="op">;</span>       <span class="co">// XOR Checksum</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> padding<span class="op">[</span><span class="dv">2</span><span class="op">];</span>  <span class="co">// 32-byte alignment</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> padding<span class="op">[</span><span class="dv">66</span><span class="op">];</span>  <span class="co">// 96-byte alignment</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SPIPacket<span class="op">;</span></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">// TX: From STM32 to Raspberry Pi (32 bytes)</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">// TX: From STM32 to Raspberry Pi (96 bytes)</span></span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  start<span class="op">;</span>      <span class="co">// 0xBB</span></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> msg_id<span class="op">;</span></span>
@@ -521,16 +525,26 @@ window.Quarto = {
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    z<span class="op">;</span></span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    a<span class="op">;</span></span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    c<span class="op">;</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    error<span class="op">;</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  check<span class="op">;</span>      <span class="co">// XOR Checksum</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  padding<span class="op">[</span><span class="dv">2</span><span class="op">];</span> <span class="co">// 32-byte alignment</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SPITxPacket<span class="op">;</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma pack(pop)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vx<span class="op">;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vy<span class="op">;</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    va<span class="op">;</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vc<span class="op">;</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vz<span class="op">;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    ax<span class="op">;</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    ay<span class="op">;</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    az<span class="op">;</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    aa<span class="op">;</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    ac<span class="op">;</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    error<span class="op">;</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  check<span class="op">;</span>      <span class="co">// XOR Checksum</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  padding<span class="op">[</span><span class="dv">26</span><span class="op">];</span> <span class="co">// 96-byte alignment</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SPITxPacket<span class="op">;</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma pack(pop)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="padding-and-packing" class="level4" data-number="1.3.3.2">
 <h4 data-number="1.3.3.2" class="anchored" data-anchor-id="padding-and-packing"><span class="header-section-number">1.3.3.2</span> Padding and Packing</h4>
-<p>Standard C/C++ compilers automatically insert invisible padding bytes between variables to align 32-bit floats to even memory addresses. Because the Raspberry Pi (C++) and the STM32 (C) process memory differently, relying on default compiler behavior results in misaligned bytes across the SPI bus. To solve this, the firmware enforces a strict 1-byte alignment using <code>#pragma pack(push, 1)</code>. The <code>padding[2]</code> array is explicitly added at the end of the structs to force the total size to exactly 32 bytes. This power-of-2 dimension matches the SPI/DMA transfer length perfectly, ensuring neither side expects more or fewer clock cycles than physically generated.</p>
+<p>Standard C/C++ compilers automatically insert invisible padding bytes between variables to align 32-bit floats to even memory addresses. Because the Raspberry Pi (C++) and the STM32 (C) process memory differently, relying on default compiler behavior results in misaligned bytes across the SPI bus. To solve this, the firmware enforces a strict 1-byte alignment using <code>#pragma pack(push, 1)</code>. The <code>padding[2]</code> array is explicitly added at the end of the structs to force the total size to exactly 96 bytes. This power-of-2 dimension matches the SPI/DMA transfer length perfectly, ensuring neither side expects more or fewer clock cycles than physically generated.</p>
 </section>
 <section id="data-integrity-and-checksum" class="level4" data-number="1.3.3.3">
 <h4 data-number="1.3.3.3" class="anchored" data-anchor-id="data-integrity-and-checksum"><span class="header-section-number">1.3.3.3</span> Data Integrity and Checksum</h4>
@@ -540,7 +554,7 @@ window.Quarto = {
 <section id="dma-configuration" class="level4" data-number="1.3.3.4">
 <h4 data-number="1.3.3.4" class="anchored" data-anchor-id="dma-configuration"><span class="header-section-number">1.3.3.4</span> DMA Configuration</h4>
 <p>Initially, the SPI3 peripheral on the STM32 was configured with its DMA in <code>CIRCULAR</code> mode. However, this led to a race condition known as “FIFO Tearing.”</p>
-<p>In Circular mode, as soon as a 32-byte transfer finishes, the DMA immediately fetches the first bytes of the old buffer and pushes them into the SPI hardware FIFO, waiting for the next Raspberry Pi clock signal. Meanwhile, the STM32’s 10 kHz control loop (<code>TIM6</code>) overwrites the RAM buffer with fresh positional data. When the Raspberry Pi finally initiates the next read, the STM32 spits out a “hybrid” packet: the first 4 bytes (the old header in the FIFO) mixed with 28 fresh bytes from RAM. This temporal misalignment caused the checksum to fail continuously.</p>
+<p>In Circular mode, as soon as a 96-byte transfer finishes, the DMA immediately fetches the first bytes of the old buffer and pushes them into the SPI hardware FIFO, waiting for the next Raspberry Pi clock signal. Meanwhile, the STM32’s 10 kHz control loop (<code>TIM6</code>) overwrites the RAM buffer with fresh positional data. When the Raspberry Pi finally initiates the next read, the STM32 spits out a “hybrid” packet: the first 4 bytes (the old header in the FIFO) mixed with 28 fresh bytes from RAM. This temporal misalignment caused the checksum to fail continuously.</p>
 <p>To achieve atomic data transfers, the DMA was switched to <code>NORMAL</code> mode. The sequence is now strictly sequential:</p>
 <ul>
 <li>The 10 kHz control loop updates a temporary staging buffer.</li>
@@ -579,11 +593,13 @@ window.Quarto = {
 <section id="mechanical-structure" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Mechanical Structure</h1>
 <p>The mechanical foundation of the project is based on a <strong>Creality CR10 Max</strong>. Its natively large build volume is crucial for this multi-axis modification, as it provides the necessary spatial clearance to safely perform complex rotations and translations without colliding with the frame. The original massive heated bed has been entirely removed and replaced with a more compact <strong>20x20 cm print bed</strong>, which is much better suited for 5-axis kinematics.</p>
-<p><strong>The Yaw Axis (Local Bed Rotation)</strong> At the core of the moving platform is the local yaw axis. The 20x20 print plate is directly mounted onto a dedicated stepper motor. This motor handles the continuous rotational movement of the bed around its vertical axis, acting as the rotational platter for the workpiece.</p>
-<p><strong>The Pitch Axis and the “Cradle”</strong> The print bed and its yaw stepper motor are nested inside a custom structural frame, referred to as the “Cradle”. The Cradle is suspended and rotated by two stepper motors—one mounted on each side—which govern the pitch angle of the entire bed assembly. A critical design choice here is the weight distribution: the inner yaw stepper and the bed are positioned so that their combined center of mass aligns perfectly with the pitch rotation axis. This mechanical balancing ensures that the dual pitch steppers only need to overcome the rotational inertia of the structure, rather than fighting gravity to hold a static unbalanced load.</p>
-<p><strong>The Y-Axis Translation</strong> To move this entire cradle assembly back and forth, the original V-wheel and bearing system of the CR10 was stripped away. It has been upgraded with high-precision <strong>linear guides</strong> mounted directly onto the base aluminum extrusions. The two pitch stepper motors sit on top of the sliding carriages riding on these rails. The linear translation along the Y-axis is driven by a single, powerful <strong>DC motor</strong>. To ensure both sides move in perfect synchronization and avoid racking, this motor is equipped with a custom extended drive shaft that hosts two separate toothed pulleys. Each pulley drives a timing belt connected to one of the carriages, pulling the cradle evenly along the linear rails.</p>
-<p><strong>The X-Axis (Extruder Gantry)</strong> The X-axis, which carries the extruder, retains the original CR10 gantry aluminum profile but has undergone a similar heavy-duty upgrade. The stock V-wheels have been replaced with a linear rail to guarantee superior rigidity and precision. Additionally, the standard stepper motor has been swapped out for a <strong>DC motor</strong>, enabling fast, closed-loop linear positioning for the toolhead.</p>
-<p><strong>Power and Aesthetics</strong> Powering this complex mechatronic setup is a dedicated <strong>400W Power Supply Unit (PSU)</strong>, which delivers a steady 12V output directly to the custom motor control board. Finally, to highlight the custom mechanics and give the machine a striking, high-tech aesthetic, custom LED lighting has been integrated throughout the chassis.</p>
+<ul>
+<li><strong>The Yaw Axis (Local Bed Rotation):</strong> At the core of the moving platform is the local yaw axis. The 20x20 print plate is directly mounted onto a dedicated stepper motor. This motor handles the continuous rotational movement of the bed around its vertical axis, acting as the rotational platter for the workpiece.</li>
+<li><strong>The Pitch Axis and the “Cradle”:</strong> The print bed and its yaw stepper motor are nested inside a custom structural frame, referred to as the “Cradle”. The Cradle is suspended and rotated by two stepper motors—one mounted on each side—which govern the pitch angle of the entire bed assembly. A critical design choice here is the weight distribution: the inner yaw stepper and the bed are positioned so that their combined center of mass aligns perfectly with the pitch rotation axis. This mechanical balancing ensures that the dual pitch steppers only need to overcome the rotational inertia of the structure, rather than fighting gravity to hold a static unbalanced load.</li>
+<li><strong>The Y-Axis Translation:</strong> To move this entire cradle assembly back and forth, the original V-wheel and bearing system of the CR10 was stripped away. It has been upgraded with high-precision <strong>linear guides</strong> mounted directly onto the base aluminum extrusions. The two pitch stepper motors sit on top of the sliding carriages riding on these rails. The linear translation along the Y-axis is driven by a single, powerful <strong>DC motor</strong>. To ensure both sides move in perfect synchronization and avoid racking, this motor is equipped with a custom extended drive shaft that hosts two separate toothed pulleys. Each pulley drives a timing belt connected to one of the carriages, pulling the cradle evenly along the linear rails.</li>
+<li><strong>The X-Axis (Extruder Gantry):</strong> The X-axis, which carries the extruder, retains the original CR10 gantry aluminum profile but has undergone a similar heavy-duty upgrade. The stock V-wheels have been replaced with a linear rail to guarantee superior rigidity and precision. Additionally, the standard stepper motor has been swapped out for a <strong>DC motor</strong>, enabling fast, closed-loop linear positioning for the toolhead.</li>
+<li><strong>Power and Aesthetics:</strong> Powering this complex mechatronic setup is a dedicated <strong>400W Power Supply Unit (PSU)</strong>, which delivers a steady 12V output directly to the custom motor control board. Finally, to highlight the custom mechanics and give the machine a striking, high-tech aesthetic, custom LED lighting has been integrated throughout the chassis.</li>
+</ul>
 
 
 </section>
@@ -675,7 +691,7 @@ window.Quarto = {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/DEDALUS-5x\.github\.io\/dedalus-docs\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>motion – DEDALUS</title>
+<title>howtouse – DEDALUS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -270,11 +270,11 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Digital Twin</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./motion.html" aria-current="page"> 
+    <a class="nav-link" href="./motion.html"> 
 <span class="menu-text">Motion &amp; Integration</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./howtouse.html"> 
+    <a class="nav-link active" href="./howtouse.html" aria-current="page"> 
 <span class="menu-text">How To Use</span></a>
   </li>  
 </ul>
@@ -301,13 +301,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#low-level-kernel" id="toc-low-level-kernel" class="nav-link active" data-scroll-target="#low-level-kernel"><span class="header-section-number">1</span> Low-Level Kernel</a>
+  <li><a href="#how-to-use" id="toc-how-to-use" class="nav-link active" data-scroll-target="#how-to-use"><span class="header-section-number">1</span> HOW TO USE</a>
   <ul class="collapse">
-  <li><a href="#mads-interface" id="toc-mads-interface" class="nav-link" data-scroll-target="#mads-interface"><span class="header-section-number">1.1</span> MADS Interface</a>
-  <ul class="collapse">
-  <li><a href="#machine" id="toc-machine" class="nav-link" data-scroll-target="#machine"><span class="header-section-number">1.1.1</span> Machine</a></li>
-  <li><a href="#simulator" id="toc-simulator" class="nav-link" data-scroll-target="#simulator"><span class="header-section-number">1.1.2</span> Simulator</a></li>
-  </ul></li>
+  <li><a href="#machine-checks" id="toc-machine-checks" class="nav-link" data-scroll-target="#machine-checks"><span class="header-section-number">1.1</span> Machine Checks</a></li>
+  <li><a href="#usage-procedure" id="toc-usage-procedure" class="nav-link" data-scroll-target="#usage-procedure"><span class="header-section-number">1.2</span> Usage Procedure</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -319,201 +316,16 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="low-level-kernel" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Low-Level Kernel</h1>
-<p>The low-level software is based on 3-axes <a href="https://github.com/pbosetti/cncpp">cncpp</a> one, that is the outcome of the <strong>Precision Engineering Mod.2</strong> course. It implements:</p>
-<ul>
-<li><code>G Code</code> parsing;</li>
-<li>Motion profiles computation;</li>
-<li><code>MQTT</code> interface for fast movements that require feedbacks from the machine.</li>
-</ul>
-<p>The used <a href="https://github.com/DEDALUS-5x/cncppevo">fork</a> additionally implements:</p>
-<ul>
-<li>2 additional positioning axes;</li>
-<li>Tool Radius Compensation;</li>
-<li>Lookhaed feedrate smoothing;</li>
-<li>MADS framework interface in change of <code>MQTT</code> communication.</li>
-</ul>
-<section id="mads-interface" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="mads-interface"><span class="header-section-number">1.1</span> MADS Interface</h2>
-<p>The software kernel runs by its own since it is fed with a valid <code>G Code</code> and a <code>yml</code> file as machine parameters configuration file. It is needed to interface it with the <a href="https://github.com/pbosetti/MADS.git">MADS</a> environment.</p>
-<p>MADS is a cross-plattform broker-based framework that can be used to run different agents on multiple machines. Its strenght stands on the idea to be a plug-and-play, robust and efficient software. In this case, it is used to interface the low-level kernel with both the real machine and a simulation environment based on Matlab Simulink.</p>
-<p>MADS is a ZeroMQ-based framework, so it is needed to interface the low-level kernel with the MADS network. From this need the dedicated monolithic agent arises. This agent directly interfaces with the already structured FSM thanks by following the <a href="https://mads-net.github.io/guides/fsm.html">fsm guide</a>.</p>
-<p>While the interested data is sent through the MADS communication network, it is possible to both interface with the real machine and simulation environment by respectively using the agents <a href="https://github.com/alterlleo/spi_agent.git">spi_agent</a> and <a href="https://github.com/MADS-NET/FMU_agent.git">fmu_agent</a>.</p>
-<section id="machine" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="machine"><span class="header-section-number">1.1.1</span> Machine</h3>
-<p>The <code>spi_agent</code> is a monolithic MADS agent specifically designed for the Raspberry Pi 5 to communicate with the Axes Controller Board (STM32H7) via the SPI peripheral. It implements a high-performance Full-Duplex logic, allowing simultaneous reading and writing during every loop cycle. Binary Protocol and Memory Alignment</p>
-<p>To ensure total compatibility between the ARM architecture of the Raspberry Pi and the MCU of the controller board, the communication protocol uses strict 1-byte alignment (via <code>#pragma pack(push, 1)</code>) to prevent memory padding issues.</p>
-<section id="tx-raspberry-pi-microcontroller" class="level4" data-number="1.1.1.1">
-<h4 data-number="1.1.1.1" class="anchored" data-anchor-id="tx-raspberry-pi-microcontroller"><span class="header-section-number">1.1.1.1</span> TX: Raspberry Pi → Microcontroller</h4>
-<p>Sent whenever a valid JSON message is received from the MADS network. - <strong>Total Size</strong>: 32 Bytes - <strong>Structure (<code>Pack</code>)</strong>:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Offset</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Field</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">0</td>
-<td style="text-align: left;"><code>uint8_t</code></td>
-<td style="text-align: left;"><code>start</code></td>
-<td style="text-align: left;">Start Byte: <code>0xAA</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">1</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>x</code></td>
-<td style="text-align: left;">X-axis coordinate (4 bytes)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">5</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>y</code></td>
-<td style="text-align: left;">Y-axis coordinate (4 bytes)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">9</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>z</code></td>
-<td style="text-align: left;">Z-axis coordinate (4 bytes)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">13</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>a</code></td>
-<td style="text-align: left;">Pitch/Rotation (4 bytes)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">17</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>c</code></td>
-<td style="text-align: left;">Yaw/Rotation (4 bytes)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">21</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>vx</code></td>
-<td style="text-align: left;">Target velocity, x component, (4 bytes)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">25</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>vy</code></td>
-<td style="text-align: left;">Target velocity, y component, (4 bytes)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">29</td>
-<td style="text-align: left;"><code>uint8_t</code></td>
-<td style="text-align: left;"><code>check</code></td>
-<td style="text-align: left;">XOR Checksum of bytes 0-28</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">30</td>
-<td style="text-align: left;"><code>uint8_t</code></td>
-<td style="text-align: left;"><code>padding[66]</code></td>
-<td style="text-align: left;">Padding</td>
-</tr>
-</tbody>
-</table>
+<section id="how-to-use" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> HOW TO USE</h1>
+<p>Before understaing the steps to get in order to work with DEDALUS, be sure to check and to remember all the next listed components as getting on the line in case of failure.</p>
+<section id="machine-checks" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="machine-checks"><span class="header-section-number">1.1</span> Machine Checks</h2>
 </section>
-<section id="rx-microcontroller-raspberry-pi" class="level4" data-number="1.1.1.2">
-<h4 data-number="1.1.1.2" class="anchored" data-anchor-id="rx-microcontroller-raspberry-pi"><span class="header-section-number">1.1.1.2</span> RX: Microcontroller → Raspberry Pi</h4>
-<p>Read during every agent loop cycle to update the machine status. - <strong>Total Size</strong>: 32 Bytes - <strong>Structure (<code>PackFb</code>)</strong>:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Offset</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Field</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">0</td>
-<td style="text-align: left;"><code>uint8_t</code></td>
-<td style="text-align: left;"><code>start</code></td>
-<td style="text-align: left;">Start Byte: <code>0xBB</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">1</td>
-<td style="text-align: left;"><code>uint32_t</code></td>
-<td style="text-align: left;"><code>msg_id</code></td>
-<td style="text-align: left;">Sequence ID (only newer IDs are processed)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">5</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>xf</code></td>
-<td style="text-align: left;">Current X position (4 bytes)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">9</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>yf</code></td>
-<td style="text-align: left;">Current Y position (4 bytes)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">13</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>zf</code></td>
-<td style="text-align: left;">Current Z position (4 bytes)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">17</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>af</code></td>
-<td style="text-align: left;">Current A position (4 bytes)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">21</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>cf</code></td>
-<td style="text-align: left;">Current C position (4 bytes)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">25</td>
-<td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;"><code>error</code></td>
-<td style="text-align: left;">Current tracking error (4 bytes)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">29</td>
-<td style="text-align: left;"><code>uint8_t</code></td>
-<td style="text-align: left;"><code>check</code></td>
-<td style="text-align: left;">XOR Checksum of bytes 0-28</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">30</td>
-<td style="text-align: left;"><code>uint8_t</code></td>
-<td style="text-align: left;"><code>padding[26]</code></td>
-<td style="text-align: left;">Padding</td>
-</tr>
-</tbody>
-</table>
-<hr>
-</section>
-</section>
-<section id="simulator" class="level3" data-number="1.1.2">
-<h3 data-number="1.1.2" class="anchored" data-anchor-id="simulator"><span class="header-section-number">1.1.2</span> Simulator</h3>
-<p>When the real hardware is not available, Dedalus uses the <a href="https://github.com/MADS-NET/FMU_agent#">FMU_agent</a> to interface the motion kernel with a <strong>Digital Twin</strong>.</p>
-<p>An FMU (Functional Mock-up Unit) is a file (ending in <code>.fmu</code>) that contains a simulation model following the FMI (Functional Mock-up Interface) standard. It allows models developed in environments like MATLAB Simulink or Modelica to be exported and executed as independent functional blocks within other software. Simulation Workflow</p>
-<p>The <code>FMU_agent</code> acts as a bridge between the MADS communication network and the virtual model:</p>
-<ul>
-<li><strong>Dynamic Modeling</strong>: The FMU contains the physical equations of the Dedalus axes, including motor torque constants, mass of the 3kg cradle, and friction of the MGN15 guides.</li>
-<li><strong>Deterministic Execution</strong>: The agent steps the simulation forward in time, receiving the same JSON setpoints that would normally be sent to the SPI agent.</li>
-<li><strong>Closed-Loop Feedback</strong>: The FMU calculates the resulting virtual position and sends it back to the MADS network as feedback. This allows the motion kernel to validate the G-code execution and the Feedforward/PID logic in a safe, virtual environment before deployment.</li>
-</ul>
-<p>For this application, the <code>FMU_agent</code> is exploited in <code>trigger mode</code>: the agent is triggered whenever an input occurs. In this way, the real-time clock runs on the master agent, that is the same that runs the FSM. The FMU is subjected to this clock, in order to get a synchronized simulation. Since the machine model implements a discrete controller and it is exported within a fixed-step integrator, it is required to get to the exported plant a time interval equal to a multiple of the integration <code>dt</code>. For this reason, a dedicated implementation on the <code>FMU_agent</code> is developed.</p>
-<p>The virtual model is exported from <code>Matlab Simulink</code> and, in particular, it is exported as <strong>Co-Simulation 3.0</strong>. It is currently tested with the <code>ode14x</code> and <code>0.0001s</code> as fixed step.</p>
-<p>In this figure, it is shown the full simulation of a generic <code>G-Code</code> in which it is imposed a generic path with also some rotative axis inclinations: <img src="images/simulation.png" class="img-fluid" alt="simulation"></p>
+<section id="usage-procedure" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="usage-procedure"><span class="header-section-number">1.2</span> Usage Procedure</h2>
 
 
-</section>
 </section>
 </section>
 

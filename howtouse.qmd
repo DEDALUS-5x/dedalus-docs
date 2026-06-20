@@ -1,0 +1,6 @@
+# HOW TO USE
+Before understaing the steps to get in order to work with DEDALUS, be sure to check and to remember all the next listed components as getting on the line in case of failure.
+
+## Machine Checks
+
+## Usage Procedure
