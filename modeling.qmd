@@ -88,3 +88,25 @@ The core element of the Z-axis is the **Translational Spring** and **Translation
 
 ### Mass and Gravity Bias
 The entire weight of the gantry acts continuously on the Z-axis. This is modeled using an **Ideal Force Source** injecting a constant downward force equal to `Gravity * mass` ($9.81 \cdot 3$ kg). The carriage itself is represented by a **Mass** block, and a **Translational Damper** simulates the friction of the vertical rails. This setup ensures the system accurately models the asymmetrical effort required to lift the gantry versus lowering it, and the resting deflection of the flexible transmission.
+
+## Model validation
+
+Before deploying advanced model-based control strategies, it is strictly necessary to validate the fidelity of the Simscape physical network. The objective of this phase is to ensure that the FMU (Digital Twin) accurately replicates the dynamic behavior of the real 5-axis kinematics when subjected to the same stimuli.
+
+To achieve this, an open-loop and closed-loop validation procedure was conducted. The physical machine and the FMU were fed identical trajectory profiles (position and velocity setpoints), and their respective outputs were logged and compared.
+
+### Trajectory Tracking Comparison
+A standard testing routine—comprising sharp accelerations, cruising speeds, and direction reversals—was executed on the physical hardware. The identical control signals were passed to the FMU running in parallel. 
+
+![Position and Velocity Tracking Comparison](images/validation_tracking_plot.png)
+
+As observed in the plot, the baseline 1D multidomain model successfully captures the dominant dynamics of the system. The mechanical compliance (belt stretching), the inertial resistance, and the Pitch-to-Y kickback coupling are faithfully simulated, maintaining the simulated trajectory within an acceptable error margin from the physical ground truth.
+
+### Residual Error and the Need for Adaptation
+The residual tracking errors expose a fundamental limitation of static modeling: **parameter variability**. 
+
+While geometric constants (like the center of gravity distance $d_{CG}$ or motor torque constants $K_t$) remain fixed, other crucial parameters change continuously during operation:
+1. **Dynamic Payload:** The equivalent mass of the Y-axis and the rotational inertia of the Pitch and Yaw axes increase steadily as plastic material is extruded onto the printing plate.
+2. **Thermal Variations:** The viscous friction coefficients ($B$) of the linear guides and the belt damping factors vary as the mechanical components heat up during long printing sessions.
+
+Relying on a statically calibrated FMU would lead to a progressive deterioration of the feedforward compensation and model-predictive features. To bridge this gap and achieve perfect alignment between the Digital Twin and the physical machine, the static parameters must be dynamically updated. This requirement naturally introduces the implementation of an **Online Parameter Identification** strategy.

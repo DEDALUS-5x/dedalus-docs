@@ -185,6 +185,7 @@ The position loop manages absolute spatial precision by reading the `RLCI2C` lin
 # Mechanical Structure
 
 The mechanical foundation of the project is based on a **Creality CR10 Max**. Its natively large build volume is crucial for this multi-axis modification, as it provides the necessary spatial clearance to safely perform complex rotations and translations without colliding with the frame. The original massive heated bed has been entirely removed and replaced with a more compact **20x20 cm print bed**, which is much better suited for 5-axis kinematics.
+All the required parts for the retrofitting, are Onyx 3D printed.
 
 * **The Yaw Axis (Local Bed Rotation):**
 At the core of the moving platform is the local yaw axis. The 20x20 print plate is directly mounted onto a dedicated stepper motor. This motor handles the continuous rotational movement of the bed around its vertical axis, acting as the rotational platter for the workpiece.

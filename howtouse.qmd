@@ -4,3 +4,6 @@ Before understaing the steps to get in order to work with DEDALUS, be sure to ch
 ## Machine Checks
 
 ## Usage Procedure
+The Power-On of the machine is relied just on the main plug and switch, than both Axes Controller Board and Raspberry will start. The Raspberry is configure as an internet `Access Point`: after turning on the switch, the `Access Point` Network is quickly available from any external device.
+
+It's then possible to connect via `SSH` at the network `DedalusAP`. MADS framework is already running as a startup service.
