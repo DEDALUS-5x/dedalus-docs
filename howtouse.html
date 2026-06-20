@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>modeling – DEDALUS</title>
+<title>howtouse – DEDALUS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -45,9 +45,6 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/bootstrap/bootstrap-3b0df04d7d218effb9a7899ceab089e8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-dark-405f11390371fefd260c28c60ed1c6fe.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="site_libs/bootstrap/bootstrap-3b0df04d7d218effb9a7899ceab089e8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -76,35 +73,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -298,7 +266,7 @@ window.Quarto = {
 <span class="menu-text">Hardware</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./modeling.html" aria-current="page"> 
+    <a class="nav-link" href="./modeling.html"> 
 <span class="menu-text">Digital Twin</span></a>
   </li>  
   <li class="nav-item">
@@ -306,7 +274,7 @@ window.Quarto = {
 <span class="menu-text">Motion &amp; Integration</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./howtouse.html"> 
+    <a class="nav-link active" href="./howtouse.html" aria-current="page"> 
 <span class="menu-text">How To Use</span></a>
   </li>  
 </ul>
@@ -333,31 +301,10 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#modeling" id="toc-modeling" class="nav-link active" data-scroll-target="#modeling"><span class="header-section-number">1</span> Modeling</a>
+  <li><a href="#how-to-use" id="toc-how-to-use" class="nav-link active" data-scroll-target="#how-to-use"><span class="header-section-number">1</span> HOW TO USE</a>
   <ul class="collapse">
-  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview"><span class="header-section-number">1.1</span> Overview</a></li>
-  <li><a href="#top-level-integration" id="toc-top-level-integration" class="nav-link" data-scroll-target="#top-level-integration"><span class="header-section-number">1.2</span> Top-Level Integration</a></li>
-  <li><a href="#x-extruder-axis" id="toc-x-extruder-axis" class="nav-link" data-scroll-target="#x-extruder-axis"><span class="header-section-number">1.3</span> X: Extruder Axis</a>
-  <ul class="collapse">
-  <li><a href="#control-sub-model" id="toc-control-sub-model" class="nav-link" data-scroll-target="#control-sub-model"><span class="header-section-number">1.3.1</span> Control sub-Model</a></li>
-  <li><a href="#physical-plant-sub-model" id="toc-physical-plant-sub-model" class="nav-link" data-scroll-target="#physical-plant-sub-model"><span class="header-section-number">1.3.2</span> Physical Plant sub-Model</a></li>
-  </ul></li>
-  <li><a href="#y-printing-plate-axis" id="toc-y-printing-plate-axis" class="nav-link" data-scroll-target="#y-printing-plate-axis"><span class="header-section-number">1.4</span> Y: Printing Plate Axis</a>
-  <ul class="collapse">
-  <li><a href="#control-sub-model-1" id="toc-control-sub-model-1" class="nav-link" data-scroll-target="#control-sub-model-1"><span class="header-section-number">1.4.1</span> Control sub-Model</a></li>
-  <li><a href="#physical-plant-sub-model-1" id="toc-physical-plant-sub-model-1" class="nav-link" data-scroll-target="#physical-plant-sub-model-1"><span class="header-section-number">1.4.2</span> Physical Plant sub-Model</a></li>
-  </ul></li>
-  <li><a href="#z-vertical-positioning-axis" id="toc-z-vertical-positioning-axis" class="nav-link" data-scroll-target="#z-vertical-positioning-axis"><span class="header-section-number">1.5</span> Z: Vertical Positioning Axis</a>
-  <ul class="collapse">
-  <li><a href="#stepper-translation" id="toc-stepper-translation" class="nav-link" data-scroll-target="#stepper-translation"><span class="header-section-number">1.5.1</span> Stepper Translation</a></li>
-  <li><a href="#transmission-and-leadscrew-dynamics" id="toc-transmission-and-leadscrew-dynamics" class="nav-link" data-scroll-target="#transmission-and-leadscrew-dynamics"><span class="header-section-number">1.5.2</span> Transmission and Leadscrew Dynamics</a></li>
-  <li><a href="#mass-and-gravity-bias" id="toc-mass-and-gravity-bias" class="nav-link" data-scroll-target="#mass-and-gravity-bias"><span class="header-section-number">1.5.3</span> Mass and Gravity Bias</a></li>
-  </ul></li>
-  <li><a href="#model-validation" id="toc-model-validation" class="nav-link" data-scroll-target="#model-validation"><span class="header-section-number">1.6</span> Model validation</a>
-  <ul class="collapse">
-  <li><a href="#trajectory-tracking-comparison" id="toc-trajectory-tracking-comparison" class="nav-link" data-scroll-target="#trajectory-tracking-comparison"><span class="header-section-number">1.6.1</span> Trajectory Tracking Comparison</a></li>
-  <li><a href="#residual-error-and-the-need-for-adaptation" id="toc-residual-error-and-the-need-for-adaptation" class="nav-link" data-scroll-target="#residual-error-and-the-need-for-adaptation"><span class="header-section-number">1.6.2</span> Residual Error and the Need for Adaptation</a></li>
-  </ul></li>
+  <li><a href="#machine-checks" id="toc-machine-checks" class="nav-link" data-scroll-target="#machine-checks"><span class="header-section-number">1.1</span> Machine Checks</a></li>
+  <li><a href="#usage-procedure" id="toc-usage-procedure" class="nav-link" data-scroll-target="#usage-procedure"><span class="header-section-number">1.2</span> Usage Procedure</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -369,149 +316,34 @@ window.Quarto = {
 
 
 
-<section id="modeling" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Modeling</h1>
-<section id="overview" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1.1</span> Overview</h2>
-<p>The architecture is built using MATLAB/Simulink and Simscape, following a Multi Domain Model Design approach. The system is explicitly divided into two referenced models to separate the discrete software logic from the continuous physical plant:</p>
+<section id="how-to-use" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> HOW TO USE</h1>
+<p>Before understanding the steps required to work with DEDALUS, ensure you perform the following pre-flight checks to prevent hardware failures or unpredictable behavior.</p>
+<section id="machine-checks" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="machine-checks"><span class="header-section-number">1.1</span> Machine Checks</h2>
+<p>Prior to powering on and operating the machine, systematically verify the following physical and sensor conditions:</p>
 <ul>
-<li><code>control_&lt;axis&gt;</code>: The discrete-time control algorithm (firmware replica).</li>
-<li><code>machine_&lt;axis&gt;</code>: The continuous-time physical model (Simscape Multibody/Foundation).</li>
-</ul>
-<p>The repository is available <a href="https://github.com/DEDALUS-5x/machine-model">here</a>.</p>
-</section>
-<section id="top-level-integration" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="top-level-integration"><span class="header-section-number">1.2</span> Top-Level Integration</h2>
-<p>The top-level model connects the control logic and the physical plant. Since the controller operates in the discrete-time domain (simulating an STM32 microcontroller) and the physical plant operates in the continuous-time domain, appropriate interface blocks are utilized:</p>
-<ul>
-<li><strong>Zero-Order Hold (ZOH):</strong> Applied to the continuous feedback signals (position and velocity) entering the controller. This mimics the finite sampling rate of the microcontroller’s ADCs and timers.</li>
-<li><strong>Unit Delay (<span class="math inline">\(z^{-1}\)</span>):</strong> Placed between the controller’s PWM output and the plant’s input. This breaks the algebraic loop, accurately simulating the computational delay (e.g., 100 <span class="math inline">\(\mu s\)</span>) between reading the encoders and updating the motor driver.</li>
+<li><strong>Linear Encoders:</strong> Verify the correct alignment and secure positioning of the linear encoders along both the X and Y axes.</li>
+<li><strong>Rotary Encoders:</strong> Ensure the magnetic rotary encoders are correctly coupled and providing stable, accurate readings.</li>
+<li><strong>Axis Leveling:</strong> Confirm that the axes remain mechanically level after the homing procedure is executed.</li>
+<li><strong>Cable Management:</strong> Inspect all wiring harnesses to ensure there are no twisted cables or wires that could catch on moving components during 5-axis kinematics.</li>
+<li><strong>Electrical Safety:</strong> Check that all stepper and DC motor terminals are properly covered and insulated to prevent accidental short circuits.</li>
 </ul>
 </section>
-<section id="x-extruder-axis" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="x-extruder-axis"><span class="header-section-number">1.3</span> X: Extruder Axis</h2>
-<section id="control-sub-model" class="level3" data-number="1.3.1">
-<h3 data-number="1.3.1" class="anchored" data-anchor-id="control-sub-model"><span class="header-section-number">1.3.1</span> Control sub-Model</h3>
-<p>The control logic features a discrete cascade PID architecture with feedforward compensation, matching the physical C firmware structure:</p>
+<section id="usage-procedure" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="usage-procedure"><span class="header-section-number">1.2</span> Usage Procedure</h2>
+<p>Powering on the machine relies solely on the main plug and power switch, which will simultaneously boot the Axes Controller Board and the Raspberry Pi.</p>
 <ul>
-<li><strong>Outer Position Loop (1 kHz):</strong> Computes the positional error. The positional feedback is quantized to simulate the finite resolution of the RLS linear encoder. The output of this <code>PID(z)</code> is a baseline velocity command.</li>
-<li><strong>Velocity Feedforward:</strong> The target feedrate is directly summed with the output of the position PID. This acts as a primary driving signal, allowing the position PID to operate purely as a low-effort error corrector (usually purely Proportional), avoiding heavy oscillations.</li>
-<li><strong>Inner Velocity Loop (10 kHz):</strong> Compares the feedforward-adjusted target velocity against the quantized feedback from the AS5048A rotary encoder. This highly responsive <code>PID(z)</code> outputs a normalized duty cycle, which is then amplified by the system voltage (e.g., 12V) to command the physical motor.</li>
+<li><strong>Network Connection:</strong> The Raspberry Pi is configured to boot as a Wi-Fi Access Point. After turning on the switch, the <code>DedalusAP</code> network will quickly become available. Connect to this network from your external device.</li>
+<li><strong>SSH Access:</strong> Connect to the Raspberry Pi environment via <code>SSH</code>.</li>
+<li><strong>Verify Background Services:</strong> The MADS framework broker and the <code>spi_agent</code> are configured to run automatically as startup services. You can verify their active status using the <code>systemctl</code> command: <code>bash  systemctl status mads-broker.service  systemctl status mads-spi.service</code></li>
+<li>Launch the Controller: Execute the path planner program (cncppevo) by specifying the desired <code>G-Code</code></li>
+<li><strong>Homing Procedure:</strong> Once the program is running and the interface is active, trigger the machine homing sequence by pressing the z key.</li>
+<li><strong>Bed Calibration:</strong> With the machine homed, perform a manual bed leveling/calibration to ensure the printing plate is perfectly set.</li>
+<li><strong>Start Printing:</strong> Begin the printing execution by pressing the <space> bar.</space></li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="images/control_x.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="control_x"><img src="images/control_x.png" class="img-fluid figure-img" alt="control_x"></a></p>
-<figcaption>control_x</figcaption>
-</figure>
-</div>
-</section>
-<section id="physical-plant-sub-model" class="level3" data-number="1.3.2">
-<h3 data-number="1.3.2" class="anchored" data-anchor-id="physical-plant-sub-model"><span class="header-section-number">1.3.2</span> Physical Plant sub-Model</h3>
-<p>The plant is modeled using the Simscape Foundation Library, employing a physical network approach rather than purely signal-based mathematical blocks. This ensures accurate bidirectional power flow and energy conservation across different physical domains (Electrical, Rotational, and Translational).</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="images/model_x.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="model_x"><img src="images/model_x.png" class="img-fluid figure-img" alt="model_x"></a></p>
-<figcaption>model_x</figcaption>
-</figure>
-</div>
-<section id="domain-boundary-and-electrical-circuit" class="level4" data-number="1.3.2.1">
-<h4 data-number="1.3.2.1" class="anchored" data-anchor-id="domain-boundary-and-electrical-circuit"><span class="header-section-number">1.3.2.1</span> Domain Boundary and Electrical Circuit</h4>
-<p>The flow begins with the <code>pwm_in</code> signal coming from the discrete controller. Since this is a standard Simulink mathematical signal, it first passes through a <strong>Simulink-PS Converter</strong> to enter the physical domain. This signal drives a <strong>Controlled Voltage Source</strong>, establishing the electrical circuit against an <strong>Electrical Reference</strong> (ground). The generated voltage powers the <strong>DC Motor</strong> block, which is parameterized with real-world electrical constraints (armature resistance, inductance, and back-EMF) and mechanical rotor inertia.</p>
-</section>
-<section id="rotational-mechanics-and-sensing" class="level4" data-number="1.3.2.2">
-<h4 data-number="1.3.2.2" class="anchored" data-anchor-id="rotational-mechanics-and-sensing"><span class="header-section-number">1.3.2.2</span> Rotational Mechanics and Sensing</h4>
-<p>The <strong>DC Motor</strong> converts electrical power into mechanical rotational power. Its casing is anchored to a <strong>Mechanical Rotational Reference</strong>, while the shaft output connects to a primary rotational node. From this node, the network branches out to handle both sensing and power transmission:</p>
-<ul>
-<li><strong>Velocity Feedback:</strong> An <strong>Ideal Rotational Motion Sensor</strong> taps into the shaft to measure the angular velocity. The physical measurement is sent through a <strong>PS-Simulink Converter</strong> to become the <code>enc_vel_out</code> signal, feeding the inner PID loop.</li>
-<li><strong>Torque Monitoring:</strong> An <strong>Ideal Torque Sensor</strong> is placed in series with a secondary ground to measure the effort generated by the motor, outputting the data to a Scope (<code>Torque monitor</code>) for tuning and diagnostic purposes.</li>
-</ul>
-</section>
-<section id="transmission-and-flexible-coupling" class="level4" data-number="1.3.2.3">
-<h4 data-number="1.3.2.3" class="anchored" data-anchor-id="transmission-and-flexible-coupling"><span class="header-section-number">1.3.2.3</span> Transmission and Flexible Coupling</h4>
-<p>The main rotational power flows into a <strong>Wheel and Axle</strong> block, which acts as the drive pulley, converting the angular motion into linear displacement. Crucially, the timing belt connecting the pulley to the carriage is not modeled as a perfectly rigid link. The linear output passes through a parallel combination of a <strong>Translational Spring</strong> and a <strong>Translational Damper</strong>. This setup accurately captures the mechanical compliance, structural resonance, and internal high-frequency energy dissipation (“ringing”) inherent in belt-driven systems.</p>
-</section>
-<section id="linear-dynamics-and-position-feedback" class="level4" data-number="1.3.2.4">
-<h4 data-number="1.3.2.4" class="anchored" data-anchor-id="linear-dynamics-and-position-feedback"><span class="header-section-number">1.3.2.4</span> Linear Dynamics and Position Feedback</h4>
-<p>Following the flexible transmission, the linear force pulls the <strong>Mass</strong> block, representing the physical weight and inertia of the extruder carriage. To simulate the viscous friction of the linear recirculating ball bearing guides, a secondary <strong>Translational Damper</strong> is connected between the mass and the <strong>Mechanical Translational Reference</strong> (the physical ground of the machine). Finally, an <strong>Ideal Translational Motion Sensor</strong> is connected to the carriage mass. It reads the absolute physical position without drawing energy from the system, passing the measurement through a <strong>PS-Simulink Converter</strong> to generate the <code>enc_pos_out</code> signal for the outer positional PID loop.</p>
-</section>
-</section>
-</section>
-<section id="y-printing-plate-axis" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="y-printing-plate-axis"><span class="header-section-number">1.4</span> Y: Printing Plate Axis</h2>
-<section id="control-sub-model-1" class="level3" data-number="1.4.1">
-<h3 data-number="1.4.1" class="anchored" data-anchor-id="control-sub-model-1"><span class="header-section-number">1.4.1</span> Control sub-Model</h3>
-<p>The control logic for the Y-axis utilizes the exact same discrete cascade PID architecture with velocity feedforward as the X-axis. By leveraging Simulink’s Model Reference arguments, the identical control model is instantiated with a specific set of tuning parameters (<span class="math inline">\(K_p\)</span>, <span class="math inline">\(K_i\)</span>, <span class="math inline">\(K_d\)</span>, and saturation limits) tailored to the heavier load and different resonant frequencies of the Y-axis.</p>
-<section id="rotational-axis-control" class="level4" data-number="1.4.1.1">
-<h4 data-number="1.4.1.1" class="anchored" data-anchor-id="rotational-axis-control"><span class="header-section-number">1.4.1.1</span> Rotational Axis Control</h4>
-<p>As regards the additional A and C axis (respectively global pitch and plate-local yaw), control law is simplified: at first, stepper motors are used, and second, just the rotating encoder <code>AS5048A</code> is embedded on the rotating shaft. Thanks to that, it is possible to implement a fast PID (10kHz frequency) by means of just Proportional gain. Derivative and Integral term are null for the C axis, while the A axis uses a small derivative term in order to smooth the kickback to the Y-axis carriage.</p>
-</section>
-</section>
-<section id="physical-plant-sub-model-1" class="level3" data-number="1.4.2">
-<h3 data-number="1.4.2" class="anchored" data-anchor-id="physical-plant-sub-model-1"><span class="header-section-number">1.4.2</span> Physical Plant sub-Model</h3>
-<p>The core physical network (<code>machine_y</code>), encompassing the electro-mechanical conversion (DC Motor) and the flexible transmission (belt elasticity and damping), remains structurally identical to the extruder axis. However, the load characteristics are significantly more complex due to the multi-axis mechanical linkages.</p>
-<section id="coupled-mass-and-parasitic-dynamics-of-pitch-rotation" class="level4" data-number="1.4.2.1">
-<h4 data-number="1.4.2.1" class="anchored" data-anchor-id="coupled-mass-and-parasitic-dynamics-of-pitch-rotation"><span class="header-section-number">1.4.2.1</span> Coupled Mass and Parasitic Dynamics of Pitch Rotation</h4>
-<p>The primary distinction in the Y-axis physical model lies in the <strong>Mass</strong> block and its external inputs. The Y-axis carriage supports the entire printing plate and the rotating cradle (Pitch axis).</p>
-<p>Crucially, because the center of gravity of the cradle is not perfectly aligned with the Y-axis linear guides, any rotational acceleration of the Pitch axis generates a leverage effect. This results in parasitic linear reaction forces (kickback) acting directly on the Y-axis carriage. To accurately simulate this coupled dynamic, the Y-axis mass system is modeled to receive these reaction forces as external physical disturbances. This ensures the simulation accurately represents the real-world scenario where the Y-axis cascade controller must actively reject sudden load changes to maintain tracking accuracy during simultaneous 5-axis movements.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="images/model_y.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="model_y"><img src="images/model_y.png" class="img-fluid figure-img" alt="model_y"></a></p>
-<figcaption>model_y</figcaption>
-</figure>
-</div>
-</section>
-<section id="yaw-rotating-printing-plate" class="level4" data-number="1.4.2.2">
-<h4 data-number="1.4.2.2" class="anchored" data-anchor-id="yaw-rotating-printing-plate"><span class="header-section-number">1.4.2.2</span> Yaw-Rotating Printing Plate</h4>
-<p>On the other hand, the printing plate also rotates on its own Z axis, resulting the 5 global printing axis. The model of the rotating plate is basically the same of the rotating Y-axis carriage, by differentiating it just for the mass and damping values.</p>
-</section>
-</section>
-</section>
-<section id="z-vertical-positioning-axis" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="z-vertical-positioning-axis"><span class="header-section-number">1.5</span> Z: Vertical Positioning Axis</h2>
-<p>Unlike the X and Y axes, which utilize closed-loop DC motors for high-speed dynamic movements, the Z-axis is responsible for precise, low-speed vertical positioning. As poisitioning axis, a stepper motor is exploited. The input <code>step_z_in</code> is a standardized signal representing the desired discrete steps.</p>
-<p>The Z-axis physical model translates discrete step commands into physical vertical motion, factoring in the unique properties of a lead screw transmission.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="images/model_z.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="model_z"><img src="images/model_z.png" class="img-fluid figure-img" alt="model_z"></a></p>
-<figcaption>model_z</figcaption>
-</figure>
-</div>
-<section id="stepper-translation" class="level3" data-number="1.5.1">
-<h3 data-number="1.5.1" class="anchored" data-anchor-id="stepper-translation"><span class="header-section-number">1.5.1</span> Stepper Translation</h3>
-<p>The input step signal is passed through an <strong>Ideal Torque Source</strong> (via a Gain block to convert steps to velocity). This enforces a strict kinematic translation profile, simulating the rigid holding torque and discrete stepping nature of the motor without modeling the complex electromagnetics of the stepper coils. This is just a modeling escamotage.</p>
-</section>
-<section id="transmission-and-leadscrew-dynamics" class="level3" data-number="1.5.2">
-<h3 data-number="1.5.2" class="anchored" data-anchor-id="transmission-and-leadscrew-dynamics"><span class="header-section-number">1.5.2</span> Transmission and Leadscrew Dynamics</h3>
-<p>The core element of the Z-axis is the <strong>Translational Spring</strong> and <strong>Translational Damper</strong> assembly, acting as a flexible coupling between the ideal step source and the physical carriage. This captures the mechanical compliance (backlash and axial deformation) of the lead screw nut when subjected to varying loads. The rotational-to-linear conversion of the lead screw is abstracted into the step-to-translation gain.</p>
-</section>
-<section id="mass-and-gravity-bias" class="level3" data-number="1.5.3">
-<h3 data-number="1.5.3" class="anchored" data-anchor-id="mass-and-gravity-bias"><span class="header-section-number">1.5.3</span> Mass and Gravity Bias</h3>
-<p>The entire weight of the gantry acts continuously on the Z-axis. This is modeled using an <strong>Ideal Force Source</strong> injecting a constant downward force equal to <code>Gravity * mass</code> (<span class="math inline">\(9.81 \cdot 3\)</span> kg). The carriage itself is represented by a <strong>Mass</strong> block, and a <strong>Translational Damper</strong> simulates the friction of the vertical rails. This setup ensures the system accurately models the asymmetrical effort required to lift the gantry versus lowering it, and the resting deflection of the flexible transmission.</p>
-</section>
-</section>
-<section id="model-validation" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="model-validation"><span class="header-section-number">1.6</span> Model validation</h2>
-<p>Before deploying advanced model-based control strategies, it is strictly necessary to validate the fidelity of the Simscape physical network. The objective of this phase is to ensure that the FMU (Digital Twin) accurately replicates the dynamic behavior of the real 5-axis kinematics when subjected to the same stimuli.</p>
-<p>To achieve this, an open-loop and closed-loop validation procedure was conducted. The physical machine and the FMU were fed identical trajectory profiles (position and velocity setpoints), and their respective outputs were logged and compared.</p>
-<section id="trajectory-tracking-comparison" class="level3" data-number="1.6.1">
-<h3 data-number="1.6.1" class="anchored" data-anchor-id="trajectory-tracking-comparison"><span class="header-section-number">1.6.1</span> Trajectory Tracking Comparison</h3>
-<p>A standard testing routine—comprising sharp accelerations, cruising speeds, and direction reversals—was executed on the physical hardware. The identical control signals were passed to the FMU running in parallel.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="images/validation_tracking_plot.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Position and Velocity Tracking Comparison"><img src="images/validation_tracking_plot.png" class="img-fluid figure-img" alt="Position and Velocity Tracking Comparison"></a></p>
-<figcaption>Position and Velocity Tracking Comparison</figcaption>
-</figure>
-</div>
-<p>As observed in the plot, the baseline 1D multidomain model successfully captures the dominant dynamics of the system. The mechanical compliance (belt stretching), the inertial resistance, and the Pitch-to-Y kickback coupling are faithfully simulated, maintaining the simulated trajectory within an acceptable error margin from the physical ground truth.</p>
-</section>
-<section id="residual-error-and-the-need-for-adaptation" class="level3" data-number="1.6.2">
-<h3 data-number="1.6.2" class="anchored" data-anchor-id="residual-error-and-the-need-for-adaptation"><span class="header-section-number">1.6.2</span> Residual Error and the Need for Adaptation</h3>
-<p>The residual tracking errors expose a fundamental limitation of static modeling: <strong>parameter variability</strong>.</p>
-<p>While geometric constants (like the center of gravity distance <span class="math inline">\(d_{CG}\)</span> or motor torque constants <span class="math inline">\(K_t\)</span>) remain fixed, other crucial parameters change continuously during operation: 1. <strong>Dynamic Payload:</strong> The equivalent mass of the Y-axis and the rotational inertia of the Pitch and Yaw axes increase steadily as plastic material is extruded onto the printing plate. 2. <strong>Thermal Variations:</strong> The viscous friction coefficients (<span class="math inline">\(B\)</span>) of the linear guides and the belt damping factors vary as the mechanical components heat up during long printing sessions.</p>
-<p>Relying on a statically calibrated FMU would lead to a progressive deterioration of the feedforward compensation and model-predictive features. To bridge this gap and achieve perfect alignment between the Digital Twin and the physical machine, the static parameters must be dynamically updated. This requirement naturally introduces the implementation of an <strong>Online Parameter Identification</strong> strategy.</p>
 
 
-</section>
 </section>
 </section>
 
@@ -930,38 +762,6 @@ window.Quarto = {
   });
   </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-(function() {
-  let previousOnload = window.onload;
-  window.onload = () => {
-    if (previousOnload) {
-      previousOnload();
-    }
-    lightboxQuarto.on('slide_before_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      const href = trigger.getAttribute('href');
-      if (href !== null) {
-        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-        if (imgEl !== null) {
-          const srcAttr = imgEl.getAttribute("src");
-          if (srcAttr && srcAttr.startsWith("data:")) {
-            slideConfig.href = srcAttr;
-          }
-        }
-      } 
-    });
-  
-    lightboxQuarto.on('slide_after_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(slideNode);
-      }
-    });
-  
-  };
-  
-})();
-          </script>
 
 
 
