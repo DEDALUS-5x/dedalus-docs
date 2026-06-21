@@ -384,7 +384,7 @@ window.Quarto = {
 <h2 data-number="1.2" class="anchored" data-anchor-id="top-level-integration"><span class="header-section-number">1.2</span> Top-Level Integration</h2>
 <p>The top-level model connects the control logic and the physical plant. Since the controller operates in the discrete-time domain (simulating an STM32 microcontroller) and the physical plant operates in the continuous-time domain, appropriate interface blocks are utilized:</p>
 <ul>
-<li><strong>Zero-Order Hold (ZOH):</strong> Applied to the continuous feedback signals (position and velocity) entering the controller. This mimics the finite sampling rate of the microcontroller’s timers and .</li>
+<li><strong>Zero-Order Hold (ZOH):</strong> Applied to the continuous feedback signals (position and velocity) entering the controller. This mimics the finite sampling rate of the microcontroller’s timers and real-time.</li>
 <li><strong>Unit Delay (<span class="math inline">\(z^{-1}\)</span>):</strong> Placed between the controller’s PWM output and the plant’s input. This breaks the algebraic loop, accurately simulating the computational delay (e.g., 100 <span class="math inline">\(\mu s\)</span>) between reading the encoders and updating the motor driver.</li>
 <li><div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -608,7 +608,7 @@ window.Quarto = {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/DEDALUS-5x\.github\.io\/dedalus-docs\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
