@@ -384,8 +384,14 @@ window.Quarto = {
 <h2 data-number="1.2" class="anchored" data-anchor-id="top-level-integration"><span class="header-section-number">1.2</span> Top-Level Integration</h2>
 <p>The top-level model connects the control logic and the physical plant. Since the controller operates in the discrete-time domain (simulating an STM32 microcontroller) and the physical plant operates in the continuous-time domain, appropriate interface blocks are utilized:</p>
 <ul>
-<li><strong>Zero-Order Hold (ZOH):</strong> Applied to the continuous feedback signals (position and velocity) entering the controller. This mimics the finite sampling rate of the microcontroller’s ADCs and timers.</li>
+<li><strong>Zero-Order Hold (ZOH):</strong> Applied to the continuous feedback signals (position and velocity) entering the controller. This mimics the finite sampling rate of the microcontroller’s timers and .</li>
 <li><strong>Unit Delay (<span class="math inline">\(z^{-1}\)</span>):</strong> Placed between the controller’s PWM output and the plant’s input. This breaks the algebraic loop, accurately simulating the computational delay (e.g., 100 <span class="math inline">\(\mu s\)</span>) between reading the encoders and updating the motor driver.</li>
+<li><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/overall.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="overall"><img src="images/overall.png" class="img-fluid figure-img" alt="overall"></a></p>
+<figcaption>overall</figcaption>
+</figure>
+</div></li>
 </ul>
 </section>
 <section id="x-extruder-axis" class="level2" data-number="1.3">
@@ -400,7 +406,7 @@ window.Quarto = {
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/control_x.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="control_x"><img src="images/control_x.png" class="img-fluid figure-img" alt="control_x"></a></p>
+<p><a href="images/control_x.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="control_x"><img src="images/control_x.png" class="img-fluid figure-img" alt="control_x"></a></p>
 <figcaption>control_x</figcaption>
 </figure>
 </div>
@@ -410,7 +416,7 @@ window.Quarto = {
 <p>The plant is modeled using the Simscape Foundation Library, employing a physical network approach rather than purely signal-based mathematical blocks. This ensures accurate bidirectional power flow and energy conservation across different physical domains (Electrical, Rotational, and Translational).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/model_x.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="model_x"><img src="images/model_x.png" class="img-fluid figure-img" alt="model_x"></a></p>
+<p><a href="images/model_x.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="model_x"><img src="images/model_x.png" class="img-fluid figure-img" alt="model_x"></a></p>
 <figcaption>model_x</figcaption>
 </figure>
 </div>
@@ -455,7 +461,7 @@ window.Quarto = {
 <p>Crucially, because the center of gravity of the cradle is not perfectly aligned with the Y-axis linear guides, any rotational acceleration of the Pitch axis generates a leverage effect. This results in parasitic linear reaction forces (kickback) acting directly on the Y-axis carriage. To accurately simulate this coupled dynamic, the Y-axis mass system is modeled to receive these reaction forces as external physical disturbances. This ensures the simulation accurately represents the real-world scenario where the Y-axis cascade controller must actively reject sudden load changes to maintain tracking accuracy during simultaneous 5-axis movements.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/model_y.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="model_y"><img src="images/model_y.png" class="img-fluid figure-img" alt="model_y"></a></p>
+<p><a href="images/model_y.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="model_y"><img src="images/model_y.png" class="img-fluid figure-img" alt="model_y"></a></p>
 <figcaption>model_y</figcaption>
 </figure>
 </div>
@@ -472,7 +478,7 @@ window.Quarto = {
 <p>The Z-axis physical model translates discrete step commands into physical vertical motion, factoring in the unique properties of a lead screw transmission.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/model_z.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="model_z"><img src="images/model_z.png" class="img-fluid figure-img" alt="model_z"></a></p>
+<p><a href="images/model_z.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="model_z"><img src="images/model_z.png" class="img-fluid figure-img" alt="model_z"></a></p>
 <figcaption>model_z</figcaption>
 </figure>
 </div>
@@ -498,7 +504,7 @@ window.Quarto = {
 <p>A standard testing routine—comprising sharp accelerations, cruising speeds, and direction reversals—was executed on the physical hardware. The identical control signals were passed to the FMU running in parallel.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/validation_tracking_plot.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Position and Velocity Tracking Comparison"><img src="images/validation_tracking_plot.png" class="img-fluid figure-img" alt="Position and Velocity Tracking Comparison"></a></p>
+<p><a href="images/validation_tracking_plot.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Position and Velocity Tracking Comparison"><img src="images/validation_tracking_plot.png" class="img-fluid figure-img" alt="Position and Velocity Tracking Comparison"></a></p>
 <figcaption>Position and Velocity Tracking Comparison</figcaption>
 </figure>
 </div>
@@ -602,7 +608,7 @@ window.Quarto = {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/DEDALUS-5x\.github\.io\/dedalus-docs\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

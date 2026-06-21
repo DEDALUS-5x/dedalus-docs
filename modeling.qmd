@@ -11,8 +11,10 @@ The repository is available [here](https://github.com/DEDALUS-5x/machine-model).
 ## Top-Level Integration
 The top-level model connects the control logic and the physical plant. Since the controller operates in the discrete-time domain (simulating an STM32 microcontroller) and the physical plant operates in the continuous-time domain, appropriate interface blocks are utilized:
 
-* **Zero-Order Hold (ZOH):** Applied to the continuous feedback signals (position and velocity) entering the controller. This mimics the finite sampling rate of the microcontroller's ADCs and timers.
+* **Zero-Order Hold (ZOH):** Applied to the continuous feedback signals (position and velocity) entering the controller. This mimics the finite sampling rate of the microcontroller's timers and real-time.
 * **Unit Delay ($z^{-1}$):** Placed between the controller's PWM output and the plant's input. This breaks the algebraic loop, accurately simulating the computational delay (e.g., 100 $\mu s$) between reading the encoders and updating the motor driver.
+* 
+![overall](images/overall.png)
 
 ## X: Extruder Axis
 
