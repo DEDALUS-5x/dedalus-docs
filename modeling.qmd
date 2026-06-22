@@ -13,8 +13,8 @@ The top-level model connects the control logic and the physical plant. Since the
 
 * **Zero-Order Hold (ZOH):** Applied to the continuous feedback signals (position and velocity) entering the controller. This mimics the finite sampling rate of the microcontroller's timers and real-time.
 * **Unit Delay ($z^{-1}$):** Placed between the controller's PWM output and the plant's input. This breaks the algebraic loop, accurately simulating the computational delay (e.g., 100 $\mu s$) between reading the encoders and updating the motor driver.
-* 
-![overall](images/overall.png)
+
+![Overall](images/overall.png)
 
 ## X: Extruder Axis
 
@@ -108,6 +108,7 @@ As observed in the plot, the baseline 1D multidomain model successfully captures
 The residual tracking errors expose a fundamental limitation of static modeling: **parameter variability**. 
 
 While geometric constants (like the center of gravity distance $d_{CG}$ or motor torque constants $K_t$) remain fixed, other crucial parameters change continuously during operation:
+
 1. **Dynamic Payload:** The equivalent mass of the Y-axis and the rotational inertia of the Pitch and Yaw axes increase steadily as plastic material is extruded onto the printing plate.
 2. **Thermal Variations:** The viscous friction coefficients ($B$) of the linear guides and the belt damping factors vary as the mechanical components heat up during long printing sessions.
 
