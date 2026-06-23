@@ -346,6 +346,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#control-sub-model-1" id="toc-control-sub-model-1" class="nav-link" data-scroll-target="#control-sub-model-1"><span class="header-section-number">1.4.1</span> Control sub-Model</a></li>
   <li><a href="#physical-plant-sub-model-1" id="toc-physical-plant-sub-model-1" class="nav-link" data-scroll-target="#physical-plant-sub-model-1"><span class="header-section-number">1.4.2</span> Physical Plant sub-Model</a></li>
+  <li><a href="#coupled-dynamics-the-pendulum-effect-and-tangential-kickback" id="toc-coupled-dynamics-the-pendulum-effect-and-tangential-kickback" class="nav-link" data-scroll-target="#coupled-dynamics-the-pendulum-effect-and-tangential-kickback"><span class="header-section-number">1.4.3</span> Coupled Dynamics: The Pendulum Effect and Tangential Kickback</a></li>
   </ul></li>
   <li><a href="#z-vertical-positioning-axis" id="toc-z-vertical-positioning-axis" class="nav-link" data-scroll-target="#z-vertical-positioning-axis"><span class="header-section-number">1.5</span> Z: Vertical Positioning Axis</a>
   <ul class="collapse">
@@ -455,20 +456,24 @@ window.Quarto = {
 <section id="physical-plant-sub-model-1" class="level3" data-number="1.4.2">
 <h3 data-number="1.4.2" class="anchored" data-anchor-id="physical-plant-sub-model-1"><span class="header-section-number">1.4.2</span> Physical Plant sub-Model</h3>
 <p>The core physical network (<code>machine_y</code>), encompassing the electro-mechanical conversion (DC Motor) and the flexible transmission (belt elasticity and damping), remains structurally identical to the extruder axis. However, the load characteristics are significantly more complex due to the multi-axis mechanical linkages.</p>
-<section id="coupled-mass-and-parasitic-dynamics-of-pitch-rotation" class="level4" data-number="1.4.2.1">
-<h4 data-number="1.4.2.1" class="anchored" data-anchor-id="coupled-mass-and-parasitic-dynamics-of-pitch-rotation"><span class="header-section-number">1.4.2.1</span> Coupled Mass and Parasitic Dynamics of Pitch Rotation</h4>
-<p>The primary distinction in the Y-axis physical model lies in the <strong>Mass</strong> block and its external inputs. The Y-axis carriage supports the entire printing plate and the rotating cradle (Pitch axis).</p>
-<p>Crucially, because the center of gravity of the cradle is not perfectly aligned with the Y-axis linear guides, any rotational acceleration of the Pitch axis generates a leverage effect. This results in parasitic linear reaction forces (kickback) acting directly on the Y-axis carriage. To accurately simulate this coupled dynamic, the Y-axis mass system is modeled to receive these reaction forces as external physical disturbances. This ensures the simulation accurately represents the real-world scenario where the Y-axis cascade controller must actively reject sudden load changes to maintain tracking accuracy during simultaneous 5-axis movements.</p>
+</section>
+<section id="coupled-dynamics-the-pendulum-effect-and-tangential-kickback" class="level3" data-number="1.4.3">
+<h3 data-number="1.4.3" class="anchored" data-anchor-id="coupled-dynamics-the-pendulum-effect-and-tangential-kickback"><span class="header-section-number">1.4.3</span> Coupled Dynamics: The Pendulum Effect and Tangential Kickback</h3>
+<p>The primary distinction in the Y-axis physical model lies in the Mass block and its external inputs. The Y-axis carriage supports the entire printing plate and the rotating cradle (Pitch axis), introducing severe parasitic dynamics that the control loops must mathematically reject.</p>
+<ul>
+<li><p>The Pendulum Effect (Gravity Bias): Unlike a perfectly balanced rotational load, the Center of Gravity (CG) of the Pitch cradle is mechanically offset from its axis of rotation. Consequently, gravity continuously exerts a variable torque on the Pitch axis. This is calculated using the exact physical formula: <span class="math inline">\(\tau_{g} = m \cdot g \cdot d_{CG} \cdot \sin(\theta_{pitch})\)</span>, where <span class="math inline">\(m\)</span> is the mass of the cradle, <span class="math inline">\(g\)</span> is the gravitational acceleration (<span class="math inline">\(9.81 m/s^2\)</span>), and <span class="math inline">\(d_{CG}\)</span> is the offset distance of the center of gravity. This introduces a non-linear pendulum effect. In the model, this is simulated using a trigonometric function block fed by the instantaneous pitch angle, which dynamically calculates and injects this gravitational load into the rotational physical network.</p></li>
+<li><p>Tangential Kickback (Reaction Force): Furthermore, the Pitch and Y axes are strictly coupled through Newton’s Third Law. Whenever the Pitch stepper motor violently accelerates the heavy cradle, an equal and opposite reaction torque is exerted on the motor’s stator, which is rigidly mounted to the Y-axis carriage. Because of the geometric lever arm (<span class="math inline">\(h\)</span>), this reaction torque translates into a tangential linear force (kickback) acting directly along the Y-axis guides.</p></li>
+</ul>
+<p>To accurately capture this multi-domain coupling without resorting to computationally heavy 3D Multibody DAE solvers, an active signal routing technique is implemented in Simscape: an Ideal Torque Sensor measures the rotational effort of the cradle, scales it by the inverse of the center of percussion distance (<span class="math inline">\(1/h\)</span>), and injects it back into the Y-axis translational node via an Ideal Force Source. This ensures the Digital Twin faithfully represents the sudden linear disturbances the Y-axis cascade controller must actively counteract during simultaneous 5-axis movements.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><a href="images/model_y.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="model_y"><img src="images/model_y.png" class="img-fluid figure-img" alt="model_y"></a></p>
 <figcaption>model_y</figcaption>
 </figure>
 </div>
-</section>
-<section id="yaw-rotating-printing-plate" class="level4" data-number="1.4.2.2">
-<h4 data-number="1.4.2.2" class="anchored" data-anchor-id="yaw-rotating-printing-plate"><span class="header-section-number">1.4.2.2</span> Yaw-Rotating Printing Plate</h4>
-<p>On the other hand, the printing plate also rotates on its own Z axis, resulting the 5 global printing axis. The model of the rotating plate is basically the same of the rotating Y-axis carriage, by differentiating it just for the mass and damping values.</p>
+<section id="yaw-rotating-printing-plate" class="level4" data-number="1.4.3.1">
+<h4 data-number="1.4.3.1" class="anchored" data-anchor-id="yaw-rotating-printing-plate"><span class="header-section-number">1.4.3.1</span> Yaw-Rotating Printing Plate</h4>
+<p>On the other hand, the printing plate also rotates on its own Z-axis, defining the 5th global printing axis. The rotational model of the Yaw plate is structurally similar to the Pitch axis, differentiated primarily by its specific inertial mass and viscous damping values. Since its axis of rotation is orthogonal to the Y-axis translation, its dynamic coupling is less invasive compared to the Pitch kickback.</p>
 </section>
 </section>
 </section>
