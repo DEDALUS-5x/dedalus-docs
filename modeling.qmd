@@ -104,7 +104,7 @@ To achieve this, an open-loop and closed-loop validation procedure was conducted
 ### Trajectory Tracking Comparison
 A standard testing routine—comprising sharp accelerations, cruising speeds, and direction reversals—was executed on the physical hardware. The identical control signals were passed to the FMU running in parallel. 
 
-![Position and Velocity Tracking Comparison](images/validation_tracking_plot.png)
+![Position and Velocity Tracking Comparison](images/comp_x.png)
 
 As observed in the plot, the baseline 1D multidomain model successfully captures the dominant dynamics of the system. The mechanical compliance (belt stretching), the inertial resistance, and the Pitch-to-Y kickback coupling are faithfully simulated, maintaining the simulated trajectory within an acceptable error margin from the physical ground truth.
 
