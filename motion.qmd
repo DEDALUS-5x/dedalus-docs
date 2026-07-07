@@ -12,6 +12,113 @@ The used [fork](https://github.com/DEDALUS-5x/cncppevo) additionally implements:
 * Lookhaed feedrate smoothing;
 * MADS framework interface in change of `MQTT` communication.
 
+## Trajectory Planning and Interpolation
+
+The core of the low-level kernel is responsible for translating human-readable `G-Code` into synchronized, hard real-time spatial setpoints for the 5-axis machine. This process is divided into three sequential pipeline stages: Parsing, Profiling, and Interpolation.
+
+### G-Code Parsing and Lookahead
+The parsing stage reads the raw `G-Code` instructions and converts them into internal mathematical objects called `Blocks`. Each block represents a geometric primitive—either a linear segment (`G01`) or an arc (`G02`/`G03`)—containing the target spatial coordinates $(X, Y, Z, A, C)$ and the requested feedrate.
+
+To prevent the machine from coming to a complete halt between consecutive blocks, the kernel implements a **Lookahead Planner**. The planner evaluates an horizon of upcoming blocks to compute the maximum safe junction velocities based on the geometric angle between segments. It then propagates a backward braking profile, ensuring that each block receives dynamically safe initial ($v_0$) and final ($v_f$) boundary velocities without violating the machine's mechanical limits.
+
+### S-Curve Velocity Profiling
+Standard CNC controllers often rely on trapezoidal velocity profiles, which apply a constant acceleration. This introduces an infinite jerk (the derivative of acceleration) at the corners of the velocity profile, causing severe mechanical vibrations, resonance, and stalling on high-inertia systems.
+
+To guarantee smooth motion, the kernel implements a **Jerk-limited S-Curve velocity profile**. This transforms the acceleration into a trapezoidal shape, rounding the corners of the velocity curve into an "S" shape. The mathematical profile is split into 7 distinct temporal phases:
+
+1. **Acceleration Build-up:** Jerk $J > 0$. Acceleration increases linearly to $A_{max}$.
+2. **Constant Acceleration:** Jerk $J = 0$. Acceleration remains at $A_{max}$.
+3. **Acceleration Ramp-down:** Jerk $J < 0$. Acceleration decreases to $0$.
+4. **Cruise Phase:** Jerk $J = 0$, Acceleration $A = 0$. Velocity is strictly constant.
+5. **Deceleration Build-up:** Jerk $J < 0$. Deceleration increases linearly to $-A_{max}$.
+6. **Constant Deceleration:** Jerk $J = 0$. Deceleration remains at $-A_{max}$.
+7. **Deceleration Ramp-down:** Jerk $J > 0$. Deceleration returns to $0$.
+
+For any given phase with a constant jerk $j$, starting from an initial time $t_0=0$ with state variables $s_0$, $v_0$, and $a_0$, the instantaneous kinematic state is integrated over time $\Delta t$ using the following equations:
+
+$$a(\Delta t) = a_0 + j \cdot \Delta t$$
+$$v(\Delta t) = v_0 + a_0 \cdot \Delta t + \frac{1}{2} j \cdot \Delta t^2$$
+$$s(\Delta t) = s_0 + v_0 \cdot \Delta t + \frac{1}{2} a_0 \cdot \Delta t^2 + \frac{1}{6} j \cdot \Delta t^3$$
+
+By enforcing $J_{max}$ limits alongside $A_{max}$ and $V_{max}$, the kernel ensures that the actuators never experience instantaneous torque demands, drastically improving tracking accuracy during non-planar trajectories.
+
+To formalize the mathematical execution, let $t_k$ be the absolute time at the end of each phase $k \in \{1, 2, ..., 7\}$, with $t_0 = 0$. For any given phase, we define the local temporal variable $\tau = t - t_{k-1}$, representing the time elapsed since the beginning of the current segment ($0 \le \tau < t_k - t_{k-1}$). 
+
+Assuming $J$ as the maximum allowed jerk magnitude, $A$ as the maximum acceleration, and $D$ as the maximum deceleration, the instantaneous kinematic state of the machine is computed by integrating the piecewise functions for Jerk $J(\tau)$, Acceleration $a(\tau)$, Velocity $v(\tau)$, and Displacement $s(\tau)$:
+
+**Jerk Profile:**
+$$
+J(\tau) =
+\begin{cases}
+J  & 0 \le t < t_1 \\
+0  & t_1 \le t < t_2 \\
+-J & t_2 \le t < t_3 \\
+0  & t_3 \le t < t_4 \\
+-J & t_4 \le t < t_5 \\
+0  & t_5 \le t < t_6 \\
+J  & t_6 \le t \le t_7
+\end{cases}
+$$
+
+**Acceleration Profile:**
+$$
+a(\tau) =
+\begin{cases}
+J \tau & 0 \le t < t_1 \\
+A & t_1 \le t < t_2 \\
+A - J \tau & t_2 \le t < t_3 \\
+0 & t_3 \le t < t_4 \\
+-J \tau & t_4 \le t < t_5 \\
+-D & t_5 \le t < t_6 \\
+-D + J \tau & t_6 \le t \le t_7
+\end{cases}
+$$
+
+**Velocity Profile:**
+$$
+v(\tau) =
+\begin{cases}
+v_0 + \frac{1}{2} J \tau^2 & 0 \le t < t_1 \\
+v_1 + A \tau & t_1 \le t < t_2 \\
+v_2 + A \tau - \frac{1}{2} J \tau^2 & t_2 \le t < t_3 \\
+v_3 & t_3 \le t < t_4 \\
+v_4 - \frac{1}{2} J \tau^2 & t_4 \le t < t_5 \\
+v_5 - D \tau & t_5 \le t < t_6 \\
+v_6 - D \tau + \frac{1}{2} J \tau^2 & t_6 \le t \le t_7
+\end{cases}
+$$
+
+**Displacement Profile:**
+$$
+s(\tau) =
+\begin{cases}
+s_0 + v_0 \tau + \frac{1}{6} J \tau^3 & 0 \le t < t_1 \\
+s_1 + v_1 \tau + \frac{1}{2} A \tau^2 & t_1 \le t < t_2 \\
+s_2 + v_2 \tau + \frac{1}{2} A \tau^2 - \frac{1}{6} J \tau^3 & t_2 \le t < t_3 \\
+s_3 + v_3 \tau & t_3 \le t < t_4 \\
+s_4 + v_4 \tau - \frac{1}{6} J \tau^3 & t_4 \le t < t_5 \\
+s_5 + v_5 \tau - \frac{1}{2} D \tau^2 & t_5 \le t < t_6 \\
+s_6 + v_6 \tau - \frac{1}{2} D \tau^2 + \frac{1}{6} J \tau^3 & t_6 \le t \le t_7
+\end{cases}
+$$
+
+*(Note: $v_k$ and $s_k$ represent respectively the initial velocity and displacement evaluated at the boundary of the corresponding phase $k$)*. 
+
+In the C++ kernel implementation, this rigorous 7-phase integration is evaluated sequentially during the `lambda()` interpolation call. By enforcing $J$ limits alongside $A$ and maximum feedrate, the kernel ensures that the actuators never experience instantaneous torque demands, drastically improving tracking accuracy during non-planar trajectories.
+
+### Discrete-Time Interpolation
+Once the continuous mathematical profile is computed, it must be sampled to generate deterministic setpoints for the SPI communication ring.
+
+The interpolator acts as a discrete-time sampler running at the predefined control frequency. At every discrete tick $t_k$, the interpolator evaluates the S-Curve polynomial to extract the scalar distance traveled $s(t_k)$. This distance is then normalized against the total block length $L$ to obtain a dimensionless parameter $\lambda \in [0, 1]$:
+
+$$\lambda(t_k) = \frac{s(t_k)}{L}$$
+
+The target coordinates for all five axes are simultaneously interpolated using this normalized parameter. For a linear block starting at point $P_{start}$ and ending at $P_{end}$:
+
+$$P(t_k) = P_{start} + \lambda(t_k) \cdot (P_{end} - P_{start})$$
+
+To prevent **Temporal Quantization Error**—which occurs when the exact mathematical duration of a block is not a perfect multiple of the machine's sampling tick—the interpolator tracks the fractional time remainder at the end of each block. This "time accumulator" is seamlessly carried over to the subsequent block, guaranteeing perfectly fluid joint transitions without instantaneous acceleration spikes.
+
 ## MADS Interface
 
 The software kernel runs by its own since it is fed with a valid `G Code` and a `yml` file as machine parameters configuration file. It is needed to interface it with the [MADS](https://github.com/pbosetti/MADS.git) environment.

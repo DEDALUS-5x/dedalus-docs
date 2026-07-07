@@ -73,6 +73,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -303,10 +332,16 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#low-level-kernel" id="toc-low-level-kernel" class="nav-link active" data-scroll-target="#low-level-kernel"><span class="header-section-number">1</span> Low-Level Kernel</a>
   <ul class="collapse">
-  <li><a href="#mads-interface" id="toc-mads-interface" class="nav-link" data-scroll-target="#mads-interface"><span class="header-section-number">1.1</span> MADS Interface</a>
+  <li><a href="#trajectory-planning-and-interpolation" id="toc-trajectory-planning-and-interpolation" class="nav-link" data-scroll-target="#trajectory-planning-and-interpolation"><span class="header-section-number">1.1</span> Trajectory Planning and Interpolation</a>
   <ul class="collapse">
-  <li><a href="#machine" id="toc-machine" class="nav-link" data-scroll-target="#machine"><span class="header-section-number">1.1.1</span> Machine</a></li>
-  <li><a href="#simulator" id="toc-simulator" class="nav-link" data-scroll-target="#simulator"><span class="header-section-number">1.1.2</span> Simulator</a></li>
+  <li><a href="#g-code-parsing-and-lookahead" id="toc-g-code-parsing-and-lookahead" class="nav-link" data-scroll-target="#g-code-parsing-and-lookahead"><span class="header-section-number">1.1.1</span> G-Code Parsing and Lookahead</a></li>
+  <li><a href="#s-curve-velocity-profiling" id="toc-s-curve-velocity-profiling" class="nav-link" data-scroll-target="#s-curve-velocity-profiling"><span class="header-section-number">1.1.2</span> S-Curve Velocity Profiling</a></li>
+  <li><a href="#discrete-time-interpolation" id="toc-discrete-time-interpolation" class="nav-link" data-scroll-target="#discrete-time-interpolation"><span class="header-section-number">1.1.3</span> Discrete-Time Interpolation</a></li>
+  </ul></li>
+  <li><a href="#mads-interface" id="toc-mads-interface" class="nav-link" data-scroll-target="#mads-interface"><span class="header-section-number">1.2</span> MADS Interface</a>
+  <ul class="collapse">
+  <li><a href="#machine" id="toc-machine" class="nav-link" data-scroll-target="#machine"><span class="header-section-number">1.2.1</span> Machine</a></li>
+  <li><a href="#simulator" id="toc-simulator" class="nav-link" data-scroll-target="#simulator"><span class="header-section-number">1.2.2</span> Simulator</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -334,18 +369,105 @@ ul.task-list li input[type="checkbox"] {
 <li>Lookhaed feedrate smoothing;</li>
 <li>MADS framework interface in change of <code>MQTT</code> communication.</li>
 </ul>
-<section id="mads-interface" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="mads-interface"><span class="header-section-number">1.1</span> MADS Interface</h2>
+<section id="trajectory-planning-and-interpolation" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="trajectory-planning-and-interpolation"><span class="header-section-number">1.1</span> Trajectory Planning and Interpolation</h2>
+<p>The core of the low-level kernel is responsible for translating human-readable <code>G-Code</code> into synchronized, hard real-time spatial setpoints for the 5-axis machine. This process is divided into three sequential pipeline stages: Parsing, Profiling, and Interpolation.</p>
+<section id="g-code-parsing-and-lookahead" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="g-code-parsing-and-lookahead"><span class="header-section-number">1.1.1</span> G-Code Parsing and Lookahead</h3>
+<p>The parsing stage reads the raw <code>G-Code</code> instructions and converts them into internal mathematical objects called <code>Blocks</code>. Each block represents a geometric primitive—either a linear segment (<code>G01</code>) or an arc (<code>G02</code>/<code>G03</code>)—containing the target spatial coordinates <span class="math inline">\((X, Y, Z, A, C)\)</span> and the requested feedrate.</p>
+<p>To prevent the machine from coming to a complete halt between consecutive blocks, the kernel implements a <strong>Lookahead Planner</strong>. The planner evaluates an horizon of upcoming blocks to compute the maximum safe junction velocities based on the geometric angle between segments. It then propagates a backward braking profile, ensuring that each block receives dynamically safe initial (<span class="math inline">\(v_0\)</span>) and final (<span class="math inline">\(v_f\)</span>) boundary velocities without violating the machine’s mechanical limits.</p>
+</section>
+<section id="s-curve-velocity-profiling" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="s-curve-velocity-profiling"><span class="header-section-number">1.1.2</span> S-Curve Velocity Profiling</h3>
+<p>Standard CNC controllers often rely on trapezoidal velocity profiles, which apply a constant acceleration. This introduces an infinite jerk (the derivative of acceleration) at the corners of the velocity profile, causing severe mechanical vibrations, resonance, and stalling on high-inertia systems.</p>
+<p>To guarantee smooth motion, the kernel implements a <strong>Jerk-limited S-Curve velocity profile</strong>. This transforms the acceleration into a trapezoidal shape, rounding the corners of the velocity curve into an “S” shape. The mathematical profile is split into 7 distinct temporal phases:</p>
+<ol type="1">
+<li><strong>Acceleration Build-up:</strong> Jerk <span class="math inline">\(J &gt; 0\)</span>. Acceleration increases linearly to <span class="math inline">\(A_{max}\)</span>.</li>
+<li><strong>Constant Acceleration:</strong> Jerk <span class="math inline">\(J = 0\)</span>. Acceleration remains at <span class="math inline">\(A_{max}\)</span>.</li>
+<li><strong>Acceleration Ramp-down:</strong> Jerk <span class="math inline">\(J &lt; 0\)</span>. Acceleration decreases to <span class="math inline">\(0\)</span>.</li>
+<li><strong>Cruise Phase:</strong> Jerk <span class="math inline">\(J = 0\)</span>, Acceleration <span class="math inline">\(A = 0\)</span>. Velocity is strictly constant.</li>
+<li><strong>Deceleration Build-up:</strong> Jerk <span class="math inline">\(J &lt; 0\)</span>. Deceleration increases linearly to <span class="math inline">\(-A_{max}\)</span>.</li>
+<li><strong>Constant Deceleration:</strong> Jerk <span class="math inline">\(J = 0\)</span>. Deceleration remains at <span class="math inline">\(-A_{max}\)</span>.</li>
+<li><strong>Deceleration Ramp-down:</strong> Jerk <span class="math inline">\(J &gt; 0\)</span>. Deceleration returns to <span class="math inline">\(0\)</span>.</li>
+</ol>
+<p>For any given phase with a constant jerk <span class="math inline">\(j\)</span>, starting from an initial time <span class="math inline">\(t_0=0\)</span> with state variables <span class="math inline">\(s_0\)</span>, <span class="math inline">\(v_0\)</span>, and <span class="math inline">\(a_0\)</span>, the instantaneous kinematic state is integrated over time <span class="math inline">\(\Delta t\)</span> using the following equations:</p>
+<p><span class="math display">\[a(\Delta t) = a_0 + j \cdot \Delta t\]</span> <span class="math display">\[v(\Delta t) = v_0 + a_0 \cdot \Delta t + \frac{1}{2} j \cdot \Delta t^2\]</span> <span class="math display">\[s(\Delta t) = s_0 + v_0 \cdot \Delta t + \frac{1}{2} a_0 \cdot \Delta t^2 + \frac{1}{6} j \cdot \Delta t^3\]</span></p>
+<p>By enforcing <span class="math inline">\(J_{max}\)</span> limits alongside <span class="math inline">\(A_{max}\)</span> and <span class="math inline">\(V_{max}\)</span>, the kernel ensures that the actuators never experience instantaneous torque demands, drastically improving tracking accuracy during non-planar trajectories.</p>
+<p>To formalize the mathematical execution, let <span class="math inline">\(t_k\)</span> be the absolute time at the end of each phase <span class="math inline">\(k \in \{1, 2, ..., 7\}\)</span>, with <span class="math inline">\(t_0 = 0\)</span>. For any given phase, we define the local temporal variable <span class="math inline">\(\tau = t - t_{k-1}\)</span>, representing the time elapsed since the beginning of the current segment (<span class="math inline">\(0 \le \tau &lt; t_k - t_{k-1}\)</span>).</p>
+<p>Assuming <span class="math inline">\(J\)</span> as the maximum allowed jerk magnitude, <span class="math inline">\(A\)</span> as the maximum acceleration, and <span class="math inline">\(D\)</span> as the maximum deceleration, the instantaneous kinematic state of the machine is computed by integrating the piecewise functions for Jerk <span class="math inline">\(J(\tau)\)</span>, Acceleration <span class="math inline">\(a(\tau)\)</span>, Velocity <span class="math inline">\(v(\tau)\)</span>, and Displacement <span class="math inline">\(s(\tau)\)</span>:</p>
+<p><strong>Jerk Profile:</strong> <span class="math display">\[
+J(\tau) =
+\begin{cases}
+J  &amp; 0 \le t &lt; t_1 \\
+0  &amp; t_1 \le t &lt; t_2 \\
+-J &amp; t_2 \le t &lt; t_3 \\
+0  &amp; t_3 \le t &lt; t_4 \\
+-J &amp; t_4 \le t &lt; t_5 \\
+0  &amp; t_5 \le t &lt; t_6 \\
+J  &amp; t_6 \le t \le t_7
+\end{cases}
+\]</span></p>
+<p><strong>Acceleration Profile:</strong> <span class="math display">\[
+a(\tau) =
+\begin{cases}
+J \tau &amp; 0 \le t &lt; t_1 \\
+A &amp; t_1 \le t &lt; t_2 \\
+A - J \tau &amp; t_2 \le t &lt; t_3 \\
+0 &amp; t_3 \le t &lt; t_4 \\
+-J \tau &amp; t_4 \le t &lt; t_5 \\
+-D &amp; t_5 \le t &lt; t_6 \\
+-D + J \tau &amp; t_6 \le t \le t_7
+\end{cases}
+\]</span></p>
+<p><strong>Velocity Profile:</strong> <span class="math display">\[
+v(\tau) =
+\begin{cases}
+v_0 + \frac{1}{2} J \tau^2 &amp; 0 \le t &lt; t_1 \\
+v_1 + A \tau &amp; t_1 \le t &lt; t_2 \\
+v_2 + A \tau - \frac{1}{2} J \tau^2 &amp; t_2 \le t &lt; t_3 \\
+v_3 &amp; t_3 \le t &lt; t_4 \\
+v_4 - \frac{1}{2} J \tau^2 &amp; t_4 \le t &lt; t_5 \\
+v_5 - D \tau &amp; t_5 \le t &lt; t_6 \\
+v_6 - D \tau + \frac{1}{2} J \tau^2 &amp; t_6 \le t \le t_7
+\end{cases}
+\]</span></p>
+<p><strong>Displacement Profile:</strong> <span class="math display">\[
+s(\tau) =
+\begin{cases}
+s_0 + v_0 \tau + \frac{1}{6} J \tau^3 &amp; 0 \le t &lt; t_1 \\
+s_1 + v_1 \tau + \frac{1}{2} A \tau^2 &amp; t_1 \le t &lt; t_2 \\
+s_2 + v_2 \tau + \frac{1}{2} A \tau^2 - \frac{1}{6} J \tau^3 &amp; t_2 \le t &lt; t_3 \\
+s_3 + v_3 \tau &amp; t_3 \le t &lt; t_4 \\
+s_4 + v_4 \tau - \frac{1}{6} J \tau^3 &amp; t_4 \le t &lt; t_5 \\
+s_5 + v_5 \tau - \frac{1}{2} D \tau^2 &amp; t_5 \le t &lt; t_6 \\
+s_6 + v_6 \tau - \frac{1}{2} D \tau^2 + \frac{1}{6} J \tau^3 &amp; t_6 \le t \le t_7
+\end{cases}
+\]</span></p>
+<p><em>(Note: <span class="math inline">\(v_k\)</span> and <span class="math inline">\(s_k\)</span> represent respectively the initial velocity and displacement evaluated at the boundary of the corresponding phase <span class="math inline">\(k\)</span>)</em>.</p>
+<p>In the C++ kernel implementation, this rigorous 7-phase integration is evaluated sequentially during the <code>lambda()</code> interpolation call. By enforcing <span class="math inline">\(J\)</span> limits alongside <span class="math inline">\(A\)</span> and maximum feedrate, the kernel ensures that the actuators never experience instantaneous torque demands, drastically improving tracking accuracy during non-planar trajectories.</p>
+</section>
+<section id="discrete-time-interpolation" class="level3" data-number="1.1.3">
+<h3 data-number="1.1.3" class="anchored" data-anchor-id="discrete-time-interpolation"><span class="header-section-number">1.1.3</span> Discrete-Time Interpolation</h3>
+<p>Once the continuous mathematical profile is computed, it must be sampled to generate deterministic setpoints for the SPI communication ring.</p>
+<p>The interpolator acts as a discrete-time sampler running at the predefined control frequency. At every discrete tick <span class="math inline">\(t_k\)</span>, the interpolator evaluates the S-Curve polynomial to extract the scalar distance traveled <span class="math inline">\(s(t_k)\)</span>. This distance is then normalized against the total block length <span class="math inline">\(L\)</span> to obtain a dimensionless parameter <span class="math inline">\(\lambda \in [0, 1]\)</span>:</p>
+<p><span class="math display">\[\lambda(t_k) = \frac{s(t_k)}{L}\]</span></p>
+<p>The target coordinates for all five axes are simultaneously interpolated using this normalized parameter. For a linear block starting at point <span class="math inline">\(P_{start}\)</span> and ending at <span class="math inline">\(P_{end}\)</span>:</p>
+<p><span class="math display">\[P(t_k) = P_{start} + \lambda(t_k) \cdot (P_{end} - P_{start})\]</span></p>
+<p>To prevent <strong>Temporal Quantization Error</strong>—which occurs when the exact mathematical duration of a block is not a perfect multiple of the machine’s sampling tick—the interpolator tracks the fractional time remainder at the end of each block. This “time accumulator” is seamlessly carried over to the subsequent block, guaranteeing perfectly fluid joint transitions without instantaneous acceleration spikes.</p>
+</section>
+</section>
+<section id="mads-interface" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="mads-interface"><span class="header-section-number">1.2</span> MADS Interface</h2>
 <p>The software kernel runs by its own since it is fed with a valid <code>G Code</code> and a <code>yml</code> file as machine parameters configuration file. It is needed to interface it with the <a href="https://github.com/pbosetti/MADS.git">MADS</a> environment.</p>
 <p>MADS is a cross-plattform broker-based framework that can be used to run different agents on multiple machines. Its strenght stands on the idea to be a plug-and-play, robust and efficient software. In this case, it is used to interface the low-level kernel with both the real machine and a simulation environment based on Matlab Simulink.</p>
 <p>MADS is a ZeroMQ-based framework, so it is needed to interface the low-level kernel with the MADS network. From this need the dedicated monolithic agent arises. This agent directly interfaces with the already structured FSM thanks by following the <a href="https://mads-net.github.io/guides/fsm.html">fsm guide</a>.</p>
 <p>While the interested data is sent through the MADS communication network, it is possible to both interface with the real machine and simulation environment by respectively using the agents <a href="https://github.com/alterlleo/spi_agent.git">spi_agent</a> and <a href="https://github.com/MADS-NET/FMU_agent.git">fmu_agent</a>.</p>
-<section id="machine" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="machine"><span class="header-section-number">1.1.1</span> Machine</h3>
+<section id="machine" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="machine"><span class="header-section-number">1.2.1</span> Machine</h3>
 <p>The <code>spi_agent</code> is a monolithic MADS agent specifically designed for the Raspberry Pi 5 to communicate with the Axes Controller Board (STM32H7) via the SPI peripheral. It implements a high-performance Full-Duplex logic, allowing simultaneous reading and writing during every loop cycle. Binary Protocol and Memory Alignment</p>
 <p>To ensure total compatibility between the ARM architecture of the Raspberry Pi and the MCU of the controller board, the communication protocol uses strict 1-byte alignment (via <code>#pragma pack(push, 1)</code>) to prevent memory padding issues.</p>
-<section id="tx-raspberry-pi-microcontroller" class="level4" data-number="1.1.1.1">
-<h4 data-number="1.1.1.1" class="anchored" data-anchor-id="tx-raspberry-pi-microcontroller"><span class="header-section-number">1.1.1.1</span> TX: Raspberry Pi → Microcontroller</h4>
+<section id="tx-raspberry-pi-microcontroller" class="level4" data-number="1.2.1.1">
+<h4 data-number="1.2.1.1" class="anchored" data-anchor-id="tx-raspberry-pi-microcontroller"><span class="header-section-number">1.2.1.1</span> TX: Raspberry Pi → Microcontroller</h4>
 <p>Sent whenever a valid JSON message is received from the MADS network. - <strong>Total Size</strong>: 32 Bytes - <strong>Structure (<code>Pack</code>)</strong>:</p>
 <table class="caption-top table">
 <thead>
@@ -420,8 +542,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="rx-microcontroller-raspberry-pi" class="level4" data-number="1.1.1.2">
-<h4 data-number="1.1.1.2" class="anchored" data-anchor-id="rx-microcontroller-raspberry-pi"><span class="header-section-number">1.1.1.2</span> RX: Microcontroller → Raspberry Pi</h4>
+<section id="rx-microcontroller-raspberry-pi" class="level4" data-number="1.2.1.2">
+<h4 data-number="1.2.1.2" class="anchored" data-anchor-id="rx-microcontroller-raspberry-pi"><span class="header-section-number">1.2.1.2</span> RX: Microcontroller → Raspberry Pi</h4>
 <p>Read during every agent loop cycle to update the machine status. - <strong>Total Size</strong>: 32 Bytes - <strong>Structure (<code>PackFb</code>)</strong>:</p>
 <table class="caption-top table">
 <thead>
@@ -498,8 +620,8 @@ ul.task-list li input[type="checkbox"] {
 <hr>
 </section>
 </section>
-<section id="simulator" class="level3" data-number="1.1.2">
-<h3 data-number="1.1.2" class="anchored" data-anchor-id="simulator"><span class="header-section-number">1.1.2</span> Simulator</h3>
+<section id="simulator" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="simulator"><span class="header-section-number">1.2.2</span> Simulator</h3>
 <p>When the real hardware is not available, Dedalus uses the <a href="https://github.com/MADS-NET/FMU_agent#">FMU_agent</a> to interface the motion kernel with a <strong>Digital Twin</strong>.</p>
 <p>An FMU (Functional Mock-up Unit) is a file (ending in <code>.fmu</code>) that contains a simulation model following the FMI (Functional Mock-up Interface) standard. It allows models developed in environments like MATLAB Simulink or Modelica to be exported and executed as independent functional blocks within other software. Simulation Workflow</p>
 <p>The <code>FMU_agent</code> acts as a bridge between the MADS communication network and the virtual model:</p>
@@ -604,7 +726,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/DEDALUS-5x\.github\.io\/dedalus-docs\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
