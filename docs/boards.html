@@ -368,22 +368,59 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#axes-controller-board" id="toc-axes-controller-board" class="nav-link active" data-scroll-target="#axes-controller-board"><span class="header-section-number">1</span> Axes Controller Board</a>
+  <li><a href="#axes-controller-board---introduction--" id="toc-axes-controller-board---introduction--" class="nav-link active" data-scroll-target="#axes-controller-board---introduction--"><span class="header-section-number">1</span> Axes Controller Board - Introduction -</a></li>
+  <li><a href="#hardware-design" id="toc-hardware-design" class="nav-link" data-scroll-target="#hardware-design"><span class="header-section-number">2</span> Hardware Design</a>
   <ul class="collapse">
-  <li><a href="#dc-motors-setup" id="toc-dc-motors-setup" class="nav-link" data-scroll-target="#dc-motors-setup"><span class="header-section-number">1.1</span> DC Motors Setup</a></li>
-  <li><a href="#stepper-motors-setup" id="toc-stepper-motors-setup" class="nav-link" data-scroll-target="#stepper-motors-setup"><span class="header-section-number">1.2</span> Stepper Motors Setup</a>
+  <li><a href="#power-supply-stage" id="toc-power-supply-stage" class="nav-link" data-scroll-target="#power-supply-stage"><span class="header-section-number">2.1</span> Power Supply Stage</a>
   <ul class="collapse">
-  <li><a href="#dma" id="toc-dma" class="nav-link" data-scroll-target="#dma"><span class="header-section-number">1.2.1</span> DMA</a></li>
+  <li><a href="#power-consumption-and-thermal-considerations" id="toc-power-consumption-and-thermal-considerations" class="nav-link" data-scroll-target="#power-consumption-and-thermal-considerations"><span class="header-section-number">2.1.1</span> Power Consumption and Thermal Considerations</a></li>
   </ul></li>
-  <li><a href="#firmware-architecture" id="toc-firmware-architecture" class="nav-link" data-scroll-target="#firmware-architecture"><span class="header-section-number">1.3</span> Firmware Architecture</a>
+  <li><a href="#motor-drivers" id="toc-motor-drivers" class="nav-link" data-scroll-target="#motor-drivers"><span class="header-section-number">2.2</span> Motor Drivers</a></li>
+  <li><a href="#encoders" id="toc-encoders" class="nav-link" data-scroll-target="#encoders"><span class="header-section-number">2.3</span> Encoders</a>
   <ul class="collapse">
-  <li><a href="#dma-driven-data-acquisition" id="toc-dma-driven-data-acquisition" class="nav-link" data-scroll-target="#dma-driven-data-acquisition"><span class="header-section-number">1.3.1</span> DMA-Driven Data Acquisition</a></li>
-  <li><a href="#stepper-motors-control" id="toc-stepper-motors-control" class="nav-link" data-scroll-target="#stepper-motors-control"><span class="header-section-number">1.3.2</span> Stepper Motors Control</a></li>
-  <li><a href="#raspberry-pi5-communication-spi-full-duplex" id="toc-raspberry-pi5-communication-spi-full-duplex" class="nav-link" data-scroll-target="#raspberry-pi5-communication-spi-full-duplex"><span class="header-section-number">1.3.3</span> Raspberry Pi5 Communication (SPI Full-Duplex)</a></li>
-  <li><a href="#dc-motors-control" id="toc-dc-motors-control" class="nav-link" data-scroll-target="#dc-motors-control"><span class="header-section-number">1.3.4</span> DC Motors Control</a></li>
+  <li><a href="#signal-integrity-and-noise-immunity" id="toc-signal-integrity-and-noise-immunity" class="nav-link" data-scroll-target="#signal-integrity-and-noise-immunity"><span class="header-section-number">2.3.1</span> Signal Integrity and Noise Immunity</a></li>
+  <li><a href="#technical-constraints-and-specifications" id="toc-technical-constraints-and-specifications" class="nav-link" data-scroll-target="#technical-constraints-and-specifications"><span class="header-section-number">2.3.2</span> Technical Constraints and Specifications</a></li>
   </ul></li>
+  <li><a href="#microcontroller" id="toc-microcontroller" class="nav-link" data-scroll-target="#microcontroller"><span class="header-section-number">2.4</span> Microcontroller</a></li>
   </ul></li>
-  <li><a href="#mechanical-structure" id="toc-mechanical-structure" class="nav-link" data-scroll-target="#mechanical-structure"><span class="header-section-number">2</span> Mechanical Structure</a></li>
+  <li><a href="#pcb-design" id="toc-pcb-design" class="nav-link" data-scroll-target="#pcb-design"><span class="header-section-number">3</span> PCB Design</a>
+  <ul class="collapse">
+  <li><a href="#layers-layout" id="toc-layers-layout" class="nav-link" data-scroll-target="#layers-layout"><span class="header-section-number">3.1</span> Layers Layout</a></li>
+  <li><a href="#ground-decoupling-and-star-topology" id="toc-ground-decoupling-and-star-topology" class="nav-link" data-scroll-target="#ground-decoupling-and-star-topology"><span class="header-section-number">3.2</span> Ground Decoupling and Star Topology</a></li>
+  <li><a href="#dc-dc-converter-layout-rules" id="toc-dc-dc-converter-layout-rules" class="nav-link" data-scroll-target="#dc-dc-converter-layout-rules"><span class="header-section-number">3.3</span> DC-DC Converter Layout Rules</a></li>
+  </ul></li>
+  <li><a href="#firmware-architecture" id="toc-firmware-architecture" class="nav-link" data-scroll-target="#firmware-architecture"><span class="header-section-number">4</span> Firmware Architecture</a>
+  <ul class="collapse">
+  <li><a href="#decoupling-data-acquisition-from-control" id="toc-decoupling-data-acquisition-from-control" class="nav-link" data-scroll-target="#decoupling-data-acquisition-from-control"><span class="header-section-number">4.1</span> Decoupling Data Acquisition from Control</a></li>
+  <li><a href="#clock-configuration" id="toc-clock-configuration" class="nav-link" data-scroll-target="#clock-configuration"><span class="header-section-number">4.2</span> Clock Configuration</a></li>
+  <li><a href="#spi-and-dma" id="toc-spi-and-dma" class="nav-link" data-scroll-target="#spi-and-dma"><span class="header-section-number">4.3</span> SPI and DMA</a></li>
+  <li><a href="#rotary-encoders-acquisition" id="toc-rotary-encoders-acquisition" class="nav-link" data-scroll-target="#rotary-encoders-acquisition"><span class="header-section-number">4.4</span> Rotary Encoders Acquisition</a>
+  <ul class="collapse">
+  <li><a href="#dma-and-l1-cache-management" id="toc-dma-and-l1-cache-management" class="nav-link" data-scroll-target="#dma-and-l1-cache-management"><span class="header-section-number">4.4.1</span> DMA and L1 Cache Management</a></li>
+  </ul></li>
+  <li><a href="#motor-control-execution" id="toc-motor-control-execution" class="nav-link" data-scroll-target="#motor-control-execution"><span class="header-section-number">4.5</span> Motor Control Execution</a>
+  <ul class="collapse">
+  <li><a href="#dc-motors" id="toc-dc-motors" class="nav-link" data-scroll-target="#dc-motors"><span class="header-section-number">4.5.1</span> DC Motors</a></li>
+  <li><a href="#stepper-motors" id="toc-stepper-motors" class="nav-link" data-scroll-target="#stepper-motors"><span class="header-section-number">4.5.2</span> Stepper motors</a></li>
+  </ul></li>
+  <li><a href="#raspberry-pi-spi-full-duplex-communication" id="toc-raspberry-pi-spi-full-duplex-communication" class="nav-link" data-scroll-target="#raspberry-pi-spi-full-duplex-communication"><span class="header-section-number">4.6</span> Raspberry Pi SPI Full-Duplex Communication</a></li>
+  <li><a href="#checksum-calculation" id="toc-checksum-calculation" class="nav-link" data-scroll-target="#checksum-calculation"><span class="header-section-number">4.7</span> Checksum Calculation</a></li>
+  <li><a href="#finite-state-machine-and-safety-logic" id="toc-finite-state-machine-and-safety-logic" class="nav-link" data-scroll-target="#finite-state-machine-and-safety-logic"><span class="header-section-number">4.8</span> Finite State Machine and Safety Logic</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">5</span> Results</a>
+  <ul class="collapse">
+  <li><a href="#real-time-execution" id="toc-real-time-execution" class="nav-link" data-scroll-target="#real-time-execution"><span class="header-section-number">5.1</span> Real Time Execution</a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><span class="header-section-number">6</span> Conclusions</a>
+  <ul class="collapse">
+  <li><a href="#future-developments" id="toc-future-developments" class="nav-link" data-scroll-target="#future-developments"><span class="header-section-number">6.1</span> Future Developments</a>
+  <ul class="collapse">
+  <li><a href="#current-sensing" id="toc-current-sensing" class="nav-link" data-scroll-target="#current-sensing"><span class="header-section-number">6.1.1</span> Current Sensing</a></li>
+  <li><a href="#spi-multi-target-packet" id="toc-spi-multi-target-packet" class="nav-link" data-scroll-target="#spi-multi-target-packet"><span class="header-section-number">6.1.2</span> SPI multi-target Packet</a></li>
+  <li><a href="#imu-implementation" id="toc-imu-implementation" class="nav-link" data-scroll-target="#imu-implementation"><span class="header-section-number">6.1.3</span> IMU implementation</a></li>
+  </ul></li>
+  <li><a href="#high-frequency-filtering" id="toc-high-frequency-filtering" class="nav-link" data-scroll-target="#high-frequency-filtering"><span class="header-section-number">6.2</span> High Frequency Filtering</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -394,214 +431,386 @@ window.Quarto = {
 
 
 
-<section id="axes-controller-board" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Axes Controller Board</h1>
-<p><a href="images/ACB.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="images/ACB.png" class="img-fluid"></a></p>
-<p>The <strong>Axes Controller Board</strong> (<strong>ACB</strong>) represents the neural center of the Dedalus mechatronic system. It serves as the high-speed bridge between the high-level trajectories planning generated by the Raspberry Pi 5 and the deterministic, real-time actuation of the physical motors.</p>
-<p>The repository is available <a href="https://github.com/DEDALUS-5x/axes-controller-board">here</a>.</p>
-<p>Unlike standard commercial 3D printing controller boards, the ACB is specifically engineered to handle complex, closed-loop dynamics. By offloading the computationally heavy path planning to the Raspberry Pi and reserving the STM32H7 MCU for hard real-time control, the board achieves a level of synchronization and responsiveness capable of managing high-inertia loads with micrometric precision. The communication layer relies on a high-bandwidth SPI interface, allowing the board to consume motion “blocks” and execute them through a multi-stage control architecture.</p>
-<p>The ACB is designed to simultaneously manage brushed DC motors for high-torque linear motion and Stepper motors for precision orientation/positioning and extrusion.</p>
-<p>The selected motors for the system are:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Geared DC Motor</th>
-<th>Stepper Motor</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><img src="images/DC.png" class="img-fluid"></td>
-<td><img src="images/step.png" class="img-fluid"></td>
-</tr>
-</tbody>
-</table>
-<section id="dc-motors-setup" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="dc-motors-setup"><span class="header-section-number">1.1</span> DC Motors Setup</h2>
-<p>In order to perform properly the PIDs, the board implements a full state-space feedback system, sensing multiple quantities to close the loop on velocity and position:</p>
+<section id="axes-controller-board---introduction--" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Axes Controller Board - Introduction -</h1>
+<p>Standard 3D printers rely on simple Cartesian kinematics and open-loop stepper motors. However, upgrading to a 5-axis non-planar printing system introduces heavy custom mechanisms, significant rotational inertia, and the need for absolute spatial accuracy. To overcome this need, the Axes Controller Board (ACB) borns. The architectural philosophy behind the ACB is straightforward: strict computational decoupling. The Raspberry Pi 5 acts as the brain, performing the heavy mathematics for S-profile interpolation, path planning, <code>GCode</code> parsing. Meanwhile, the ACB acts as the working force, executing the motor commands in hard real-time and reacting to sensor feedback within fractions of a millisecond. Computational decoupling is applied on the microcontroller as well: the CPU is utilized only for control computations, while data acquisition is devoted to DMA or Timers.<br>
+</p>
+</section>
+<section id="hardware-design" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Hardware Design</h1>
+<p>The PCB was designed to be highly integrated, eliminating messy wiring. Instead of connecting the Raspberry Pi via standard USB cables, the Pi mounts directly onto the ACB as a daughterboard and the stepper motors’ drivers as well.</p>
+<p>The main power comes from a 400W AC to 12V DC power supply unit, that results to be the only cable to plug to the AC.<br>
+</p>
+<section id="power-supply-stage" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="power-supply-stage"><span class="header-section-number">2.1</span> Power Supply Stage</h2>
+<p>In order to deliver power and eliminate ground loops, a custom onboard DC-DC buck converter steps down the main power supply and feeds clean 5V and 3.3V power to Raspberry Pi directly through its GPIO headers and the STM32H7 microcontroller respectively.</p>
+<p>For this case, <code>TPS5450-Q1</code> from <em>Texas’ Instruments</em> is used. This IC features up to 36V DC input and, most important, up to 5A as output current at 5V. This is a fundamental characteristic because of the high sensitivity of the Raspberry’s GPIO supply. Indeed, 5.1V is required in order to be robust over voltage drops, for example during compilations or heavy computations periods. Then, a 5V to 3.3V LDO is used in order to step down the main DCDC supply to a stable and reliable 3.3V for the microcontroller and sensors.<br>
+</p>
+<section id="power-consumption-and-thermal-considerations" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="power-consumption-and-thermal-considerations"><span class="header-section-number">2.1.1</span> Power Consumption and Thermal Considerations</h3>
+<p>The Raspberry Pi 5 under heavy multi-core load can experience current spikes up to 3.0A at 5V (<span class="math inline">\(\approx 15\)</span>W). The <code>TPS5450-Q1</code> ensures a maximum continuous output of 5A (25W), providing a robust 40% safety margin. This headroom is critical to prevent voltage drops that would otherwise trigger the Pi’s under-voltage mechanism or cause unexpected CPU reboots.</p>
+<p>On the 3.3V logic side, the <code>STM32H7</code> running at its peak frequency of 550&nbsp;MHz, combined with the SPI rotary encoders and linear sensors supply, draws an estimated maximum continuous current of 300–400&nbsp;mA. Because this stage is powered via a linear LDO regulator fed by the 5V rail, the IC must physically dissipate the voltage drop as heat. The theoretical maximum power dissipation <span class="math inline">\(P_{diss}\)</span> is calculated as:</p>
+<p><span class="math display">\[P_{diss} = (V_{in} - V_{out}) \times I_{load} = (5.0\text{V} - 3.3\text{V}) \times 0.4\text{A} \approx 0.68\text{W}\]</span> While 0.68&nbsp;W is a manageable thermal load for a modern SMD package, it requires careful thermal routing. To handle both the DC-DC switching losses and the LDO linear dissipation without relying on external heatsinks, the ACB’s 4-layer PCB architecture leverages its solid internal GND layers. Various thermal vias connect the ICs’ exposed pads directly to these copper planes, effectively turning the entire board into a massive thermal relief.</p>
+<p>The schematic is configured as shown in Figure <a href="#fig:DCDC" data-reference-type="ref" data-reference="fig:DCDC">1</a>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="figures/DCDC.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="DCDC power supply stage"><img src="figures/DCDC.png" class="img-fluid figure-img" alt="DCDC power supply stage"></a></p>
+<figcaption>DCDC power supply stage</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="motor-drivers" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="motor-drivers"><span class="header-section-number">2.2</span> Motor Drivers</h2>
+<p>For the actuators, the stepper motor drivers are soldered directly on the board, keeping the high-current switching traces as short as possible to drive the <code>Moons’ C17HD4010201N</code> stepper motors efficiently. The selected drivers are the consolidated <code>TMC2209</code>.<br>
+Stepper motors are used solely on positioning axes, such as Z, Pitch (A) and Yaw (C), where Pitch and Yaw are the actuated rotations of the printing plate as the 2 additional rotation axes.</p>
+<p>For the X and Y axes, which are the movement axes dedicated to the actual printing evolution, DC brushed motors are mounted: they allow a more precise and industrial-grade control, by sacrificing noise due to the gear box stage. DC motors are driven by double-H-bridge drivers configured as IBT-4.<br>
+</p>
+</section>
+<section id="encoders" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="encoders"><span class="header-section-number">2.3</span> Encoders</h2>
+<p>On the sensor side, the board interfaces with two distinct feedback systems to close the control loops. The RLS linear magnetic encoders (<code>RLC2IC</code>) output standard A/B quadrature signals, which are wired directly to the <code>UA667</code> driver, which outputs a differential signal to the STM32’s hardware encoder timers (<code>TIM2</code> and <code>TIM5</code>), allowing the hardware to track absolute position with zero CPU overhead. Meanwhile, the <code>AS5048A</code> rotary encoders are read by leveraging DMA along SPI communication. Due to DC motors and long cables, it was not possible to implement a daisy-chain architecture between rotary encoders. Each <code>AS5048a</code> communicates on its dedicated SPI interface.<br>
+</p>
+<section id="signal-integrity-and-noise-immunity" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="signal-integrity-and-noise-immunity"><span class="header-section-number">2.3.1</span> Signal Integrity and Noise Immunity</h3>
+<p>Routing high-speed SPI signals across a 3D printer frame poses significant Electromagnetic Interference (EMI) challenges, particularly because the sensor cables run parallel to the unshielded power wires of both stepper motors and DC actuators. SPI is a single-ended protocol, making it naturally susceptible to capacitive coupling and crosstalk.</p>
+<p>To mitigate these issues and preserve signal integrity over cable lengths up to 50cm, source termination resistors (33&nbsp;<span class="math inline">\(\Omega\)</span>) are placed in series on the SCK, MOSI, and CS lines directly at the microcontroller outputs. These resistors act as impedance matching elements, dampening high-frequency harmonics and limiting the slew rate. This prevents signal reflections (ringing) that could cause false clock edges and data corruption. Coupled with the lowered baud rate on longer branches (e.g., 500kbps), this termination strategy ensures reliable data transmission in a harsh electromechanical environment.<br>
+</p>
+</section>
+<section id="technical-constraints-and-specifications" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="technical-constraints-and-specifications"><span class="header-section-number">2.3.2</span> Technical Constraints and Specifications</h3>
+<p>To guarantee the reliability of the control loops, the mechanical and electrical integration must strictly adhere to the operating limits of both sensor families.</p>
+<p>The <strong>AS5048A rotary encoders</strong> require a clean 3.3V power supply and communicate via a high-speed SPI bus, outputting a 14-bit absolute angular position. This provides a native resolution of <span class="math inline">\(0.0219^\circ\)</span> per step (16384 steps per revolution). The 16-bit SPI payload embeds not only the data but also parity and hardware error flags. Mechanically, the Hall-effect sensor demands strict diametrical alignment with its magnet. The air gap between the IC package and the magnet surface is a critical parameter: it must be maintained strictly between 0.5mm and 2.0mm. An air gap narrower than 0.5mm physically saturates the sensor (triggering a Magnetic Field High, or MIGH, hardware error), whereas an excessive distance leads to signal loss (Magnetic Field Low, MGL error), instantly invalidating the velocity feedback to the PID.</p>
+<p>Conversely, the <strong>RLS RLC2IC linear encoders</strong> are fed by the 5V rail and rely on a purely hardware-driven interface, outputting standard A/B quadrature digital signals. These signals provide an exceptional linear resolution of 5<span class="math inline">\(\mu\)</span>m. However, this extreme sensitivity introduces severe mechanical installation constraints. The sensor readhead must move over the magnetic scale with a nominal ride height (air gap) typically restricted to a fraction of a millimeter (around 0.1mm to 0.4mm) and tightly controlled pitch, roll, and yaw tolerances. Any mechanical deflection along the axes that alters this microscopic gap can cause quadrature pulse loss, which would irreversibly corrupt the absolute positioning tracked by the STM32 hardware timers.<br>
+</p>
+</section>
+</section>
+<section id="microcontroller" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="microcontroller"><span class="header-section-number">2.4</span> Microcontroller</h2>
+<p>The chosen microcontroller is an <code>STM32H723ZGT6</code>, representing the cutting edge of the STM32 products for complex mechatronic applications. It offers:</p>
 <ul>
-<li><code>AS5048A</code> as rotative encoders mounted along each motor axis as feedback on angular velocity;</li>
-<li><code>RLCI2C</code> as linear magnetic encoders mounted along the axes to provide absolute positioning feedback, bypassing mechanical inaccuracies such as belt stretch or gearbox backlash;</li>
-<li><code>ACS37800</code> as current sensors in order to monitor the real-time flowing current that is proportional to the motor torque.</li>
-</ul>
-<p>This 3 sensors are managed for each DC motor, that in total are 3:</p>
-<ul>
-<li>A single DC motor for the X axis (extruder axis);</li>
-<li>A single DC motor for the Y axis (printing plate axis).</li>
-</ul>
-<p>The 3 DC motors are then actuated thanks to an external double-H-bridge driver in a IBT-4 configuration. The <code>Axes Controller Board</code>’s MCU drives it using 2 complementary PWM signals for each motor, in order to select the rotation direction (CW/CCW). The PID algorithm outputs the commanding signal that is then written inside the CCR register (<code>Capture Compare  Register</code>) that is proportional to the duty cycle.</p>
-</section>
-<section id="stepper-motors-setup" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="stepper-motors-setup"><span class="header-section-number">1.2</span> Stepper Motors Setup</h2>
-<p>Stepper motors are actuated thanks to <code>TMC</code> drivers, that implement micro-stepping and STEP/DIR interface. They are driven by the MCU using these 2 signals while correcting the STEP position using the rotative encoder. The used stepper motors configuration is:</p>
-<ul>
-<li>2 steppers for Z positioning;</li>
-<li>2 steppers for global plate pitch orientation;</li>
-<li>1 stepper for local plate yaw orientation;</li>
-<li>1 stepper for plastic material flow.</li>
-</ul>
-<section id="dma" class="level3" data-number="1.2.1">
-<h3 data-number="1.2.1" class="anchored" data-anchor-id="dma"><span class="header-section-number">1.2.1</span> DMA</h3>
-<p>The DMA of <code>STM32H723ZGT6</code> is used as follow:</p>
-<ul>
-<li>interface with SPI1 for <code>Raspberry Pi5</code> communication;</li>
-<li>interface with SPI2 for 3 daisy-chain-configured rotative encoders;</li>
-<li>interface with SPI3 for the other 3 daisy-chain-configured rotative encoders;</li>
-<li>interface with SPI4 for current sensor readings.</li>
-</ul>
-</section>
-</section>
-<section id="firmware-architecture" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="firmware-architecture"><span class="header-section-number">1.3</span> Firmware Architecture</h2>
-<p>The motion control of Dedalus is managed by a custom bare-metal firmware developed for the STM32H7 architecture, designed to handle high-frequency control loops.</p>
-<section id="dma-driven-data-acquisition" class="level3" data-number="1.3.1">
-<h3 data-number="1.3.1" class="anchored" data-anchor-id="dma-driven-data-acquisition"><span class="header-section-number">1.3.1</span> DMA-Driven Data Acquisition</h3>
-<p>To achieve strict real-time performance and eliminate CPU overhead during high-frequency closed-loop control, the system relies on Direct Memory Access (DMA) for sensor communication. The physical rotary encoders (AS5048A) are connected to the SPI1 and SPI2 buses in a Daisy Chain configuration, enabling the synchronous acquisition of multiple axes (e.g., Z, A, C) within a single data transaction.</p>
-<section id="high-speed-triggering-10-khz-control-loop" class="level4" data-number="1.3.1.1">
-<h4 data-number="1.3.1.1" class="anchored" data-anchor-id="high-speed-triggering-10-khz-control-loop"><span class="header-section-number">1.3.1.1</span> High-Speed Triggering (10 kHz Control Loop)</h4>
-<p>The core position-control loop is driven by a hardware timer (TIM6) operating at a strict 10 kHz frequency, providing a narrow 100 µs execution window. Instead of employing blocking SPI calls that would stall the CPU, the timer’s Interrupt Service Routine (ISR) is used solely to initiate the data request. The firmware asserts the Chip Select (CS) line and triggers a non-blocking <code>HAL_SPI_TransmitReceive_DMA</code> request.</p>
-<p>Before launching the DMA, the firmware forces a microscopic manual toggle of the CS line to HIGH and clears any residual SPI Overrun (OVR) flags. This acts as a hardware reset for the encoders’ internal state machines, preventing the bus from deadlocking due to electrical noise or missed clock edges.</p>
-</section>
-<section id="asynchronous-execution-and-jitter-elimination" class="level4" data-number="1.3.1.2">
-<h4 data-number="1.3.1.2" class="anchored" data-anchor-id="asynchronous-execution-and-jitter-elimination"><span class="header-section-number">1.3.1.2</span> Asynchronous Execution and Jitter Elimination</h4>
-<p>Offloading the SPI transaction to the DMA controller physically decouples the data transmission from the CPU execution. At a standard SPI baud rate (e.g., 1.0 to 2.0 Mbps), transferring the 48 bits required for three daisy-chained 16-bit encoders takes approximately 24 to 48 µs. While the DMA handles this data shifting in the background, the CPU is immediately released. This allows the processor to handle other critical operations—such as updating the linear encoders or evaluating path planning—without introducing execution jitter to the stepper motor generation.</p>
-</section>
-<section id="l1-data-cache-management" class="level4" data-number="1.3.1.3">
-<h4 data-number="1.3.1.3" class="anchored" data-anchor-id="l1-data-cache-management"><span class="header-section-number">1.3.1.3</span> L1 Data Cache Management</h4>
-<p>The STM32H7 architecture employs a high-performance Cortex-M7 core equipped with an L1 Data Cache. Because the DMA streams the incoming SPI payload directly into the RAM matrix, it bypasses the CPU entirely. Consequently, the CPU’s L1 cache becomes temporarily out of sync with the physical memory.</p>
-<p>To ensure data integrity, the system leverages the DMA Transfer Complete Callback (<code>HAL_SPI_TxRxCpltCallback</code>). Before processing the newly arrived <code>spi1_rx_buf</code> array, the firmware executes an <code>SCB_InvalidateDCache_by_Addr</code> operation. This critical step invalidates the specific memory region linked to the buffer, forcing the CPU to fetch the fresh, exact positional data from RAM before calculating the new motor targets.</p>
-</section>
-</section>
-<section id="stepper-motors-control" class="level3" data-number="1.3.2">
-<h3 data-number="1.3.2" class="anchored" data-anchor-id="stepper-motors-control"><span class="header-section-number">1.3.2</span> Stepper Motors Control</h3>
-<p>The positioning axes are driven by stepper motors (Moons’ C17HD4 series) operating in a strict closed-loop configuration. The control algorithm runs inside the 10 kHz system timer (TIM6) interrupt, continuously computing the positional error between the target coordinates and the high-resolution feedback provided by the AS5048A rotary encoders.</p>
-<section id="hysteresis-deadband" class="level4" data-number="1.3.2.1">
-<h4 data-number="1.3.2.1" class="anchored" data-anchor-id="hysteresis-deadband"><span class="header-section-number">1.3.2.1</span> Hysteresis Deadband</h4>
-<p>A major challenge in closed-loop stepper control is “hunting” (or limit cycling)—a high-frequency vibration occurring when the computed positional error falls below the physical microstepping resolution of the motor, causing continuous forward/backward corrections. To eliminate this, the firmware implements a dynamic, state-aware hysteresis deadband:</p>
-<ul>
-<li><strong>Active State (Moving):</strong> A tight tolerance (e.g., 0.15°) is used to accurately determine when the motor has reached the target.</li>
-<li><strong>Idle State (Stopped):</strong> Once the target is reached and the motor stops, the tolerance is significantly widened (e.g., 0.60°). This prevents the system from violently reacting to microscopic inertial overshoots or mechanical elasticity, ensuring the motor remains perfectly silent and structurally rigid once in position.</li>
-</ul>
-</section>
-<section id="hardware-level-pwm-generation" class="level4" data-number="1.3.2.2">
-<h4 data-number="1.3.2.2" class="anchored" data-anchor-id="hardware-level-pwm-generation"><span class="header-section-number">1.3.2.2</span> Hardware-Level PWM Generation</h4>
-<p>To guarantee perfectly deterministic step generation without CPU bit-banging overhead, the firmware manipulates the STM32 hardware timers (e.g., TIM4, TIM8, TIM15) in <code>PWM Generation</code> mode. The calculated required speed is converted into a step frequency (Hz). The algorithm dynamically recalculates and updates the timer’s Auto-Reload Register (<code>ARR</code>) to adjust the frequency on the fly, while keeping the Capture/Compare Register (<code>CCR</code>) at <code>ARR / 2</code> to maintain an optimal 50% duty cycle for the stepper drivers.</p>
-</section>
-<section id="anti-glitch-protection" class="level4" data-number="1.3.2.3">
-<h4 data-number="1.3.2.3" class="anchored" data-anchor-id="anti-glitch-protection"><span class="header-section-number">1.3.2.3</span> Anti-Glitch Protection</h4>
-<p>When updating timer frequencies dynamically, modifying the <code>ARR</code> to a value lower than the current Counter (<code>CNT</code>) value can cause the timer to overflow to 0xFFFF, resulting in a severe step delay (glitch). The <code>stepper_command</code> function actively prevents this by automatically resetting the <code>CNT</code> register if it exceeds the newly calculated <code>ARR</code>. Furthermore, a low-frequency cutoff filter is implemented: if the requested speed drops below 10 Hz, the firmware aggressively zeroes the <code>CCR</code> register. This instantly disables the PWM output, allowing the stepper driver to inject pure holding torque, completely eradicating low-frequency acoustic resonance.</p>
-</section>
-</section>
-<section id="raspberry-pi5-communication-spi-full-duplex" class="level3" data-number="1.3.3">
-<h3 data-number="1.3.3" class="anchored" data-anchor-id="raspberry-pi5-communication-spi-full-duplex"><span class="header-section-number">1.3.3</span> Raspberry Pi5 Communication (SPI Full-Duplex)</h3>
-<p>The synchronization between the high-level trajectory planner (Raspberry Pi 5 running MADS) and the real-time execution core (STM32H7) is achieved through a robust, Full-Duplex SPI interface operating at 1 MHz.</p>
-<p>To ensure micrometric precision at high speeds, the communication protocol must guarantee zero data loss, exact memory alignment, and atomic data transfers.</p>
-<section id="packet-structure-and-memory-alignment" class="level4" data-number="1.3.3.1">
-<h4 data-number="1.3.3.1" class="anchored" data-anchor-id="packet-structure-and-memory-alignment"><span class="header-section-number">1.3.3.1</span> Packet Structure and Memory Alignment</h4>
-<p>The communication relies on a fixed 96-byte payload for both TX and RX channels. Exchanging fixed-size packets allows both master and slave to maintain perfect clock synchronization without overhead.</p>
-<p>The structures are defined as follows:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode c code-with-copy"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma pack(push, 1)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">// RX: From Raspberry Pi to STM32 (96 bytes)</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> start<span class="op">;</span>       <span class="co">// 0xAA (Run) or 0xCC (Homing)</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> x<span class="op">;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> y<span class="op">;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> z<span class="op">;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> a<span class="op">;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> c<span class="op">;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> vx<span class="op">;</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> vy<span class="op">;</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> check<span class="op">;</span>       <span class="co">// XOR Checksum</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span> padding<span class="op">[</span><span class="dv">66</span><span class="op">];</span>  <span class="co">// 96-byte alignment</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SPIPacket<span class="op">;</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">// TX: From STM32 to Raspberry Pi (96 bytes)</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  start<span class="op">;</span>      <span class="co">// 0xBB</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint32_t</span> msg_id<span class="op">;</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    x<span class="op">;</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    y<span class="op">;</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    z<span class="op">;</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    a<span class="op">;</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    c<span class="op">;</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vx<span class="op">;</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vy<span class="op">;</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    va<span class="op">;</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vc<span class="op">;</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vz<span class="op">;</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    ax<span class="op">;</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    ay<span class="op">;</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    az<span class="op">;</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    aa<span class="op">;</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    ac<span class="op">;</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    error<span class="op">;</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  check<span class="op">;</span>      <span class="co">// XOR Checksum</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="dt">uint8_t</span>  padding<span class="op">[</span><span class="dv">26</span><span class="op">];</span> <span class="co">// 96-byte alignment</span></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SPITxPacket<span class="op">;</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma pack(pop)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="padding-and-packing" class="level4" data-number="1.3.3.2">
-<h4 data-number="1.3.3.2" class="anchored" data-anchor-id="padding-and-packing"><span class="header-section-number">1.3.3.2</span> Padding and Packing</h4>
-<p>Standard C/C++ compilers automatically insert invisible padding bytes between variables to align 32-bit floats to even memory addresses. Because the Raspberry Pi (C++) and the STM32 (C) process memory differently, relying on default compiler behavior results in misaligned bytes across the SPI bus. To solve this, the firmware enforces a strict 1-byte alignment using <code>#pragma pack(push, 1)</code>. The <code>padding[2]</code> array is explicitly added at the end of the structs to force the total size to exactly 96 bytes. This power-of-2 dimension matches the SPI/DMA transfer length perfectly, ensuring neither side expects more or fewer clock cycles than physically generated.</p>
-</section>
-<section id="data-integrity-and-checksum" class="level4" data-number="1.3.3.3">
-<h4 data-number="1.3.3.3" class="anchored" data-anchor-id="data-integrity-and-checksum"><span class="header-section-number">1.3.3.3</span> Data Integrity and Checksum</h4>
-<p>Since jumper wires and high-frequency DC motor PWMs can introduce electromagnetic interference (EMI) on the SPI lines, data integrity is verified via a strict XOR checksum.</p>
-<p>The checksum is calculated exclusively on the first 29 bytes of the payload (the <code>start</code> byte, the <code>msg_id</code>, and the floats). The code programmatically stops before the <code>check</code> byte using the <code>offsetof()</code> function. The two trailing padding bytes are intentionally excluded from the XOR calculation, as their memory state might be undefined, which would otherwise lead to false-positive checksum failures.</p>
-</section>
-<section id="dma-configuration" class="level4" data-number="1.3.3.4">
-<h4 data-number="1.3.3.4" class="anchored" data-anchor-id="dma-configuration"><span class="header-section-number">1.3.3.4</span> DMA Configuration</h4>
-<p>Initially, the SPI3 peripheral on the STM32 was configured with its DMA in <code>CIRCULAR</code> mode. However, this led to a race condition known as “FIFO Tearing.”</p>
-<p>In Circular mode, as soon as a 96-byte transfer finishes, the DMA immediately fetches the first bytes of the old buffer and pushes them into the SPI hardware FIFO, waiting for the next Raspberry Pi clock signal. Meanwhile, the STM32’s 10 kHz control loop (<code>TIM6</code>) overwrites the RAM buffer with fresh positional data. When the Raspberry Pi finally initiates the next read, the STM32 spits out a “hybrid” packet: the first 4 bytes (the old header in the FIFO) mixed with 28 fresh bytes from RAM. This temporal misalignment caused the checksum to fail continuously.</p>
-<p>To achieve atomic data transfers, the DMA was switched to <code>NORMAL</code> mode. The sequence is now strictly sequential:</p>
-<ul>
-<li>The 10 kHz control loop updates a temporary staging buffer.</li>
-<li>The Raspberry Pi initiates the SPI transfer, reading the active buffer.</li>
-<li>Once the transfer is complete, the HAL_SPI_TxRxCpltCallback is triggered.</li>
-<li>Only inside this callback (when the SPI bus is idle), the firmware safely copies the staging buffer to the active buffer and manually re-arms the DMA for the next transfer.</li>
-</ul>
-<p>This architectural choice completely eradicates FIFO tearing, ensuring that the Raspberry Pi always reads a single, coherent snapshot of the machine’s state.</p>
-</section>
-</section>
-<section id="dc-motors-control" class="level3" data-number="1.3.4">
-<h3 data-number="1.3.4" class="anchored" data-anchor-id="dc-motors-control"><span class="header-section-number">1.3.4</span> DC Motors Control</h3>
-<section id="inner-velocity-loop" class="level4" data-number="1.3.4.1">
-<h4 data-number="1.3.4.1" class="anchored" data-anchor-id="inner-velocity-loop"><span class="header-section-number">1.3.4.1</span> Inner Velocity Loop</h4>
-<p>The velocity loop is critical for the dynamic stability of the brushed DC motors.</p>
-<ul>
-<li>It runs at every occurrence of the Timer 6 interrupt (<span class="math inline">\(dt=0.0001s\)</span>);</li>
-<li>it receives a composite velocity setpoint, consisting of the position feedback plus the feedforward from the <code>Raspberry Pi</code>;</li>
-<li>the firmware calculates the acceleration contribution (Ka​) in real-time. This is derived from the smooth motion profile to overcome the inertia of the 3 kg cradle before a velocity error even occurs;</li>
-<li>it directly generates the <code>PWM</code> signal sent to the <code>CCR</code> registers of Timer 1.</li>
-</ul>
-</section>
-<section id="outer-position-loop" class="level4" data-number="1.3.4.2">
-<h4 data-number="1.3.4.2" class="anchored" data-anchor-id="outer-position-loop"><span class="header-section-number">1.3.4.2</span> Outer Position Loop</h4>
-<p>The position loop manages absolute spatial precision by reading the <code>RLCI2C</code> linear encoders from RLS.</p>
-<ul>
-<li>It runs every 10 cycles of the velocity loop using a <code>pid_counter</code>;</li>
-<li>it reads the real position via the H7’s hardware encoder inputs (<code>Timer 2</code> and <code>Timer 3</code>);</li>
-<li>it calculates the corrective velocity required to nullify the position error relative to the interpolated target received from the <code>Raspberry Pi</code>.</li>
-<li>thanks to the 10-micron resolution of the RLS sensors, this loop ensures the machine maintains its nominal coordinate by correcting for mechanical backlash or belt flex;</li>
+<li><p>32-bit Arm Cortex-M7 CPU with native single and double-precision Floating Point Unit (FPU) support;</p></li>
+<li><p>Maximum core frequency of 550&nbsp;MHz;</p></li>
+<li><p>4 DMA controllers and 24 advanced hardware timers;</p></li>
+<li><p>High-speed communication interfaces (SPI, I2C, USART).</p></li>
 </ul>
 </section>
 </section>
-</section>
-</section>
-<section id="mechanical-structure" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Mechanical Structure</h1>
-<p>The mechanical foundation of the project is based on a <strong>Creality CR10 Max</strong>. Its natively large build volume is crucial for this multi-axis modification, as it provides the necessary spatial clearance to safely perform complex rotations and translations without colliding with the frame. The original massive heated bed has been entirely removed and replaced with a more compact <strong>20x20 cm print bed</strong>, which is much better suited for 5-axis kinematics. All the required parts for the retrofitting, are Onyx 3D printed.</p>
+<section id="pcb-design" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> PCB Design</h1>
+<p>Regarding the PCB design, there are no strict dimensional constraints since the board is intended for a large-scale, high-end 3D printer. Nevertheless, the board is designed to be highly compact, easily mountable, and optimized for harsh electromechanical environments.<br>
+</p>
+<section id="layers-layout" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="layers-layout"><span class="header-section-number">3.1</span> Layers Layout</h2>
+<p>To ensure signal integrity and robust power delivery, the ACB is structured on a 4-layer PCB. The layer stackup is assigned as minimizing ground loop distances, provide passive electromagnetic shielding, and avoid voltage drops on critical supply lines:</p>
 <ul>
-<li><strong>The Yaw Axis (Local Bed Rotation):</strong> At the core of the moving platform is the local yaw axis. The 20x20 print plate is directly mounted onto a dedicated stepper motor. This motor handles the continuous rotational movement of the bed around its vertical axis, acting as the rotational platter for the workpiece.</li>
-<li><strong>The Pitch Axis and the “Cradle”:</strong> The print bed and its yaw stepper motor are nested inside a custom structural frame, referred to as the “Cradle”. The Cradle is suspended and rotated by two stepper motors—one mounted on each side—which govern the pitch angle of the entire bed assembly. A critical design choice here is the weight distribution: the inner yaw stepper and the bed are positioned so that their combined center of mass aligns perfectly with the pitch rotation axis. This mechanical balancing ensures that the dual pitch steppers only need to overcome the rotational inertia of the structure, rather than fighting gravity to hold a static unbalanced load.</li>
-<li><strong>The Y-Axis Translation:</strong> To move this entire cradle assembly back and forth, the original V-wheel and bearing system of the CR10 was stripped away. It has been upgraded with high-precision <strong>linear guides</strong> mounted directly onto the base aluminum extrusions. The two pitch stepper motors sit on top of the sliding carriages riding on these rails. The linear translation along the Y-axis is driven by a single, powerful <strong>DC motor</strong>. To ensure both sides move in perfect synchronization and avoid racking, this motor is equipped with a custom extended drive shaft that hosts two separate toothed pulleys. Each pulley drives a timing belt connected to one of the carriages, pulling the cradle evenly along the linear rails.</li>
-<li><strong>The X-Axis (Extruder Gantry):</strong> The X-axis, which carries the extruder, retains the original CR10 gantry aluminum profile but has undergone a similar heavy-duty upgrade. The stock V-wheels have been replaced with a linear rail to guarantee superior rigidity and precision. Additionally, the standard stepper motor has been swapped out for a <strong>DC motor</strong>, enabling fast, closed-loop linear positioning for the toolhead.</li>
-<li><strong>Power and Aesthetics:</strong> Powering this complex mechatronic setup is a dedicated <strong>400W Power Supply Unit (PSU)</strong>, which delivers a steady 12V output directly to the custom motor control board. Finally, to highlight the custom mechanics and give the machine a striking, high-tech aesthetic, custom LED lighting has been integrated throughout the chassis.</li>
+<li><p><strong>Front Layer:</strong> Dedicated to component placement and critical high-speed signal routing (e.g., SPI lines). The unused area is flooded with a continuous GND copper pour.</p></li>
+<li><p><strong>Inner Layer 1:</strong> Acts as a dedicated, solid GND plane. This is crucial to provide an uninterrupted, ultra-short return path for high-frequency digital signals, effectively minimizing the loop inductance.</p></li>
+<li><p><strong>Inner Layer 2:</strong> Acts as a split power plane, partially covered by 3.3V and 5V copper zones, as shown in <a href="#fig:pcb" data-reference-type="ref" data-reference="fig:pcb">3</a>.</p></li>
+<li><p><strong>Back Layer:</strong> Used for secondary signal routing and power traces crossing, fully flooded with a GND pour tightly stitched to the other GND layers via arrays of vias.</p></li>
 </ul>
+</section>
+<section id="ground-decoupling-and-star-topology" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="ground-decoupling-and-star-topology"><span class="header-section-number">3.2</span> Ground Decoupling and Star Topology</h2>
+<p>A mixed-signal board dealing with heavy inductive loads requires aggressive noise management. The stepper motors and DC actuators draw high, pulsed currents that can cause severe "ground bounce" if their return paths overlap with the sensitive 3.3V logic.</p>
+<p>To solve this, the PCB implements a <strong>Star Grounding Topology</strong>. The high-power ground (PGND), used by the TMC2209 stepper drivers and external IBT-4 connectors, is physically decoupled from the digital ground (SGND) used by the STM32 and the SPI encoders. These two ground planes are routed separately and tie together at exactly one single node: the negative terminal of the main 12V power supply input. This guarantees that the noisy return currents from the motors flow directly back to the power supply without ever crossing or polluting the microcontroller’s zero-volt reference.<br>
+</p>
+</section>
+<section id="dc-dc-converter-layout-rules" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="dc-dc-converter-layout-rules"><span class="header-section-number">3.3</span> DC-DC Converter Layout Rules</h2>
+<p>The switching nature of the TPS5450-Q1 buck converter generates aggressive high-frequency voltage and current transients. To prevent supply noise and interferences, layout guidelines are shown in Figure <a href="#fig:dcdcpcb" data-reference-type="ref" data-reference="fig:dcdcpcb">2</a>:</p>
+<ol type="1">
+<li><p><strong>Minimized High-Frequency Loops:</strong> The input decoupling capacitors, the catch diode, and the power inductor are placed as physically close to the IC pins as possible. This minimizes the parasitic inductance of the switching loop, drastically reducing voltage ringing and EMI.</p></li>
+<li><p><strong>Copper Polygons over Traces:</strong> In the power stage, standard thin PCB traces are completely avoided. Instead, wide copper polygons (zones) are used to connect the 12V input, the 5V output, and the switching node.</p></li>
+<li><p><strong>Thermal Management:</strong> Besides increasing the current-carrying capacity for the 5A maximum load, these massive copper polygons act as integrated heatsinks, helping the thermal dissipation away from the IC’s exposed pad and spreading it across the board’s internal layers through thermal vias.</p></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="figures/dcdcpcb.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="DCDC PCB design, highlighting zones usage"><img src="figures/dcdcpcb.png" class="img-fluid figure-img" alt="DCDC PCB design, highlighting zones usage"></a></p>
+<figcaption>DCDC PCB design, highlighting zones usage</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="figures/pcb.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Complete PCB design. It is possible to notice how the sockets for TMC2209 drivers are separated from the 3V3 side. Furthermore, the inner layer with the orange 3V3 zone is shown in order to bring supply to microcontroller and rotary encoders connectors"><img src="figures/pcb.png" class="img-fluid figure-img" alt="Complete PCB design. It is possible to notice how the sockets for TMC2209 drivers are separated from the 3V3 side. Furthermore, the inner layer with the orange 3V3 zone is shown in order to bring supply to microcontroller and rotary encoders connectors"></a></p>
+<figcaption>Complete PCB design. It is possible to notice how the sockets for <code>TMC2209</code> drivers are separated from the 3V3 side. Furthermore, the inner layer with the orange 3V3 zone is shown in order to bring supply to microcontroller and rotary encoders connectors</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="figures/ACB.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Board 3D model"><img src="figures/ACB.png" class="img-fluid figure-img" alt="Board 3D model"></a></p>
+<figcaption>Board 3D model</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="firmware-architecture" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Firmware Architecture</h1>
+<p>The firmware is written entirely in bare-metal C. A Real-Time Operating System was avoided to eliminate the unpredictable overhead and context-switching delays that could affect the strict timing requirements of the control loop and thus to have all the possible control over the workflow. The development environment does not have many requirements: the entire codebase was written in Visual Studio Code and compiled, flashed, and debugged using the <code>OpenOCD</code> tool.<br>
+The following <code>structs</code> are implemented:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-language="C" data-caption="Firmware structs"><pre class="sourceCode objectivec code-with-copy"><code class="sourceCode objectivec"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _kp<span class="op">,</span> _ki<span class="op">,</span> _kd<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _setpoint<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _integral<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _last_error<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _output_limit<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _output<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _last_D<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _anti_windup_limit<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> PID<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    int32_t _raw_value<span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _converted_value<span class="op">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _velocity<span class="op">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _offset<span class="op">;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> g_ratio<span class="op">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _last_raw_pos<span class="op">;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _last_converted_value<span class="op">;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _last_velocity<span class="op">;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _acceleration<span class="op">;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    int32_t _turns<span class="op">;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Encoder<span class="op">;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    Encoder <span class="op">*</span>_enc_rot<span class="op">;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    Encoder <span class="op">*</span>_enc_lin<span class="op">;</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    PID _pid_pos<span class="op">;</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    PID _pid_vel<span class="op">;</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _target_pos<span class="op">;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _target_vel<span class="op">;</span> <span class="co">// from feedforward</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _last_vel<span class="op">;</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _ka<span class="op">;</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="dt">volatile</span> uint32_t <span class="op">*</span>_pwm_register<span class="op">;</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Axis<span class="op">;</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    Encoder <span class="op">*</span>_enc_rot<span class="op">;</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _target<span class="op">;</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> steps_per_unit<span class="op">;</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _current_speed_hz<span class="op">;</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _target_speed<span class="op">;</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> _last_error<span class="op">;</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    uint8_t _dir<span class="op">;</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    uint8_t _in_position<span class="op">;</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Stepper<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="decoupling-data-acquisition-from-control" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="decoupling-data-acquisition-from-control"><span class="header-section-number">4.1</span> Decoupling Data Acquisition from Control</h2>
+<p>In a 10 kHz control loop, the CPU has an absolute maximum window of 100 microseconds to complete all its tasks. Wasting CPU clock cycles waiting for an SPI bus to shift bits serially is unacceptable for this case. Therefore, it is strictly decoupled data acquisition from the actual motor control logic.</p>
+<p>The STM32H7 CPU is dedicated 100% to running the PID algorithms and calculating the next motor commands. For the motors, querying the SPI rotary encoders is fully offloaded to the Direct Memory Access (DMA) controller: the CPU triggers a non-blocking read and immediately processes the data only upon the DMA transfer complete interrupt.<br>
+</p>
+</section>
+<section id="clock-configuration" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="clock-configuration"><span class="header-section-number">4.2</span> Clock Configuration</h2>
+<p>To strictly meet the deterministic constraints of the hard real-time motor control, the clock tree was configured to extract maximum performances. The main Phase-Locked Loop (PLL) multiplies the internal oscillator to drive the <strong>Cortex-M7 core at its peak 550&nbsp;MHz</strong>.</p>
+<p>The peripheral buses (<code>APB1</code>, <code>APB2</code>, <code>APB3</code>, <code>APB4</code>) are divided down to run at <strong>137.5&nbsp;MHz</strong>. However, the STM32H7 architecture automatically doubles the clock frequency for the hardware timers, meaning that all motor control timers (such as <code>TIM1</code> for the DC motors and <code>TIM4</code>, <code>TIM8</code>, <code>TIM15</code> for the steppers) operate at a <strong>275&nbsp;MHz</strong> base clock. This extremely high resolution is crucial to calculate dynamic Auto-Reload Register (<code>ARR</code>) values, enabling smooth PWM step generation for the stepper drivers, even at extremely low rotational speeds.<br>
+</p>
+</section>
+<section id="spi-and-dma" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="spi-and-dma"><span class="header-section-number">4.3</span> SPI and DMA</h2>
+<p>For the data acquisition side, the SPI buses are explicitly mapped and clocked to optimize reliability across different cable lengths:</p>
+<ul>
+<li><p><em>SPI1 and SPI2</em> (dedicated to the AS5048A rotary encoders) are fed by a 64MHz peripheral clock. SPI1 operates at a stable 1Mbps (using a 64 prescaler) for the shorter cables, while SPI2 was deliberately slowed down to 500kbps (128 prescaler) to effectively suppress electromagnetic reflections and ringing on the longer 50cm cables reaching the X-axis.</p></li>
+<li><p><em>SPI3</em> acts as the 1&nbsp;MHz Full-Duplex slave interface to seamlessly exchange target coordinates and telemetries with the Raspberry Pi 5.</p></li>
+<li><p><em>SPI4 and SPI5</em> are devoted to A and C axes and they are configured as SPI2.</p></li>
+</ul>
+<p>By leveraging the built-in DMA controllers, the 550MHz CPU is completely freed from the overhead of polling bits on the SPI buses. Linear encoders are directly interfaced with the hardware Timers, meaning the positional <code>CNT</code> register is always instantly available to be read. As a result, the core focuses exclusively on dealing the <code>float</code> mathematics of the multi-axis PID loops, fully exploiting the native hardware FPU.<br>
+</p>
+</section>
+<section id="rotary-encoders-acquisition" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="rotary-encoders-acquisition"><span class="header-section-number">4.4</span> Rotary Encoders Acquisition</h2>
+<p><code>AS5048a</code> run via SPI, so the <code>0x3FFF</code> hexadecimal mask is used to get rid od the two most significant bits of the 16-bit word (Bit 15 for parity, and Bit 14 for hardware errors). This safely isolates the pure 14-bit positional data, yielding an integer between 0 and 16383. The resulting value is explicitly cast to a float and multiplied by the resolution factor (<span class="math inline">\(360^\circ / 16384\)</span>) to directly convert the raw data into a precise floating-point angle in degrees.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-language="C" data-caption="Rotary Encoders Acquisition"><pre class="sourceCode objectivec code-with-copy"><code class="sourceCode objectivec"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> update_rotary_encoder<span class="op">(</span>Encoder <span class="op">*</span>enc<span class="op">,</span> uint16_t raw_spi<span class="op">,</span> <span class="dt">float</span> dt<span class="op">){</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> <span class="op">(</span>raw_spi <span class="op">&amp;</span> <span class="bn">0x4000</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span><span class="op">;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> new_pos <span class="op">=</span> <span class="op">(</span><span class="dt">float</span><span class="op">)(</span>raw_spi <span class="op">&amp;</span> <span class="bn">0x3FFF</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">360.0f</span> <span class="op">/</span> <span class="fl">16384.0f</span><span class="op">);</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> diff <span class="op">=</span> new_pos <span class="op">-</span> enc<span class="op">-&gt;</span>_last_raw_pos<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> <span class="op">(</span>diff <span class="op">&gt;</span> <span class="fl">180.0f</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    diff <span class="op">-=</span> <span class="fl">360.0f</span><span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    enc<span class="op">-&gt;</span>_turns<span class="op">--;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span>diff <span class="op">&lt;</span> <span class="op">-</span><span class="fl">180.0f</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    diff <span class="op">+=</span> <span class="fl">360.0f</span><span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    enc<span class="op">-&gt;</span>_turns<span class="op">++;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  enc<span class="op">-&gt;</span>_last_raw_pos <span class="op">=</span> new_pos<span class="op">;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> total_pos_deg <span class="op">=</span> <span class="op">(</span>enc<span class="op">-&gt;</span>_turns <span class="op">*</span> <span class="fl">360.0f</span><span class="op">)</span> <span class="op">+</span> new_pos<span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  enc<span class="op">-&gt;</span>_converted_value <span class="op">=</span> <span class="op">(</span>total_pos_deg <span class="op">-</span> enc<span class="op">-&gt;</span>_offset<span class="op">)</span>  <span class="op">/</span> enc <span class="op">-&gt;</span> _g_ratio <span class="op">;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="dt">float</span> instant_vel <span class="op">=</span> diff <span class="op">/</span> dt<span class="op">;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  enc <span class="op">-&gt;</span> _velocity <span class="op">=</span> <span class="op">(</span>enc<span class="op">-&gt;</span>_velocity <span class="op">*</span> <span class="fl">0.99f</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span>instant_vel <span class="op">*</span> <span class="fl">0.01f</span><span class="op">);</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  enc <span class="op">-&gt;</span> _last_converted_value <span class="op">=</span> enc<span class="op">-&gt;</span>_converted_value<span class="op">;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  enc <span class="op">-&gt;</span> _acceleration <span class="op">=</span> enc <span class="op">-&gt;</span> _acceleration <span class="op">*</span> <span class="fl">0.95f</span> <span class="op">+</span> <span class="op">((</span>enc <span class="op">-&gt;</span> _velocity <span class="op">-</span> enc <span class="op">-&gt;</span> _last_velocity<span class="op">)</span> <span class="op">/</span> dt<span class="op">)</span> <span class="op">*</span> <span class="fl">0.05f</span><span class="op">;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  enc <span class="op">-&gt;</span> _last_velocity <span class="op">=</span> enc <span class="op">-&gt;</span> _velocity<span class="op">;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Regarding the mounting on DC motors, the sensors are mounted directly on the high-speed motor shaft, strictly <em>before</em> the planetary gearbox. The amplified resolution given by the 27:1 and 24:1 mechanical reductions yields an effective linear resolution at the belt of approximately <span class="math inline">\(0.09~\mu m\)</span>. The fast 10kHz inner loop acts as an high-resolution damper, neutralizing micro-vibrations before they propagate through the gearbox, while the slower 1kHz outer loop utilizes the 5<span class="math inline">\(\mu\)</span>m linear scale strictly as an absolute, backlash-free reference.</p>
+<p>The stepper motors control runs at 10kHz as well, thanks to DMA and SPI combination for rotary encoders.</p>
+<section id="dma-and-l1-cache-management" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="dma-and-l1-cache-management"><span class="header-section-number">4.4.1</span> DMA and L1 Cache Management</h3>
+<p>Relying heavily on DMA inside a high-performance Cortex-M7 core introduces an important hardware challenge: cache coherence. Because the DMA streams the incoming SPI sensor data directly into the RAM, the CPU’s L1 Data Cache remains completely unaware that the underlying memory has changed. If the CPU tries to read the sensor data immediately, it will fetch old values from its fast cache rather than the updated values from RAM.</p>
+<p>To solve this, manual cache invalidation commands (<code>SCB_InvalidateDCache_by_Addr</code>) are implemented inside the DMA complete callbacks. This forces the CPU to discard its cached memory and fetch the fresh positional bytes directly from RAM before feeding them to the PID controllers.</p>
+<p>Furthermore, the DMA is configured for the full-duplex SPI communication with the Raspberry Pi. Initially, using the DMA in "Circular" mode caused FIFO tearing and checksum failures, because the DMA would begin fetching the next packet while the CPU was still updating the current one. This was fixed by switching the DMA to "Normal" mode and manually re-arming it only inside the completion callback, ensuring the Raspberry Pi always reads perfectly atomic and synchronized data packets.</p>
+<p>Moreover, the Cortex-M7 cache operates on 32-byte cache lines. If a DMA buffer shares a cache line with standard CPU variables, performing a manual cache invalidation could accidentally wipe out adjacent data. To prevent this memory corruption, a dedicated, uninitialized memory section is defined in the linker script (<code>STM32H723XG_FLASH.ld</code>) forced to a strict 32-byte alignment:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-language="bash" data-caption="STM32H723XG\_FLASH.ld custom DMA custom section"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.dma_buffer</span> <span class="er">(</span><span class="ex">NOLOAD</span><span class="kw">)</span> <span class="bu">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">.</span> = ALIGN<span class="er">(</span><span class="ex">32</span><span class="kw">);</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">*</span><span class="er">(</span><span class="ex">.dma_buffer</span><span class="kw">)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">.</span> = ALIGN<span class="er">(</span><span class="ex">32</span><span class="kw">);</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">}</span> <span class="op">&gt;</span>RAM_D1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-language="C" data-caption="SPI3 example variables declarations"><pre class="sourceCode objectivec code-with-copy"><code class="sourceCode objectivec"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>uint8_t spi3_rx_buf<span class="op">[</span><span class="dv">96</span><span class="op">]</span> __attribute__<span class="op">((</span>section<span class="op">(</span><span class="st">".dma_buffer"</span><span class="op">),</span> aligned<span class="op">(</span><span class="dv">32</span><span class="op">)));</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>uint8_t spi3_tx_buf<span class="op">[</span><span class="dv">96</span><span class="op">]</span> __attribute__<span class="op">((</span>section<span class="op">(</span><span class="st">".dma_buffer"</span><span class="op">),</span> aligned<span class="op">(</span><span class="dv">32</span><span class="op">)));</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> HAL_SPI_TxRxCpltCallback<span class="op">(</span>SPI_HandleTypeDef <span class="op">*</span>hspi<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="op">(</span>hspi<span class="op">-&gt;</span>Instance <span class="op">==</span> SPI3<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        SCB_InvalidateDCache_by_Addr<span class="op">((</span>uint32_t <span class="op">*)</span>spi3_rx_buf<span class="op">,</span> <span class="dv">96</span><span class="op">);</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Processing</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="motor-control-execution" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="motor-control-execution"><span class="header-section-number">4.5</span> Motor Control Execution</h2>
+<p>The heart of the system is a hardware timer (<code>TIM6</code>) interrupt that ticks precisely at 10kHz. Inside this hard real-time routine, two different types of actuators are handled at two different frequencies.</p>
+<section id="dc-motors" class="level3" data-number="4.5.1">
+<h3 data-number="4.5.1" class="anchored" data-anchor-id="dc-motors"><span class="header-section-number">4.5.1</span> DC Motors</h3>
+<p>For the brushed DC motors, the control relies on a cascaded PID architecture. The outer position loop operates at 1kHz, reading the absolute position from the high-resolution linear quadrature encoders. This loop computes a corrective velocity to compensate for mechanical backlash and belt stretch, which is then summed with the velocity feedforward target sent directly by the Raspberry Pi. The inner velocity loop executes strictly at 10kHz, computing the dynamic error against the rotary encoders’ readings acquired via the SPI-DMA pipeline. The final output determines the PWM duty cycle sent to the external IBT-4 dual H-bridge drivers. To ensure mathematical stability and prevent integral saturation whenever the motors hit their maximum physical speed or PWM limits, a robust anti-windup algorithm is integrated into both control loops.</p>
+</section>
+<section id="stepper-motors" class="level3" data-number="4.5.2">
+<h3 data-number="4.5.2" class="anchored" data-anchor-id="stepper-motors"><span class="header-section-number">4.5.2</span> Stepper motors</h3>
+<p>For the stepper motors, the firmware runs a single P loop at <strong>10kHz</strong>, computing the positional error dynamically against the rotary encoders’ readings acquired via the SPI interface. The algorithm converts the required speed into a step frequency and adjusts the Auto-Reload Register (<code>ARR</code>) of the hardware timers. It ensures a smooth rotation of the stepper motor without delivering a CPU-driven pulses train.</p>
+<p>However, controlling stepper motors in a closed-loop system introduces specific physical challenges that standard P controllers cannot handle alone:</p>
+<ul>
+<li><p><em>Inertia and Braking:</em> Stepper motors can easily overshoot the target if commanded to a fast stop, causing oscillation. To prevent this, the firmware implements a predictive braking algorithm. It dynamically limits the maximum allowed speed based on the remaining distance, forcing the motor to absorb the kinetic energy and decelerate smoothly before reaching the target.</p></li>
+<li><p><em>The spring effect and Holding Torque:</em> When a stepper holds its position, the electrical elasticity of the coils (acting like virtual springs) and the natural noise of the high-resolution encoders can trick the control law into making high-frequency corrections. To ensure absolute stillness, the algorithm implements an hysteresis check. Once the motor is within half a physical step of the target, the active control loop goes to sleep, relying entirely on the motor driver’s natural Holding Torque. The loop only wakes up and applies a correction if an external force physically pushes the axis out of its resting tolerance.</p></li>
+</ul>
+<p>Regarding the Z axis, it is the only open-loop controlled axis. This decision stands on the fact that its blocking reduction introduce a natural stability which reduces the performance gap with the closed-loop control. Moreover, the mechanical mounting of the rotary encoder requires complex design due to motor shaft possibile movements.</p>
+</section>
+</section>
+<section id="raspberry-pi-spi-full-duplex-communication" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="raspberry-pi-spi-full-duplex-communication"><span class="header-section-number">4.6</span> Raspberry Pi SPI Full-Duplex Communication</h2>
+<p>To ensure the synchronized flow of trajectories, the STM32H7 and the Raspberry Pi 5 communicate via a 1 MHz full-duplex SPI link. Since the Raspberry Pi acts as the SPI Master, data exchange happens simultaneously: while the Pi sends the next trajectory targets (positions and feedforward velocities), the STM32 returns the current telemetries (actual positions, measured velocities, and tracking errors). This procedure loops at 1kHz.</p>
+<p>To ensure micrometric precision, the exchanged data structures must be perfectly aligned in memory. Because the Raspberry Pi (Cortex-A76) and the STM32 (Cortex-M7) process memory alignment differently, relying on default compiler behavior results in misaligned bytes across the SPI bus, leading to catastrophic position commands. To solve this, strict memory padding and compiler <code>pragmas</code> (<code>#pragma pack(push, 1)</code>) are implemented. This guarantees that both devices interpret the fixed 96-byte payload identically. Furthermore, the checksum calculation deliberately ignores the padding bytes to prevent undefined memory states from triggering false-positive data corruption errors.<br>
+</p>
+</section>
+<section id="checksum-calculation" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="checksum-calculation"><span class="header-section-number">4.7</span> Checksum Calculation</h2>
+<p>Given the noisy electromagnetic environment generated by the brushed DC motors and stepper drivers, the SPI communication lines are highly susceptible to electromagnetic interference (EMI). To guarantee data integrity and prevent the actuators from executing corrupted position commands, a lightweight but robust checksum mechanism was implemented.</p>
+<p>The firmware uses a Longitudinal Redundancy Check (LRC) based on a sequential XOR operation. The choice of the XOR algorithm is strategic: it requires a single CPU clock cycle per byte on the Cortex-M7 architecture, ensuring that the checksum verification does not add computational overhead.</p>
+<p>Before transmission, the STM32 treats the 96-byte packet as a contiguous array of unsigned 8-bit integers. The algorithm loops through the first 69 active bytes, which include the start byte, the sequential message ID, and all the 32-bit floating-point telemetries, computing the cumulative XOR value. The resulting 8-bit checksum is then injected into the <code>check</code> field of the packet. Crucially, the calculation deliberately excludes the trailing 26 bytes of padding. Since these padding bytes contain uninitialized RAM data, including them in the checksum would lead to undefined behavior and continuous false-positive integrity failures on the Raspberry Pi side.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-language="C" data-caption="96 bit transmission struct"><pre class="sourceCode objectivec code-with-copy"><code class="sourceCode objectivec"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma pack(push, 1)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> __attribute__<span class="op">((</span>packed<span class="op">)){</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    uint8_t start<span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> x<span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> y<span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> z<span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> a<span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> c<span class="op">;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> vx<span class="op">;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> vy<span class="op">;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    uint8_t check<span class="op">;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    uint8_t padding<span class="op">[</span><span class="dv">66</span><span class="op">];</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SPIPacket<span class="op">;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> __attribute__<span class="op">((</span>packed<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    uint8_t  start<span class="op">;</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    uint32_t msg_id<span class="op">;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    x<span class="op">;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    y<span class="op">;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    z<span class="op">;</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    a<span class="op">;</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    c<span class="op">;</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vx<span class="op">;</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vy<span class="op">;</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    va<span class="op">;</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vc<span class="op">;</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    vz<span class="op">;</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    ax<span class="op">;</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    ay<span class="op">;</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    az<span class="op">;</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    aa<span class="op">;</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    ac<span class="op">;</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span>    error<span class="op">;</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    uint8_t  check<span class="op">;</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    uint8_t padding<span class="op">[</span><span class="dv">26</span><span class="op">];</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> SPITxPacket<span class="op">;</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma pack(pop)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="finite-state-machine-and-safety-logic" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="finite-state-machine-and-safety-logic"><span class="header-section-number">4.8</span> Finite State Machine and Safety Logic</h2>
+<p>To guarantee operational safety and predictable physical behavior, the high-level logic of the ACB firmware is modeled as a strict Finite State Machine (FSM). The FSM ensures that the high-power dual H-bridges and the stepper drivers are energized exclusively when the system is in a known, safe spatial configuration.</p>
+<p>The state transitions are governed by the full-duplex SPI communication with the Raspberry Pi and the hardware interrupts triggered by the endstops. The firmware implements the following core states:</p>
+<ul>
+<li><p><strong>INIT:</strong> Upon boot, the microcontroller immediately defaults to this state. The PID controllers are disabled, and the Capture/Compare Registers (<code>CCR</code>) of all hardware timers are rigorously forced to zero.</p></li>
+<li><p><strong>HOMING:</strong> Triggered by the receipt of a specific packet header (<code>0xCC</code>) from the Raspberry Pi. The firmware enables the power stages and executes a self-contained zeroing procedure.</p></li>
+<li><p><strong>RUN:</strong> The FSM is allowed to transition into the <code>RUN</code> state <em>only</em> after a successful homing sequence (<code>homing_counter == 3</code>) or via an explicit <code>0xAA</code> packet.</p></li>
+</ul>
+<p>The logic flow and the strict conditions required to transition between these states are visually summarized in the flowchart in Figure <a href="#fig:fsm" data-reference-type="ref" data-reference="fig:fsm">5</a>.</p>
+<figure id="fig:fsm" class="figure">
+<figcaption>
+Firmware Finite State Machine (FSM) flowchart. The vertical layout ensures readability within a two-column document. Power stages are energized exclusively during HOMING and RUN states, while any spatial violation triggers a hardware E-STOP fallback to INIT.
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="results" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Results</h1>
+<p>The primary objective of the Axes Controller Board (ACB) was to guarantee a deterministic, high-fidelity execution of the trajectories generated by the Raspberry Pi 5, aiming for an absolute spatial precision strictly below the 0.1&nbsp;mm threshold. To evaluate the system’s performance, the tracking error was continuously profiled via the full-duplex SPI telemetry.<br>
+</p>
+<section id="real-time-execution" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="real-time-execution"><span class="header-section-number">5.1</span> Real Time Execution</h2>
+<p>To physically validate the hard real-time capabilities of the STM32H7, execution times were profiled at the silicon level using the Cortex-M7 Data Watchpoint and Trace (DWT) cycle counter. Operating at a core frequency of 550&nbsp;MHz, the DWT provides an absolute hardware-level timing resolution of approximately <span class="math inline">\(1.81\)</span>&nbsp;ns per cycle, entirely immune to software overhead.</p>
+<p>The main control timer (<code>TIM6</code>) fires at 10kHz, establishing a rigid, non-negotiable execution window of 100<span class="math inline">\(\mu\)</span>s. Failing to conclude all control operations within this timeframe would cause interrupt overlap and catastrophic mechanical drift. Figure&nbsp;<a href="#fig:result_times_axis" data-reference-type="ref" data-reference="fig:result_times_axis">10</a> shows the execution footprint over a 5&nbsp;ms window, highlighting the intentional architectural asymmetry of the dual-loop design.</p>
+<p>The system exhibits two distinct execution states:</p>
+<ul>
+<li><p><strong>Standard Execution (10&nbsp;kHz):</strong> Represented by the blue baseline, 9 out of 10 interrupt cycles consume an average of <strong>4.5&nbsp;<span class="math inline">\(\mu\)</span>s</strong>. During this brief window, the MCU parses the DMA-streamed rotary encoder data, computes the inner velocity PIDs for the DC motors, and updates the stepper timers’ hardware registers (<code>ARR</code>/<code>CCR</code>) for step generation.</p></li>
+<li><p><strong>Worst-Case Execution Time (at 1&nbsp;kHz):</strong> Every tenth cycle (red peaks), the slower outer position loop triggers. The CPU must additionally fetch the linear encoder hardware timers, compute the position PID, format the 96-byte SPI telemetry payload, and calculate the 69-byte XOR checksum. Even under this peak computational stress, the execution time stabilizes around <strong>8.8<span class="math inline">\(\mu\)</span>s</strong>, safely below the 10<span class="math inline">\(\mu\)</span>s reference limit.</p></li>
+</ul>
+<p>In particular, it is possible to study the required execution time of specific functions by means of the DWT tool:</p>
+<ul>
+<li><em>Rotary Encoder Parsing</em> (<code>update_rotary_encoder</code>)</li>
+<li><em>Velocity Loop</em> (<code>PID_compute_vel</code>): <span class="math inline">\(\sim 0.5\mu\)</span>s per axis. It includes error calculation, integral clamping, low-pass filtering on the derivative term, and feedforward addition.</li>
+<li><em>Position Loop</em> (<code>PID_compute_pos</code>): <span class="math inline">\(\sim 0.4\mu\)</span>s per axis.</li>
+<li><em>Stepper Control</em> (<code>stepper_loop</code>): <span class="math inline">\(\sim 0.6\mu\)</span>s per axis. The conversion from velocity to hardware frequency and the dynamic <code>ARR</code>/<code>CCR</code> register updates are executed purely through rapid memory-mapped I/O writes.</li>
+<li><em>Telemetry Checksum (69-byte XOR):</em> <span class="math inline">\(\sim 0.2\mu\)</span>s. Handled sequentially inside the CPU registers.</li>
+</ul>
+<p>With the WCET securely confined under 10&nbsp;<span class="math inline">\(\mu\)</span>s, it highlights a massive architectural safety margin. Even in the absolute worst-case scenario, the motor control logic consumes less than <strong>10%</strong> of the 100&nbsp;<span class="math inline">\(\mu\)</span>s interrupt window. This leaves the CPU idle for over 90&nbsp;<span class="math inline">\(\mu\)</span>s per cycle, providing margin to handle the asynchronous DMA callbacks, cache invalidation routines, and any future expansion of the kinematic complexity without ever threatening the deterministic nature of the machine.</p>
+<p>Furthermore, to preserve this low latency, the firmware is intentionally designed to perform a <em>busy wait</em> within the main <code>while(1)</code> idle task, completely avoiding low-power sleep instructions such as <code>WFI</code> (Wait For Interrupt). Entering and exiting a sleep state introduces a wake-up penalty and an unpredictable jitter of <span class="math inline">\(1.5\)</span> to <span class="math inline">\(2.0~\mu\)</span>s due to core clock reactivation and context restoration. In a high-performance manufacturing application with abundant power supply, sacrificing determinism for negligible power is unjustified.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="figures/comp_execution_times.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Execution time measured for the 10kHz loop for a total of 5ms"><img src="figures/comp_execution_times.png" class="img-fluid figure-img" alt="Execution time measured for the 10kHz loop for a total of 5ms"></a></p>
+<figcaption>Execution time measured for the 10kHz loop for a total of 5ms</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="conclusions" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Conclusions</h1>
+<p>The development of the Axes Controller Board (ACB) successfully demonstrated that strict computational decoupling is a highly effective approach for advanced multi-axis mechatronic systems. By offloading path planning and kinematics to a high-level processor (Raspberry Pi 5) and isolating the hard real-time motor control on a dedicated bare-metal microcontroller (STM32H7), the inherent limitations of standard commercial controller boards were completely bypassed.</p>
+<p>On the hardware level, the custom 4-layer PCB design, combined with strict star-grounding topologies and SPI daisy-chain series termination, proved robust against the severe electromagnetic interference (EMI) generated by high-power DC and stepper motors.</p>
+<p>On the firmware level, the aggressive use of DMA controllers and hardware features, eliminated CPU polling overhead. The hardware-level DWT timing evaluation conclusively validated the system’s determinism: even during the worst-case scenario for Execution time, the complete multi-axis cascaded control loop executes in under 10&nbsp;<span class="math inline">\(\mu\)</span>s. This consumes less than 10% of the 100&nbsp;<span class="math inline">\(\mu\)</span>s deadline dictated by the 10kHz operating frequency, providing unparalleled stability.</p>
+<section id="future-developments" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="future-developments"><span class="header-section-number">6.1</span> Future Developments</h2>
+<section id="current-sensing" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="current-sensing"><span class="header-section-number">6.1.1</span> Current Sensing</h3>
+<p>Future developments will focus on leveraging the onboard ACS37800 current sensors to implement sensorless collision detection and real-time torque monitoring, further enhancing the closed-loop capabilities of the Dedalus system without compromising its hard real-time guarantees.</p>
+</section>
+<section id="spi-multi-target-packet" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="spi-multi-target-packet"><span class="header-section-number">6.1.2</span> SPI multi-target Packet</h3>
+<p>Currently the Raspberry Pi sends a single packet to the ACB at 1kHz frequency. Experiments show that the communication is robust thanks to real-time algorithms implemented by both sides. A faster control could be implemented, so the SPI communication may become the real-time bottle-neck. In order to overcome this problem, the Raspberry could send a packet that includes a set of consecutive targets: thanks to that, the ACB can schedule them at its own frequency, by carrying the communication’s computation burden one time for a full set of targets. This windowing-approach will make the communication much more robust to higher frequencies.</p>
+</section>
+<section id="imu-implementation" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="imu-implementation"><span class="header-section-number">6.1.3</span> IMU implementation</h3>
+<p>In order to understand better the accelerations that affect the printing plate, an Inertial Measurement Unit can be added. It would help to smooth the commanding torque to both DC and stepper motors.</p>
+</section>
+</section>
+<section id="high-frequency-filtering" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="high-frequency-filtering"><span class="header-section-number">6.2</span> High Frequency Filtering</h2>
+<p>Currently, the <code>AS5048A</code> rotary encoders are fetched in the 10&nbsp;kHz control loop. Due to the noisy environment generated by the high-current actuator wiring, it would be beneficial to acquire the encoder data at a higher frequency (e.g., 20kHz to 50kHz). These oversampled readings could then be mathematically filtered within the temporal window of the main control loop. In this way, the PID controllers would be fed with clean, pre-filtered positional data. A possible software implementation would involve a dedicated decimation filter, such as a Moving Average or a higher-order Low-Pass Filter, carefully tuned to aggressively attenuate noise without introducing an excessive phase delay that could compromise the system’s mechanical stability.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -691,7 +900,7 @@ window.Quarto = {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/DEDALUS-5x\.github\.io\/dedalus-docs\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
