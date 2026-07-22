@@ -16,6 +16,7 @@ Powering on the machine relies solely on the main plug and power switch, which w
 * **Network Connection:** The Raspberry Pi is configured to boot as a Wi-Fi Access Point. After turning on the switch, the `DedalusAP` network will quickly become available. Connect to this network from your external device.
 * **SSH Access:** Connect to the Raspberry Pi environment via `SSH`.
 * **Verify Background Services:** The MADS framework broker and the `spi_agent` are configured to run automatically as startup services. You can verify their active status using the `systemctl` command:
+
    ```bash
    systemctl status mads-broker.service
    systemctl status mads-spi.service
