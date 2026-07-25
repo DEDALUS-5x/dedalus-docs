@@ -339,7 +339,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#how-to-use" id="toc-how-to-use" class="nav-link active" data-scroll-target="#how-to-use"><span class="header-section-number">1</span> HOW TO USE</a>
   <ul class="collapse">
   <li><a href="#machine-checks" id="toc-machine-checks" class="nav-link" data-scroll-target="#machine-checks"><span class="header-section-number">1.1</span> Machine Checks</a></li>
-  <li><a href="#usage-procedure" id="toc-usage-procedure" class="nav-link" data-scroll-target="#usage-procedure"><span class="header-section-number">1.2</span> Usage Procedure</a></li>
+  </ul></li>
+  <li><a href="#how-to-use-1" id="toc-how-to-use-1" class="nav-link" data-scroll-target="#how-to-use-1"><span class="header-section-number">2</span> HOW TO USE</a>
+  <ul class="collapse">
+  <li><a href="#machine-checks-1" id="toc-machine-checks-1" class="nav-link" data-scroll-target="#machine-checks-1"><span class="header-section-number">2.1</span> Machine Checks</a></li>
+  <li><a href="#usage-procedure" id="toc-usage-procedure" class="nav-link" data-scroll-target="#usage-procedure"><span class="header-section-number">2.2</span> Usage Procedure</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -365,19 +369,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Electrical Safety:</strong> Check that all stepper and DC motor terminals are properly covered and insulated to prevent accidental short circuits.</li>
 </ul>
 </section>
-<section id="usage-procedure" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="usage-procedure"><span class="header-section-number">1.2</span> Usage Procedure</h2>
+</section>
+<section id="how-to-use-1" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> HOW TO USE</h1>
+<p>Before understanding the steps required to work with DEDALUS, ensure you perform the following pre-flight checks to prevent hardware failures or unpredictable behavior.</p>
+<section id="machine-checks-1" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="machine-checks-1"><span class="header-section-number">2.1</span> Machine Checks</h2>
+<p>Prior to powering on and operating the machine, systematically verify the following physical and sensor conditions:</p>
+<ul>
+<li><strong>Linear Encoders:</strong> Verify the correct alignment and secure positioning of the linear encoders along both the X and Y axes.</li>
+<li><strong>Rotary Encoders:</strong> Ensure the magnetic rotary encoders are correctly coupled and providing stable, accurate readings.</li>
+<li><strong>Axis Leveling:</strong> Confirm that the axes remain mechanically level after the homing procedure is executed.</li>
+<li><strong>Cable Management:</strong> Inspect all wiring harnesses to ensure there are no twisted cables or wires that could catch on moving components during 5-axis kinematics.</li>
+<li><strong>Electrical Safety:</strong> Check that all stepper and DC motor terminals are properly covered and insulated to prevent accidental short circuits.</li>
+</ul>
+</section>
+<section id="usage-procedure" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="usage-procedure"><span class="header-section-number">2.2</span> Usage Procedure</h2>
 <p>Powering on the machine relies solely on the main plug and power switch, which will simultaneously boot the Axes Controller Board and the Raspberry Pi.</p>
 <ul>
-<li><p><strong>Network Connection:</strong> The Raspberry Pi is configured to boot as a Wi-Fi Access Point. After turning on the switch, the <code>DedalusAP</code> network will quickly become available. Connect to this network from your external device.</p></li>
-<li><p><strong>SSH Access:</strong> Connect to the Raspberry Pi environment via <code>SSH</code>.</p></li>
-<li><p><strong>Verify Background Services:</strong> The MADS framework broker and the <code>spi_agent</code> are configured to run automatically as startup services. You can verify their active status using the <code>systemctl</code> command:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> status mads-broker.service</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">systemctl</span> status mads-spi.service</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
-<li><p>Launch the Controller: Execute the path planner program (cncppevo) by specifying the desired <code>G-Code</code></p></li>
-<li><p><strong>Homing Procedure:</strong> Once the program is running and the interface is active, trigger the machine homing sequence by pressing the z key.</p></li>
-<li><p><strong>Bed Calibration:</strong> With the machine homed, perform a manual bed leveling/calibration to ensure the printing plate is perfectly set.</p></li>
-<li><p><strong>Start Printing:</strong> Begin the printing execution by pressing the <space> bar.</space></p></li>
+<li><strong>Network Connection:</strong> You can connect to the machine’s Raspberry Pi “brain” using either a wireless or a wired connection. The Ethernet connection is highly recommended for maximum speed, stability, and zero-latency telemetry streaming.
+<ul>
+<li><strong>Option A - Wi-Fi (Access Point):</strong> The Raspberry Pi automatically broadcasts the <code>DedalusAP</code> Wi-Fi network. Simply connect your PC to this network.</li>
+<li><strong>Option B - Ethernet Direct Link (Recommended):</strong> Connect a standard Ethernet cable directly from your PC to the Raspberry Pi port. On your PC’s network settings, modify the Wired Connection properties by setting the IPv4 method to <strong>Manual</strong> and applying the following parameters:
+<ul>
+<li><em>Address:</em> <code>192.168.50.1</code></li>
+<li><em>Netmask:</em> <code>255.255.255.0</code></li>
+<li><em>(Leave Gateway and DNS empty)</em></li>
+</ul></li>
+</ul></li>
+<li><strong>SSH Access:</strong> Open a terminal on your PC and connect to the Raspberry Pi environment via <code>SSH</code>. Depending on your chosen connection method, use the corresponding IP address:
+<ul>
+<li>For Wi-Fi: <code>ssh dedalus@10.42.0.1</code></li>
+<li>For Ethernet: <code>ssh dedalus@192.168.50.2</code></li>
+</ul></li>
+<li><strong>Verify Background Services:</strong> The MADS framework broker and the <code>spi_agent</code> are configured to run automatically as startup services. You can verify their active status using the <code>systemctl</code> command:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>   <span class="ex">systemctl</span> status mads-broker.service</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   <span class="ex">systemctl</span> status mads-spi.service</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Launch the Controller</strong>: Execute the path planner program (cncppevo) by specifying the desired <code>G-Code</code></li>
+<li><strong>Homing Procedure:</strong> Once the program is running and the interface is active, trigger the machine homing sequence by pressing the z key.</li>
+<li><strong>Bed Calibration:</strong> With the machine homed, perform a manual bed leveling/calibration to ensure the printing plate is perfectly set.</li>
+<li><strong>Start Printing:</strong> Begin the printing execution by pressing the <space> bar.</space></li>
 </ul>
 
 
