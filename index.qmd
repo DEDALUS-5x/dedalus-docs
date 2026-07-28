@@ -2,6 +2,9 @@
 title: "DEDALUS"
 ---
 
+![Dedalus](images/dedalus.jpg){width=45%}
+
+
 The **Dedalus** project focuses on upgrading a classic Cartesian 3D printer into a 5-Degree-of-Freedom (5DoF) manufacturing system. This upgrade overcomes the traditional limitations of planar Fused Deposition Modeling (FDM) by enabling non-planar printing, combining a hobbyist-friendly architecture with industrial-grade dynamic stability.
 
 Dedalus stands on three fundamental pillars:
